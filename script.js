@@ -2411,6 +2411,134 @@ javascript
 
 })();
 
+/* =========================================================
+   SAFE NAVIGATION FIX
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const pages = document.querySelectorAll(".page");
+  const navButtons = document.querySelectorAll(".nav-item");
+  const dashboardButtons =
+    document.querySelectorAll(".dashboard-action");
+
+  function showPage(pageId) {
+
+    pages.forEach(function (page) {
+      page.classList.remove("active");
+    });
+
+    const target = document.getElementById(pageId);
+
+    if (target) {
+      target.classList.add("active");
+    }
+
+    navButtons.forEach(function (button) {
+
+      if (button.dataset.page === pageId) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+
+  /* Sidebar buttons */
+
+  navButtons.forEach(function (button) {
+
+    button.addEventListener("click", function (event) {
+
+      event.preventDefault();
+
+      const pageId =
+        button.getAttribute("data-page");
+
+      if (pageId) {
+        showPage(pageId);
+      }
+
+    });
+
+  });
+
+
+  /* Dashboard buttons */
+
+  dashboardButtons.forEach(function (button) {
+
+    button.addEventListener("click", function (event) {
+
+      event.preventDefault();
+
+      const pageId =
+        button.getAttribute("data-page");
+
+      if (pageId) {
+        showPage(pageId);
+      }
+
+    });
+
+  });
+
+
+  /* New Project button */
+
+  const newProjectButton =
+    document.getElementById("newProjectBtn");
+
+  const dashboardNewProject =
+    document.getElementById("dashboardNewProject");
+
+  const modal =
+    document.getElementById("newProjectModal");
+
+  function openModal() {
+
+    if (modal) {
+      modal.classList.remove("hidden");
+    }
+
+  }
+
+  if (newProjectButton) {
+    newProjectButton.onclick = openModal;
+  }
+
+  if (dashboardNewProject) {
+    dashboardNewProject.onclick = openModal;
+  }
+
+
+  /* Close modal */
+
+  const closeModal =
+    document.getElementById("closeModalBtn");
+
+  if (closeModal) {
+
+    closeModal.onclick = function () {
+
+      if (modal) {
+        modal.classList.add("hidden");
+      }
+
+    };
+
+  }
+
+
+  /* Start on Dashboard */
+
+  showPage("dashboard");
+
+});
 
 
 
