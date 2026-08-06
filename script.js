@@ -1,4 +1,3 @@
-javascript
 alert("SCRIPT WORKING");
 "use strict";
 
