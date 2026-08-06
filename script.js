@@ -1,4 +1,5 @@
 javascript
+alert("SCRIPT WORKING");
 "use strict";
 
 /* =====================================================
@@ -1504,5 +1505,5 @@ document.addEventListener(
   }
 );
 
-alert("SCRIPT WORKING");
+
 
