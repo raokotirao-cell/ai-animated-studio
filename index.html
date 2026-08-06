@@ -1,1 +1,840 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AI Animated Studio</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =========================================
+       APP HEADER
+  ========================================== -->
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">🎬</div>
+
+      <div>
+        <h1>AI Animated Studio</h1>
+        <span>Creative Animation Workspace</span>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="newProjectBtn" class="primary-btn">
+        + New Project
+      </button>
+
+      <button id="saveProjectBtn" class="secondary-btn">
+        💾 Save
+      </button>
+    </div>
+
+  </header>
+
+
+  <!-- =========================================
+       MAIN APP
+  ========================================== -->
+  <div class="app-layout">
+
+    <!-- =======================================
+         SIDEBAR
+    ======================================== -->
+    <aside class="sidebar">
+
+      <div class="sidebar-title">
+        WORKSPACE
+      </div>
+
+      <button class="nav-item active" data-page="dashboard">
+        🏠
+        <span>Dashboard</span>
+      </button>
+
+      <button class="nav-item" data-page="story">
+        📝
+        <span>Story / Script</span>
+      </button>
+
+      <button class="nav-item" data-page="scenes">
+        🎬
+        <span>Story → Scenes</span>
+      </button>
+
+      <button class="nav-item" data-page="characters">
+        👤
+        <span>Characters</span>
+      </button>
+
+      <button class="nav-item" data-page="backgrounds">
+        🌄
+        <span>Backgrounds</span>
+      </button>
+
+      <button class="nav-item" data-page="editor">
+        🎞️
+        <span>Scene Editor</span>
+      </button>
+
+      <button class="nav-item" data-page="voice">
+        🎙️
+        <span>Voice / Narration</span>
+      </button>
+
+      <button class="nav-item" data-page="music">
+        🎵
+        <span>Music & SFX</span>
+      </button>
+
+      <button class="nav-item" data-page="animation">
+        ✨
+        <span>Animation</span>
+      </button>
+
+      <button class="nav-item" data-page="captions">
+        💬
+        <span>Captions</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-title">
+        OUTPUT
+      </div>
+
+      <button class="nav-item" data-page="preview">
+        ▶️
+        <span>Preview</span>
+      </button>
+
+      <button class="nav-item" data-page="export">
+        📤
+        <span>Export</span>
+      </button>
+
+      <div class="sidebar-bottom">
+
+        <button class="nav-item" data-page="settings">
+          ⚙️
+          <span>Settings</span>
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =======================================
+         CONTENT AREA
+    ======================================== -->
+    <main class="content">
+
+      <!-- =====================================
+           DASHBOARD
+      ====================================== -->
+      <section class="page active" id="dashboard">
+
+        <div class="page-header">
+
+          <div>
+            <h2>Welcome to AI Animated Studio</h2>
+
+            <p>
+              Create animated videos from your story,
+              characters, scenes and voice.
+            </p>
+          </div>
+
+          <button id="dashboardNewProject" class="primary-btn">
+            🎬 Create New Animation
+          </button>
+
+        </div>
+
+
+        <!-- PROJECT AREA -->
+        <div class="dashboard-grid">
+
+          <div class="dashboard-card create-card">
+
+            <div class="card-icon">✨</div>
+
+            <h3>Start Creating</h3>
+
+            <p>
+              Turn your idea into an animated video.
+            </p>
+
+            <button class="primary-btn dashboard-action"
+                    data-page="story">
+              Start Story
+            </button>
+
+          </div>
+
+
+          <div class="dashboard-card">
+
+            <div class="card-icon">📝</div>
+
+            <h3>Story / Script</h3>
+
+            <p>
+              Write or generate your story and script.
+            </p>
+
+            <button class="secondary-btn dashboard-action"
+                    data-page="story">
+              Open
+            </button>
+
+          </div>
+
+
+          <div class="dashboard-card">
+
+            <div class="card-icon">🎬</div>
+
+            <h3>Scenes</h3>
+
+            <p>
+              Convert your story into animated scenes.
+            </p>
+
+            <button class="secondary-btn dashboard-action"
+                    data-page="scenes">
+              Open
+            </button>
+
+          </div>
+
+
+          <div class="dashboard-card">
+
+            <div class="card-icon">👤</div>
+
+            <h3>Characters</h3>
+
+            <p>
+              Create and manage your characters.
+            </p>
+
+            <button class="secondary-btn dashboard-action"
+                    data-page="characters">
+              Open
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- WORKFLOW -->
+        <div class="workflow-section">
+
+          <h3>Animation Workflow</h3>
+
+          <div class="workflow">
+
+            <div class="workflow-step">
+              <span>1</span>
+              <strong>Story</strong>
+              <small>Write your idea</small>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+              <span>2</span>
+              <strong>Scenes</strong>
+              <small>Create scenes</small>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+              <span>3</span>
+              <strong>Characters</strong>
+              <small>Build characters</small>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+              <span>4</span>
+              <strong>Animation</strong>
+              <small>Animate scenes</small>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+              <span>5</span>
+              <strong>Export</strong>
+              <small>Create video</small>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PROJECT STATUS -->
+        <div class="project-status">
+
+          <h3>Current Project</h3>
+
+          <div class="status-box">
+
+            <div>
+              <span>Project Name</span>
+              <strong id="projectNameDisplay">
+                No project created
+              </strong>
+            </div>
+
+            <div>
+              <span>Scenes</span>
+              <strong id="sceneCountDisplay">0</strong>
+            </div>
+
+            <div>
+              <span>Characters</span>
+              <strong id="characterCountDisplay">0</strong>
+            </div>
+
+            <div>
+              <span>Status</span>
+              <strong id="projectStatusDisplay">
+                Ready
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           STORY
+      ====================================== -->
+      <section class="page" id="story">
+
+        <div class="page-header">
+          <div>
+            <h2>📝 Story / Script</h2>
+
+            <p>
+              Write your story and prepare the script
+              for animation.
+            </p>
+          </div>
+        </div>
+
+        <div class="module-card">
+
+          <label for="storyTitle">
+            Story Title
+          </label>
+
+          <input
+            id="storyTitle"
+            type="text"
+            placeholder="Enter your story title"
+          >
+
+
+          <label for="storyText">
+            Story / Script
+          </label>
+
+          <textarea
+            id="storyText"
+            rows="14"
+            placeholder="Write your story here..."
+          ></textarea>
+
+
+          <div class="button-row">
+
+            <button class="primary-btn" id="saveStoryBtn">
+              💾 Save Story
+            </button>
+
+            <button class="secondary-btn" id="storyToScenesBtn">
+              🎬 Create Scenes
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           SCENES
+      ====================================== -->
+      <section class="page" id="scenes">
+
+        <div class="page-header">
+
+          <div>
+            <h2>🎬 Story → Scenes</h2>
+
+            <p>
+              Turn your story into individual scenes.
+            </p>
+          </div>
+
+          <button class="primary-btn" id="addSceneBtn">
+            + Add Scene
+          </button>
+
+        </div>
+
+        <div id="sceneList" class="scene-list">
+
+          <div class="empty-state">
+            <div>🎬</div>
+            <h3>No scenes yet</h3>
+            <p>Create your first scene.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           CHARACTERS
+      ====================================== -->
+      <section class="page" id="characters">
+
+        <div class="page-header">
+
+          <div>
+            <h2>👤 Characters</h2>
+
+            <p>
+              Create and manage characters for your animation.
+            </p>
+
+          </div>
+
+          <button class="primary-btn" id="addCharacterBtn">
+            + Add Character
+          </button>
+
+        </div>
+
+        <div id="characterList" class="character-grid">
+
+          <div class="empty-state">
+            <div>👤</div>
+            <h3>No characters yet</h3>
+            <p>Add your first character.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           BACKGROUNDS
+      ====================================== -->
+      <section class="page" id="backgrounds">
+
+        <div class="page-header">
+
+          <div>
+            <h2>🌄 Backgrounds</h2>
+
+            <p>
+              Manage backgrounds for your scenes.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="asset-placeholder">
+
+          <div>🌄</div>
+
+          <h3>Background Library</h3>
+
+          <p>
+            Background generation and upload tools
+            will be added here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           SCENE EDITOR
+      ====================================== -->
+      <section class="page" id="editor">
+
+        <div class="page-header">
+
+          <div>
+            <h2>🎞️ Scene Editor</h2>
+
+            <p>
+              Build and arrange your animation scene.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="editor-placeholder">
+
+          <div>🎞️</div>
+
+          <h3>Scene Editor</h3>
+
+          <p>
+            Character positioning, backgrounds,
+            text, camera and timeline controls
+            will be added here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           VOICE
+      ====================================== -->
+      <section class="page" id="voice">
+
+        <div class="page-header">
+
+          <div>
+            <h2>🎙️ Voice / Narration</h2>
+
+            <p>
+              Add narration and character voices.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="module-card">
+
+          <label for="voiceText">
+            Narration Text
+          </label>
+
+          <textarea
+            id="voiceText"
+            rows="8"
+            placeholder="Enter narration text..."
+          ></textarea>
+
+          <div class="button-row">
+
+            <button class="primary-btn" id="generateVoiceBtn">
+              🎙️ Generate Voice
+            </button>
+
+            <button class="secondary-btn" id="recordVoiceBtn">
+              🔴 Record Voice
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           MUSIC
+      ====================================== -->
+      <section class="page" id="music">
+
+        <div class="page-header">
+
+          <div>
+            <h2>🎵 Music & Sound Effects</h2>
+
+            <p>
+              Add background music and sound effects.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="asset-placeholder">
+
+          <div>🎵</div>
+
+          <h3>Audio Library</h3>
+
+          <p>
+            Music upload, sound effects and
+            audio controls will be added here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           ANIMATION
+      ====================================== -->
+      <section class="page" id="animation">
+
+        <div class="page-header">
+
+          <div>
+            <h2>✨ Animation</h2>
+
+            <p>
+              Animate characters and scenes.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="editor-placeholder">
+
+          <div>✨</div>
+
+          <h3>Animation Studio</h3>
+
+          <p>
+            Character movement, transitions,
+            camera movement and animation controls
+            will be added here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           CAPTIONS
+      ====================================== -->
+      <section class="page" id="captions">
+
+        <div class="page-header">
+
+          <div>
+            <h2>💬 Captions / Subtitles</h2>
+
+            <p>
+              Add subtitles and captions to your video.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="module-card">
+
+          <label for="captionText">
+            Caption Text
+          </label>
+
+          <textarea
+            id="captionText"
+            rows="5"
+            placeholder="Enter caption text..."
+          ></textarea>
+
+          <button class="primary-btn" id="addCaptionBtn">
+            + Add Caption
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           PREVIEW
+      ====================================== -->
+      <section class="page" id="preview">
+
+        <div class="page-header">
+
+          <div>
+            <h2>▶️ Video Preview</h2>
+
+            <p>
+              Preview your animation before exporting.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="video-preview-box">
+
+          <div class="preview-placeholder">
+            <div>▶️</div>
+            <h3>Preview Area</h3>
+            <p>Your animation preview will appear here.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           EXPORT
+      ====================================== -->
+      <section class="page" id="export">
+
+        <div class="page-header">
+
+          <div>
+            <h2>📤 Export</h2>
+
+            <p>
+              Export your finished animated video.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="module-card export-card">
+
+          <h3>Export Animation</h3>
+
+          <p>
+            Your final video export controls
+            will be added here.
+          </p>
+
+          <button class="primary-btn" id="exportVideoBtn">
+            🎥 Export Video
+          </button>
+
+          <div id="exportStatus" class="status-message"></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           SETTINGS
+      ====================================== -->
+      <section class="page" id="settings">
+
+        <div class="page-header">
+
+          <div>
+            <h2>⚙️ Settings</h2>
+
+            <p>
+              Configure your AI Animated Studio project.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="module-card">
+
+          <label for="projectName">
+            Project Name
+          </label>
+
+          <input
+            id="projectName"
+            type="text"
+            placeholder="My Animated Video"
+          >
+
+          <label for="videoResolution">
+            Video Resolution
+          </label>
+
+          <select id="videoResolution">
+
+            <option value="720p">
+              1280 × 720 (720p)
+            </option>
+
+            <option value="1080p">
+              1920 × 1080 (1080p)
+            </option>
+
+          </select>
+
+          <button class="primary-btn" id="saveSettingsBtn">
+            💾 Save Settings
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================================
+       NEW PROJECT MODAL
+  ========================================== -->
+  <div id="newProjectModal" class="modal hidden">
+
+    <div class="modal-content">
+
+      <button id="closeModalBtn" class="modal-close">
+        ×
+      </button>
+
+      <h2>🎬 Create New Project</h2>
+
+      <p>
+        Start a new animated video project.
+      </p>
+
+      <label for="newProjectName">
+        Project Name
+      </label>
+
+      <input
+        id="newProjectName"
+        type="text"
+        placeholder="My Animated Story"
+      >
+
+      <button id="createProjectBtn" class="primary-btn">
+        Create Project
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================
+       SCRIPT
+  ========================================== -->
+  <script src="script.js"></script>
+
+</body>
+</html>
+```
 
