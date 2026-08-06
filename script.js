@@ -1300,5 +1300,1117 @@ document.addEventListener(
 
   }
 );
+javascript
+/* =========================================================
+   STORY → SCENES PRO MODULE
+   AI ANIMATED STUDIO
+========================================================= */
+
+(function initStoryScenesPro() {
+
+  /* -------------------------------------------------------
+     EXTRA SCENE DATA
+  ------------------------------------------------------- */
+
+  function normalizeScene(scene, index) {
+
+    return {
+      id: scene.id || Date.now() + index,
+
+      number: index + 1,
+
+      title:
+        scene.title ||
+        `Scene ${index + 1}`,
+
+      description:
+        scene.description || "",
+
+      duration:
+        Number(scene.duration) || 5,
+
+      background:
+        scene.background || "",
+
+      characters:
+        Array.isArray(scene.characters)
+          ? scene.characters
+          : [],
+
+      dialogue:
+        scene.dialogue || "",
+
+      camera:
+        scene.camera || "Static",
+
+      animation:
+        scene.animation || "None"
+    };
+
+  }
+
+
+  /* -------------------------------------------------------
+     UPGRADE EXISTING SCENES
+  ------------------------------------------------------- */
+
+  project.scenes =
+    project.scenes.map(
+      normalizeScene
+    );
+
+
+  /* -------------------------------------------------------
+     SCENE EDITOR MODAL
+  ------------------------------------------------------- */
+
+  const modal =
+    document.createElement("div");
+
+  modal.id =
+    "sceneEditorModal";
+
+  modal.className =
+    "modal hidden";
+
+  modal.innerHTML = `
+
+    <div class="modal-content scene-editor-modal">
+
+      <button
+        id="closeSceneEditor"
+        class="modal-close">
+        ×
+      </button>
+
+      <h2>🎬 Edit Scene</h2>
+
+      <p>
+        Configure this scene for animation.
+      </p>
+
+
+      <label>
+        Scene Title
+      </label>
+
+      <input
+        id="sceneEditTitle"
+        type="text"
+        placeholder="Scene title"
+      >
+
+
+      <label>
+        Scene Description
+      </label>
+
+      <textarea
+        id="sceneEditDescription"
+        rows="5"
+        placeholder="Describe what happens in this scene..."
+      ></textarea>
+
+
+      <label>
+        Characters
+      </label>
+
+      <input
+        id="sceneEditCharacters"
+        type="text"
+        placeholder="Example: Ravi, Anu"
+      >
+
+
+      <label>
+        Background
+      </label>
+
+      <input
+        id="sceneEditBackground"
+        type="text"
+        placeholder="Example: Village, Forest, City"
+      >
+
+
+      <label>
+        Dialogue
+      </label>
+
+      <textarea
+        id="sceneEditDialogue"
+        rows="4"
+        placeholder="Character dialogue or narration..."
+      ></textarea>
+
+
+      <label>
+        Camera
+      </label>
+
+      <select id="sceneEditCamera">
+
+        <option value="Static">
+          Static
+        </option>
+
+        <option value="Wide Shot">
+          Wide Shot
+        </option>
+
+        <option value="Medium Shot">
+          Medium Shot
+        </option>
+
+        <option value="Close Up">
+          Close Up
+        </option>
+
+        <option value="Zoom In">
+          Zoom In
+        </option>
+
+        <option value="Zoom Out">
+          Zoom Out
+        </option>
+
+        <option value="Pan Left">
+          Pan Left
+        </option>
+
+        <option value="Pan Right">
+          Pan Right
+        </option>
+
+      </select>
+
+
+      <label>
+        Animation
+      </label>
+
+      <select id="sceneEditAnimation">
+
+        <option value="None">
+          None
+        </option>
+
+        <option value="Fade In">
+          Fade In
+        </option>
+
+        <option value="Fade Out">
+          Fade Out
+        </option>
+
+        <option value="Walk">
+          Walk
+        </option>
+
+        <option value="Talk">
+          Talk
+        </option>
+
+        <option value="Action">
+          Action
+        </option>
+
+        <option value="Camera Movement">
+          Camera Movement
+        </option>
+
+      </select>
+
+
+      <label>
+        Duration (seconds)
+      </label>
+
+      <input
+        id="sceneEditDuration"
+        type="number"
+        min="1"
+        max="300"
+        value="5"
+      >
+
+
+      <div class="button-row">
+
+        <button
+          id="saveSceneEditor"
+          class="primary-btn">
+          💾 Save Scene
+        </button>
+
+        <button
+          id="cancelSceneEditor"
+          class="secondary-btn">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(modal);
+
+
+  let editingSceneIndex = -1;
+
+
+  /* -------------------------------------------------------
+     OPEN SCENE EDITOR
+  ------------------------------------------------------- */
+
+  function openSceneEditor(index) {
+
+    const scene =
+      project.scenes[index];
+
+    if (!scene) return;
+
+    editingSceneIndex = index;
+
+    $("sceneEditTitle").value =
+      scene.title || "";
+
+    $("sceneEditDescription").value =
+      scene.description || "";
+
+    $("sceneEditCharacters").value =
+      Array.isArray(scene.characters)
+        ? scene.characters.join(", ")
+        : "";
+
+    $("sceneEditBackground").value =
+      scene.background || "";
+
+    $("sceneEditDialogue").value =
+      scene.dialogue || "";
+
+    $("sceneEditCamera").value =
+      scene.camera || "Static";
+
+    $("sceneEditAnimation").value =
+      scene.animation || "None";
+
+    $("sceneEditDuration").value =
+      scene.duration || 5;
+
+    modal.classList.remove("hidden");
+
+  }
+
+
+  /* -------------------------------------------------------
+     CLOSE SCENE EDITOR
+  ------------------------------------------------------- */
+
+  function closeSceneEditor() {
+
+    modal.classList.add("hidden");
+
+    editingSceneIndex = -1;
+
+  }
+
+
+  $("closeSceneEditor")
+    .addEventListener(
+      "click",
+      closeSceneEditor
+    );
+
+
+  $("cancelSceneEditor")
+    .addEventListener(
+      "click",
+      closeSceneEditor
+    );
+
+
+  modal.addEventListener(
+    "click",
+    event => {
+
+      if (event.target === modal) {
+
+        closeSceneEditor();
+
+      }
+
+    }
+  );
+
+
+  /* -------------------------------------------------------
+     SAVE SCENE
+  ------------------------------------------------------- */
+
+  $("saveSceneEditor")
+    .addEventListener(
+      "click",
+      () => {
+
+        if (
+          editingSceneIndex < 0
+        ) {
+          return;
+        }
+
+        const scene =
+          project.scenes[
+            editingSceneIndex
+          ];
+
+        if (!scene) return;
+
+
+        scene.title =
+          $("sceneEditTitle")
+            .value
+            .trim() ||
+          `Scene ${
+            editingSceneIndex + 1
+          }`;
+
+
+        scene.description =
+          $("sceneEditDescription")
+            .value
+            .trim();
+
+
+        scene.characters =
+          $("sceneEditCharacters")
+            .value
+            .split(",")
+            .map(
+              name => name.trim()
+            )
+            .filter(Boolean);
+
+
+        scene.background =
+          $("sceneEditBackground")
+            .value
+            .trim();
+
+
+        scene.dialogue =
+          $("sceneEditDialogue")
+            .value
+            .trim();
+
+
+        scene.camera =
+          $("sceneEditCamera")
+            .value;
+
+
+        scene.animation =
+          $("sceneEditAnimation")
+            .value;
+
+
+        scene.duration =
+          Math.max(
+            1,
+            Number(
+              $("sceneEditDuration")
+                .value
+            ) || 5
+          );
+
+
+        project.status =
+          "Scene updated";
+
+
+        renderScenesPro();
+
+        updateProjectUI();
+
+        saveProject();
+
+        closeSceneEditor();
+
+      }
+    );
+
+
+  /* -------------------------------------------------------
+     PRO SCENE RENDER
+  ------------------------------------------------------- */
+
+  function renderScenesPro() {
+
+    const list =
+      $("sceneList");
+
+    if (!list) return;
+
+
+    if (
+      project.scenes.length === 0
+    ) {
+
+      list.innerHTML = `
+
+        <div class="empty-state">
+
+          <div>🎬</div>
+
+          <h3>No scenes yet</h3>
+
+          <p>
+            Create your first scene.
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    project.scenes.forEach(
+      (scene, index) => {
+
+        const card =
+          document.createElement("div");
+
+        card.className =
+          "scene-card";
+
+
+        const characterText =
+          scene.characters.length
+            ? scene.characters.join(", ")
+            : "None";
+
+
+        card.innerHTML = `
+
+          <div style="width:100%">
+
+            <div style="
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap:12px;
+              margin-bottom:10px;
+            ">
+
+              <h3>
+                🎬
+                ${escapeHTML(
+                  scene.title
+                )}
+              </h3>
+
+              <span style="
+                color:var(--muted);
+                font-size:12px;
+              ">
+                ${scene.duration}s
+              </span>
+
+            </div>
+
+
+            <p style="
+              margin-bottom:10px;
+            ">
+              ${escapeHTML(
+                scene.description
+              )}
+            </p>
+
+
+            <div style="
+              display:grid;
+              grid-template-columns:
+                repeat(auto-fit,minmax(130px,1fr));
+              gap:8px;
+              margin-top:10px;
+            ">
+
+
+              <div style="
+                background:var(--panel-light);
+                padding:9px;
+                border-radius:8px;
+              ">
+
+                <small
+                  style="color:var(--muted)">
+                  👤 Characters
+                </small>
+
+                <div style="
+                  margin-top:4px;
+                  font-size:12px;
+                ">
+                  ${escapeHTML(
+                    characterText
+                  )}
+                </div>
+
+              </div>
+
+
+              <div style="
+                background:var(--panel-light);
+                padding:9px;
+                border-radius:8px;
+              ">
+
+                <small
+                  style="color:var(--muted)">
+                  🌄 Background
+                </small>
+
+                <div style="
+                  margin-top:4px;
+                  font-size:12px;
+                ">
+                  ${escapeHTML(
+                    scene.background ||
+                    "Not set"
+                  )}
+                </div>
+
+              </div>
+
+
+              <div style="
+                background:var(--panel-light);
+                padding:9px;
+                border-radius:8px;
+              ">
+
+                <small
+                  style="color:var(--muted)">
+                  🎥 Camera
+                </small>
+
+                <div style="
+                  margin-top:4px;
+                  font-size:12px;
+                ">
+                  ${escapeHTML(
+                    scene.camera
+                  )}
+                </div>
+
+              </div>
+
+
+              <div style="
+                background:var(--panel-light);
+                padding:9px;
+                border-radius:8px;
+              ">
+
+                <small
+                  style="color:var(--muted)">
+                  ✨ Animation
+                </small>
+
+                <div style="
+                  margin-top:4px;
+                  font-size:12px;
+                ">
+                  ${escapeHTML(
+                    scene.animation
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            ${
+              scene.dialogue
+                ? `
+                  <div style="
+                    margin-top:12px;
+                    padding:10px;
+                    background:#0c1324;
+                    border-left:3px solid var(--primary);
+                    border-radius:6px;
+                  ">
+
+                    <small
+                      style="color:var(--muted)">
+                      💬 Dialogue
+                    </small>
+
+                    <div style="
+                      margin-top:5px;
+                      font-size:13px;
+                    ">
+                      ${escapeHTML(
+                        scene.dialogue
+                      )}
+                    </div>
+
+                  </div>
+                `
+                : ""
+            }
+
+
+            <div class="button-row">
+
+              <button
+                class="primary-btn"
+                data-edit-pro="${index}">
+                ✏️ Edit Scene
+              </button>
+
+
+              <button
+                class="secondary-btn"
+                data-duplicate-pro="${index}">
+                📋 Duplicate
+              </button>
+
+
+              <button
+                class="secondary-btn"
+                data-delete-pro="${index}">
+                🗑️ Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        list.appendChild(card);
+
+      }
+    );
+
+
+    /* -----------------------------------------------------
+       EDIT BUTTONS
+    ----------------------------------------------------- */
+
+    list.querySelectorAll(
+      "[data-edit-pro]"
+    ).forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          openSceneEditor(
+            Number(
+              button.dataset.editPro
+            )
+          );
+
+        }
+      );
+
+    });
+
+
+    /* -----------------------------------------------------
+       DUPLICATE BUTTONS
+    ----------------------------------------------------- */
+
+    list.querySelectorAll(
+      "[data-duplicate-pro]"
+    ).forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const index =
+            Number(
+              button.dataset
+                .duplicatePro
+            );
+
+          const original =
+            project.scenes[index];
+
+          if (!original) return;
+
+
+          const copy =
+            JSON.parse(
+              JSON.stringify(
+                original
+              )
+            );
+
+
+          copy.id =
+            Date.now();
+
+
+          copy.title =
+            `${original.title} Copy`;
+
+
+          project.scenes.splice(
+            index + 1,
+            0,
+            copy
+          );
+
+
+          renumberScenes();
+
+          project.status =
+            "Scene duplicated";
+
+
+          renderScenesPro();
+
+          updateProjectUI();
+
+          saveProject();
+
+        }
+      );
+
+    });
+
+
+    /* -----------------------------------------------------
+       DELETE BUTTONS
+    ----------------------------------------------------- */
+
+    list.querySelectorAll(
+      "[data-delete-pro]"
+    ).forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const index =
+            Number(
+              button.dataset
+                .deletePro
+            );
+
+
+          if (
+            !confirm(
+              "Delete this scene?"
+            )
+          ) {
+            return;
+          }
+
+
+          project.scenes.splice(
+            index,
+            1
+          );
+
+
+          renumberScenes();
+
+
+          project.status =
+            "Scene deleted";
+
+
+          renderScenesPro();
+
+          updateProjectUI();
+
+          saveProject();
+
+        }
+      );
+
+    });
+
+  }
+
+
+  /* -------------------------------------------------------
+     ENHANCED STORY → SCENES
+  ------------------------------------------------------- */
+
+  const originalStoryButton =
+    $("storyToScenesBtn");
+
+
+  if (originalStoryButton) {
+
+    originalStoryButton.onclick =
+      function () {
+
+        if (!project.name) {
+
+          alert(
+            "Create a project first."
+          );
+
+          openNewProjectModal();
+
+          return;
+
+        }
+
+
+        const story =
+          $("storyText")
+            .value
+            .trim();
+
+
+        if (!story) {
+
+          alert(
+            "Please write your story first."
+          );
+
+          return;
+
+        }
+
+
+        project.storyTitle =
+          $("storyTitle")
+            .value
+            .trim();
+
+
+        project.storyText =
+          story;
+
+
+        /*
+          Split by paragraphs first.
+        */
+
+        let parts =
+          story
+            .split(/\n\s*\n/)
+            .map(
+              item =>
+                item.trim()
+            )
+            .filter(Boolean);
+
+
+        /*
+          If there are not multiple
+          paragraphs, split sentences.
+        */
+
+        if (parts.length <= 1) {
+
+          parts =
+            story
+              .split(
+                /(?<=[.!?])\s+/
+              )
+              .map(
+                item =>
+                  item.trim()
+              )
+              .filter(Boolean);
+
+        }
+
+
+        /*
+          Create scene objects.
+        */
+
+        project.scenes =
+          parts.map(
+            (text, index) => {
+
+              return {
+
+                id:
+                  Date.now() +
+                  index,
+
+                number:
+                  index + 1,
+
+                title:
+                  `Scene ${
+                    index + 1
+                  }`,
+
+                description:
+                  text,
+
+                duration:
+                  5,
+
+                background:
+                  "",
+
+                characters:
+                  [],
+
+                dialogue:
+                  "",
+
+                camera:
+                  "Static",
+
+                animation:
+                  "None"
+
+              };
+
+            }
+          );
+
+
+        project.status =
+          "Scenes created";
+
+
+        renderScenesPro();
+
+        updateProjectUI();
+
+        saveProject();
+
+        openPage("scenes");
+
+      };
+
+  }
+
+
+  /* -------------------------------------------------------
+     ADD SCENE UPGRADE
+  ------------------------------------------------------- */
+
+  const addSceneButton =
+    $("addSceneBtn");
+
+
+  if (addSceneButton) {
+
+    addSceneButton.onclick =
+      function () {
+
+        if (!project.name) {
+
+          alert(
+            "Create a project first."
+          );
+
+          openNewProjectModal();
+
+          return;
+
+        }
+
+
+        const number =
+          project.scenes.length + 1;
+
+
+        project.scenes.push({
+
+          id:
+            Date.now(),
+
+          number,
+
+          title:
+            `Scene ${number}`,
+
+          description:
+            "Describe what happens in this scene.",
+
+          duration:
+            5,
+
+          background:
+            "",
+
+          characters:
+            [],
+
+          dialogue:
+            "",
+
+          camera:
+            "Static",
+
+          animation:
+            "None"
+
+        });
+
+
+        project.status =
+          "Scene added";
+
+
+        renderScenesPro();
+
+        updateProjectUI();
+
+        saveProject();
+
+
+        /*
+          Immediately open the
+          new scene editor.
+        */
+
+        openSceneEditor(
+          project.scenes.length - 1
+        );
+
+      };
+
+  }
+
+
+  /* -------------------------------------------------------
+     INITIAL PRO RENDER
+  ------------------------------------------------------- */
+
+  renderScenesPro();
+
+
+  /*
+    Make the pro renderer available
+    to the rest of the application.
+  */
+
+  window.renderScenesPro =
+    renderScenesPro;
+
+})();
+
+
 
 
