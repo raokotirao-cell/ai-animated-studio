@@ -828,12 +828,10 @@ html
 
   </div>
 
+<!-- =========================================
+     SCRIPT
+========================================== -->
 
-  <!-- =========================================
-       SCRIPT
-  ========================================== -->
-  <script>
-  alert("HTML SCRIPT TEST");
 <script>
   window.addEventListener("error", function(event) {
     alert("JS ERROR: " + event.message);
@@ -842,7 +840,11 @@ html
   alert("HTML SCRIPT TEST");
 </script>
 
-<script src="./script.js"></script>
+<script
+  src="./script.js"
+  onload="alert('JS LOADED: ' + typeof showPage)"
+  onerror="alert('JS LOAD FAILED')">
+</script>
 
 </body>
 </html>
