@@ -834,6 +834,12 @@ html
   ========================================== -->
   <script>
   alert("HTML SCRIPT TEST");
+<script>
+  window.addEventListener("error", function(event) {
+    alert("JS ERROR: " + event.message);
+  });
+
+  alert("HTML SCRIPT TEST");
 </script>
 
 <script src="./script.js"></script>
