@@ -622,106 +622,252 @@ function addScene() {
 
 function renderScenes() {
 
-  const list =
-    $("sceneList");
+  const list = $("sceneList");
 
   if (!list) return;
 
-
-  if (
-    project.scenes.length === 0
-  ) {
+  if (project.scenes.length === 0) {
 
     list.innerHTML = `
-
       <div class="empty-state">
-
         <div>🎬</div>
-
         <h3>No scenes yet</h3>
+        <p>Create your first scene.</p>
+      </div>
+    `;
 
-        <p>
-          Create your first scene.
-        </p>
+    return;
+  }
+
+  list.innerHTML = "";
+
+  project.scenes.forEach(function(scene, index) {
+
+    const card = document.createElement("div");
+
+    card.className = "scene-card";
+
+    card.innerHTML = `
+
+      <div class="scene-card-header">
+
+        <div>
+          <h3>
+            🎬 Scene ${index + 1}
+          </h3>
+
+          <span>
+            ${escapeHTML(scene.title || "Untitled Scene")}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="secondary-btn"
+          data-delete-scene="${index}">
+          🗑️ Delete
+        </button>
+
+      </div>
+
+
+      <div class="scene-editor-grid">
+
+        <div class="scene-field">
+
+          <label>Scene Title</label>
+
+          <input
+            type="text"
+            data-scene-title="${index}"
+            value="${escapeHTML(scene.title || "")}"
+            placeholder="Scene title">
+
+        </div>
+
+
+        <div class="scene-field">
+
+          <label>Duration (seconds)</label>
+
+          <input
+            type="number"
+            min="1"
+            max="300"
+            data-scene-duration="${index}"
+            value="${scene.duration || 5}">
+
+        </div>
+
+
+        <div class="scene-field scene-full">
+
+          <label>Scene Description</label>
+
+          <textarea
+            rows="4"
+            data-scene-description="${index}"
+            placeholder="Describe what happens in this scene...">${escapeHTML(scene.description || "")}</textarea>
+
+        </div>
+
+
+        <div class="scene-field">
+
+          <label>🌄 Background</label>
+
+          <input
+            type="text"
+            data-scene-background="${index}"
+            value="${escapeHTML(scene.background || "")}"
+            placeholder="Village, forest, city...">
+
+        </div>
+
+
+        <div class="scene-field">
+
+          <label>👤 Characters</label>
+
+          <input
+            type="text"
+            data-scene-characters="${index}"
+            value="${escapeHTML(
+              Array.isArray(scene.characters)
+                ? scene.characters.join(", ")
+                : scene.characters || ""
+            )}"
+            placeholder="Character names">
+
+        </div>
+
+
+        <div class="scene-field scene-full">
+
+          <label>💬 Dialogue</label>
+
+          <textarea
+            rows="3"
+            data-scene-dialogue="${index}"
+            placeholder="Character dialogue...">${escapeHTML(scene.dialogue || "")}</textarea>
+
+        </div>
+
+
+        <div class="scene-field">
+
+          <label>📷 Camera</label>
+
+          <select data-scene-camera="${index}">
+
+            <option value="Static"
+              ${scene.camera === "Static" ? "selected" : ""}>
+              Static
+            </option>
+
+            <option value="Zoom In"
+              ${scene.camera === "Zoom In" ? "selected" : ""}>
+              Zoom In
+            </option>
+
+            <option value="Zoom Out"
+              ${scene.camera === "Zoom Out" ? "selected" : ""}>
+              Zoom Out
+            </option>
+
+            <option value="Pan Left"
+              ${scene.camera === "Pan Left" ? "selected" : ""}>
+              Pan Left
+            </option>
+
+            <option value="Pan Right"
+              ${scene.camera === "Pan Right" ? "selected" : ""}>
+              Pan Right
+            </option>
+
+            <option value="Close Up"
+              ${scene.camera === "Close Up" ? "selected" : ""}>
+              Close Up
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="scene-field">
+
+          <label>✨ Animation</label>
+
+          <select data-scene-animation="${index}">
+
+            <option value="None"
+              ${scene.animation === "None" ? "selected" : ""}>
+              None
+            </option>
+
+            <option value="Idle"
+              ${scene.animation === "Idle" ? "selected" : ""}>
+              Idle
+            </option>
+
+            <option value="Walk"
+              ${scene.animation === "Walk" ? "selected" : ""}>
+              Walk
+            </option>
+
+            <option value="Run"
+              ${scene.animation === "Run" ? "selected" : ""}>
+              Run
+            </option>
+
+            <option value="Talk"
+              ${scene.animation === "Talk" ? "selected" : ""}>
+              Talk
+            </option>
+
+            <option value="Action"
+              ${scene.animation === "Action" ? "selected" : ""}>
+              Action
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          type="button"
+          class="primary-btn"
+          data-save-scene="${index}">
+          💾 Save Scene
+        </button>
 
       </div>
 
     `;
 
-    return;
+    list.appendChild(card);
 
-  }
-
-
-  list.innerHTML = "";
+  });
 
 
-  project.scenes.forEach(
-    function(scene, index) {
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "scene-card";
-
-
-      card.innerHTML = `
-
-        <div>
-
-          <h3>
-            🎬 ${escapeHTML(scene.title)}
-          </h3>
-
-          <p>
-            ${escapeHTML(scene.description)}
-          </p>
-
-          <p>
-            ⏱️ ${scene.duration}s
-          </p>
-
-        </div>
-
-
-        <div class="button-row">
-
-          <button
-            class="secondary-btn"
-            data-edit-scene="${index}">
-            ✏️ Edit
-          </button>
-
-          <button
-            class="secondary-btn"
-            data-delete-scene="${index}">
-            🗑️ Delete
-          </button>
-
-        </div>
-
-      `;
-
-
-      list.appendChild(card);
-
-    }
-  );
-
+  /* SAVE SCENE */
 
   list.querySelectorAll(
-    "[data-edit-scene]"
+    "[data-save-scene]"
   ).forEach(function(button) {
 
     button.addEventListener(
       "click",
       function() {
 
-        editScene(
-          Number(
-            button.dataset.editScene
-          )
+        saveScene(
+          Number(button.dataset.saveScene)
         );
 
       }
@@ -729,6 +875,8 @@ function renderScenes() {
 
   });
 
+
+  /* DELETE SCENE */
 
   list.querySelectorAll(
     "[data-delete-scene]"
@@ -739,38 +887,20 @@ function renderScenes() {
       function() {
 
         const index =
-          Number(
-            button.dataset.deleteScene
-          );
+          Number(button.dataset.deleteScene);
 
-
-        if (
-          !confirm(
-            "Delete this scene?"
-          )
-        ) {
-
+        if (!confirm("Delete this scene?")) {
           return;
-
         }
 
-
-        project.scenes.splice(
-          index,
-          1
-        );
-
+        project.scenes.splice(index, 1);
 
         renumberScenes();
 
-        project.status =
-          "Scene deleted";
-
+        project.status = "Scene deleted";
 
         renderScenes();
-
         updateProjectUI();
-
         saveProject();
 
       }
@@ -779,7 +909,126 @@ function renderScenes() {
   });
 
 }
+function saveScene(index) {
 
+  const scene = project.scenes[index];
+
+  if (!scene) return;
+
+
+  const titleInput =
+    document.querySelector(
+      `[data-scene-title="${index}"]`
+    );
+
+  const descriptionInput =
+    document.querySelector(
+      `[data-scene-description="${index}"]`
+    );
+
+  const durationInput =
+    document.querySelector(
+      `[data-scene-duration="${index}"]`
+    );
+
+  const backgroundInput =
+    document.querySelector(
+      `[data-scene-background="${index}"]`
+    );
+
+  const charactersInput =
+    document.querySelector(
+      `[data-scene-characters="${index}"]`
+    );
+
+  const dialogueInput =
+    document.querySelector(
+      `[data-scene-dialogue="${index}"]`
+    );
+
+  const cameraInput =
+    document.querySelector(
+      `[data-scene-camera="${index}"]`
+    );
+
+  const animationInput =
+    document.querySelector(
+      `[data-scene-animation="${index}"]`
+    );
+
+
+  scene.title =
+    titleInput
+      ? titleInput.value.trim()
+      : scene.title;
+
+
+  scene.description =
+    descriptionInput
+      ? descriptionInput.value.trim()
+      : scene.description;
+
+
+  scene.duration =
+    durationInput
+      ? Math.max(
+          1,
+          Number(durationInput.value) || 5
+        )
+      : 5;
+
+
+  scene.background =
+    backgroundInput
+      ? backgroundInput.value.trim()
+      : "";
+
+
+  scene.characters =
+    charactersInput
+      ? charactersInput.value
+          .split(",")
+          .map(function(name) {
+            return name.trim();
+          })
+          .filter(Boolean)
+      : [];
+
+
+  scene.dialogue =
+    dialogueInput
+      ? dialogueInput.value.trim()
+      : "";
+
+
+  scene.camera =
+    cameraInput
+      ? cameraInput.value
+      : "Static";
+
+
+  scene.animation =
+    animationInput
+      ? animationInput.value
+      : "None";
+
+
+  project.status =
+    "Scene saved";
+
+
+  renderScenes();
+
+  updateProjectUI();
+
+  saveProject();
+
+  alert(
+    "Scene " + (index + 1) +
+    " saved successfully."
+  );
+
+}
 
 /* =====================================================
    EDIT SCENE
