@@ -3208,3 +3208,308 @@ function setupSfxControls() {
 
 setupMusicControls();
 setupSfxControls();
+/* =====================================================
+   ANIMATION CONTROLS
+===================================================== */
+
+function refreshAnimationScenes() {
+
+    const select = $("animationSceneSelect");
+
+    if (!select) return;
+
+    select.innerHTML = `
+        <option value="">
+            Select a scene
+        </option>
+    `;
+
+    if (!project.scenes) {
+        project.scenes = [];
+    }
+
+    project.scenes.forEach(function(scene, index) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            "Scene " +
+            (index + 1) +
+            " - " +
+            (scene.title || scene.name || "Scene");
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* -------------------------
+   LOAD SELECTED SCENE
+------------------------- */
+
+function loadAnimationScene(index) {
+
+    if (
+        index === "" ||
+        index === null ||
+        index === undefined
+    ) {
+        return;
+    }
+
+    if (!project.scenes) {
+        project.scenes = [];
+    }
+
+    const scene =
+        project.scenes[Number(index)];
+
+    if (!scene) return;
+
+
+    const characterAnimation =
+        $("characterAnimation");
+
+    const cameraAnimation =
+        $("cameraAnimation");
+
+    const animationDuration =
+        $("animationDuration");
+
+    const sceneTransition =
+        $("sceneTransition");
+
+
+    if (characterAnimation) {
+
+        characterAnimation.value =
+            scene.animation || "None";
+
+    }
+
+
+    if (cameraAnimation) {
+
+        cameraAnimation.value =
+            scene.camera || "Static";
+
+    }
+
+
+    if (animationDuration) {
+
+        animationDuration.value =
+            scene.duration || 5;
+
+    }
+
+
+    if (sceneTransition) {
+
+        sceneTransition.value =
+            scene.transition || "None";
+
+    }
+
+
+    const status =
+        $("animationStatus");
+
+    if (status) {
+
+        status.textContent =
+            "Scene loaded.";
+
+    }
+
+}
+
+
+/* -------------------------
+   SAVE ANIMATION
+------------------------- */
+
+function saveAnimationSettings() {
+
+    const select =
+        $("animationSceneSelect");
+
+    if (!select || select.value === "") {
+
+        alert("Please select a scene first.");
+
+        return;
+
+    }
+
+
+    if (!project.scenes) {
+        project.scenes = [];
+    }
+
+
+    const index =
+        Number(select.value);
+
+    const scene =
+        project.scenes[index];
+
+    if (!scene) return;
+
+
+    const characterAnimation =
+        $("characterAnimation");
+
+    const cameraAnimation =
+        $("cameraAnimation");
+
+    const animationDuration =
+        $("animationDuration");
+
+    const sceneTransition =
+        $("sceneTransition");
+
+
+    scene.animation =
+        characterAnimation
+            ? characterAnimation.value
+            : "None";
+
+
+    scene.camera =
+        cameraAnimation
+            ? cameraAnimation.value
+            : "Static";
+
+
+    scene.duration =
+        animationDuration
+            ? Math.max(
+                1,
+                Number(animationDuration.value) || 5
+            )
+            : 5;
+
+
+    scene.transition =
+        sceneTransition
+            ? sceneTransition.value
+            : "None";
+
+
+    project.status =
+        "Animation saved";
+
+
+    saveProject();
+    updateProjectUI();
+
+
+    const status =
+        $("animationStatus");
+
+    if (status) {
+
+        status.textContent =
+            "Animation settings saved successfully.";
+
+    }
+
+}
+
+
+/* -------------------------
+   REFRESH ANIMATION
+------------------------- */
+
+function refreshAnimationControls() {
+
+    refreshAnimationScenes();
+
+    const select =
+        $("animationSceneSelect");
+
+    if (select && select.value !== "") {
+
+        loadAnimationScene(select.value);
+
+    }
+
+}
+
+
+/* -------------------------
+   EVENT CONNECTIONS
+------------------------- */
+
+function setupAnimationControls() {
+
+    const sceneSelect =
+        $("animationSceneSelect");
+
+    const saveButton =
+        $("saveAnimationBtn");
+
+    const refreshButton =
+        $("refreshAnimationBtn");
+
+
+    if (sceneSelect) {
+
+        sceneSelect.addEventListener(
+            "change",
+            function() {
+
+                loadAnimationScene(
+                    sceneSelect.value
+                );
+
+            }
+        );
+
+    }
+
+
+    if (saveButton) {
+
+        saveButton.addEventListener(
+            "click",
+            function() {
+
+                saveAnimationSettings();
+
+            }
+        );
+
+    }
+
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            "click",
+            function() {
+
+                refreshAnimationControls();
+
+            }
+        );
+
+    }
+
+
+    refreshAnimationScenes();
+
+}
+
+
+/* =====================================================
+   START ANIMATION CONTROLS
+===================================================== */
+
+setupAnimationControls();
