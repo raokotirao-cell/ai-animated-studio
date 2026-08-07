@@ -3102,17 +3102,153 @@ function updateAnimationPreview() {
             canvas.height
         );
 
+/* -----------------------------------------
+   SCENE BACKGROUND
+----------------------------------------- */
 
-        /* Background */
+const backgroundName =
+    String(scene.background || "").trim();
 
-        ctx.fillStyle = "#111";
+let background = null;
 
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
+if (
+    backgroundName &&
+    Array.isArray(project.backgrounds)
+) {
+
+    background =
+        project.backgrounds.find(
+            function(bg) {
+
+                return String(bg.name || "")
+                    .trim()
+                    .toLowerCase() ===
+                    backgroundName.toLowerCase();
+
+            }
         );
+}
+
+
+if (background) {
+
+    ctx.fillStyle = "#284d32";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "#fff";
+
+    ctx.font = "90px Arial";
+
+    ctx.fillText(
+        background.emoji || "🌄",
+        canvas.width / 2,
+        240
+    );
+
+    ctx.font = "bold 36px Arial";
+
+    ctx.fillText(
+        background.name || "Background",
+        canvas.width / 2,
+        300
+    );
+
+} else {
+
+    ctx.fillStyle = "#111";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+}
+
+
+/* -----------------------------------------
+   SCENE CHARACTERS
+----------------------------------------- */
+
+const sceneCharacters =
+    Array.isArray(scene.characters)
+        ? scene.characters
+        : [];
+
+sceneCharacters.forEach(
+    function(characterName) {
+
+        const name =
+            String(characterName || "")
+                .trim();
+
+        if (!name) {
+            return;
+        }
+
+        let character = null;
+
+        if (
+            Array.isArray(project.characters)
+        ) {
+
+            character =
+                project.characters.find(
+                    function(char) {
+
+                        return String(
+                            char.name || ""
+                        )
+                        .trim()
+                        .toLowerCase() ===
+                        name.toLowerCase();
+
+                    }
+                );
+        }
+
+        const x =
+            canvas.width / 2;
+
+        const y =
+            canvas.height - 260;
+
+        ctx.textAlign = "center";
+
+        ctx.font = "90px Arial";
+
+        ctx.fillText(
+            character &&
+            character.emoji
+                ? character.emoji
+                : "👤",
+            x,
+            y
+        );
+
+        ctx.fillStyle = "#fff";
+
+        ctx.font =
+            "bold 32px Arial";
+
+        ctx.fillText(
+            character &&
+            character.name
+                ? character.name
+                : name,
+            x,
+            y + 55
+        );
+    }
+);
 
 
         /* Scene title */
