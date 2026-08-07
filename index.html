@@ -1347,35 +1347,131 @@
            EXPORT
       ====================================== -->
       <section class="page" id="export">
+<div class="module-card export-card">
 
-        <div class="page-header">
+  <h3>🎥 Export Animation</h3>
 
-          <div>
-            <h2>📤 Export</h2>
+  <p>
+    Configure your animation export settings.
+  </p>
 
-            <p>
-              Export your finished animated video.
-            </p>
-          </div>
 
-        </div>
+  <label for="exportResolution">
+    📐 Resolution
+  </label>
 
-        <div class="module-card export-card">
+  <select id="exportResolution">
 
-          <h3>Export Animation</h3>
+    <option value="720p">
+      1280 × 720 (720p)
+    </option>
 
-          <p>
-            Your final video export controls
-            will be added here.
-          </p>
+    <option value="1080p">
+      1920 × 1080 (1080p)
+    </option>
 
-          <button class="primary-btn" id="exportVideoBtn">
-            🎥 Export Video
-          </button>
+  </select>
 
-          <div id="exportStatus" class="status-message"></div>
 
-        </div>
+  <label for="exportFps">
+    🎞️ Frame Rate
+  </label>
+
+  <select id="exportFps">
+
+    <option value="24">
+      24 FPS
+    </option>
+
+    <option value="30">
+      30 FPS
+    </option>
+
+    <option value="60">
+      60 FPS
+    </option>
+
+  </select>
+
+
+  <label for="exportQuality">
+    ⭐ Quality
+  </label>
+
+  <select id="exportQuality">
+
+    <option value="standard">
+      Standard
+    </option>
+
+    <option value="high">
+      High
+    </option>
+
+    <option value="maximum">
+      Maximum
+    </option>
+
+  </select>
+
+
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="exportVideoBtn">
+      🎥 Export Video
+    </button>
+
+  </div>
+
+
+  <div
+    id="exportProgressContainer"
+    style="display:none; margin-top:20px;">
+
+    <label>
+      Export Progress
+    </label>
+
+    <progress
+      id="exportProgress"
+      value="0"
+      max="100"
+      style="width:100%;">
+    </progress>
+
+    <div id="exportProgressText">
+      0%
+    </div>
+
+  </div>
+
+
+  <div
+    id="exportStatus"
+    class="status-message">
+  </div>
+
+
+  <div
+    id="exportDownloadArea"
+    style="display:none; margin-top:20px;">
+
+    <h3>✅ Export Complete</h3>
+
+    <a
+      id="exportDownloadLink"
+      class="primary-btn"
+      href="#"
+      download>
+      ⬇️ Download Video
+    </a>
+
+  </div>
+
+</div>
 
       </section>
 
