@@ -769,39 +769,200 @@ function addBackground() {
   saveProject();
 
 }
+   
+<!-- =====================================
+     SCENE EDITOR
+====================================== -->
+<section class="page" id="editor">
 
-      <!-- =====================================
-           SCENE EDITOR
-      ====================================== -->
-      <section class="page" id="editor">
+  <div class="page-header">
 
-        <div class="page-header">
+    <div>
+      <h2>🎞️ Scene Editor</h2>
 
-          <div>
-            <h2>🎞️ Scene Editor</h2>
+      <p>
+        Build and arrange your animation scene.
+      </p>
+    </div>
 
-            <p>
-              Build and arrange your animation scene.
-            </p>
-          </div>
+  </div>
 
-        </div>
 
-        <div class="editor-placeholder">
+  <div class="module-card">
 
-          <div>🎞️</div>
+    <!-- SCENE SELECT -->
+    <label for="editorSceneSelect">
+      🎬 Select Scene
+    </label>
 
-          <h3>Scene Editor</h3>
+    <select id="editorSceneSelect">
+      <option value="">
+        Select a scene
+      </option>
+    </select>
 
-          <p>
-            Character positioning, backgrounds,
-            text, camera and timeline controls
-            will be added here.
-          </p>
 
-        </div>
+    <!-- BACKGROUND -->
+    <label for="editorBackgroundSelect">
+      🌄 Background
+    </label>
 
-      </section>
+    <select id="editorBackgroundSelect">
+      <option value="">
+        Select background
+      </option>
+    </select>
+
+
+    <!-- CHARACTERS -->
+    <label for="editorCharacterSelect">
+      👤 Character
+    </label>
+
+    <select id="editorCharacterSelect">
+      <option value="">
+        Select character
+      </option>
+    </select>
+
+
+    <!-- CAMERA -->
+    <label for="editorCameraSelect">
+      📷 Camera
+    </label>
+
+    <select id="editorCameraSelect">
+
+      <option value="Static">
+        Static
+      </option>
+
+      <option value="Zoom In">
+        Zoom In
+      </option>
+
+      <option value="Zoom Out">
+        Zoom Out
+      </option>
+
+      <option value="Pan Left">
+        Pan Left
+      </option>
+
+      <option value="Pan Right">
+        Pan Right
+      </option>
+
+      <option value="Close Up">
+        Close Up
+      </option>
+
+    </select>
+
+
+    <!-- ANIMATION -->
+    <label for="editorAnimationSelect">
+      ✨ Animation
+    </label>
+
+    <select id="editorAnimationSelect">
+
+      <option value="None">
+        None
+      </option>
+
+      <option value="Idle">
+        Idle
+      </option>
+
+      <option value="Walk">
+        Walk
+      </option>
+
+      <option value="Run">
+        Run
+      </option>
+
+      <option value="Talk">
+        Talk
+      </option>
+
+      <option value="Action">
+        Action
+      </option>
+
+    </select>
+
+
+    <!-- SCENE DESCRIPTION -->
+    <label for="editorSceneDescription">
+      📝 Scene Description
+    </label>
+
+    <textarea
+      id="editorSceneDescription"
+      rows="6"
+      placeholder="Describe what happens in this scene..."
+    ></textarea>
+
+
+    <!-- DIALOGUE -->
+    <label for="editorSceneDialogue">
+      💬 Dialogue
+    </label>
+
+    <textarea
+      id="editorSceneDialogue"
+      rows="4"
+      placeholder="Enter character dialogue..."
+    ></textarea>
+
+
+    <!-- DURATION -->
+    <label for="editorSceneDuration">
+      ⏱️ Duration (seconds)
+    </label>
+
+    <input
+      id="editorSceneDuration"
+      type="number"
+      min="1"
+      max="300"
+      value="5"
+    >
+
+
+    <!-- SAVE -->
+    <div class="button-row">
+
+      <button
+        type="button"
+        class="primary-btn"
+        id="saveEditorSceneBtn">
+        💾 Save Scene
+      </button>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        id="refreshEditorBtn">
+        🔄 Refresh
+      </button>
+
+    </div>
+
+
+    <!-- STATUS -->
+    <div
+      id="sceneEditorStatus"
+      class="status-message">
+    </div>
+
+  </div>
+
+</section>
+
+
 
 
       <!-- =====================================
