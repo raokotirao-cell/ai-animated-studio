@@ -3503,7 +3503,9 @@ function setupAnimationControls() {
     }
 
 
+    setTimeout(function() {
     refreshAnimationScenes();
+}, 100);
 
 }
 
