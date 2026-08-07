@@ -2956,94 +2956,549 @@ showPage = function (pageId) {
         updateAnimationPreview();
     }
 };
+/* =====================================================
+   ANIMATION PREVIEW ENGINE
+===================================================== */
+
+let previewAnimationFrame = null;
+let previewStartTimestamp = null;
+let previewPausedTime = 0;
+let previewIsPlaying = false;
 
 
 /* =====================================================
-   SIMPLE ANIMATION PREVIEW
+   UPDATE PREVIEW
 ===================================================== */
 
 function updateAnimationPreview() {
 
-    const preview =
-        document.querySelector(
-            ".preview-placeholder"
+    const canvas =
+        $("animationPreviewCanvas");
+
+    const playBtn =
+        $("previewPlayBtn");
+
+    const pauseBtn =
+        $("previewPauseBtn");
+
+    const restartBtn =
+        $("previewRestartBtn");
+
+    const volume =
+        $("previewVolume");
+
+    const currentTimeEl =
+        $("previewCurrentTime");
+
+    const timeline =
+        $("previewTimeline");
+
+    const durationEl =
+        $("previewDuration");
+
+
+    if (!canvas) return;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    /* ---------------------------------------------
+       GET SCENES
+    --------------------------------------------- */
+
+    const scenes =
+        Array.isArray(project.scenes)
+            ? project.scenes
+            : [];
+
+
+    if (scenes.length === 0) {
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
         );
 
-    if (!preview) {
+        ctx.fillStyle = "#111";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle = "#fff";
+
+        ctx.textAlign = "center";
+
+        ctx.font = "42px Arial";
+
+        ctx.fillText(
+            "No Scenes",
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+        if (durationEl) {
+            durationEl.textContent = "0.0s";
+        }
+
+        if (currentTimeEl) {
+            currentTimeEl.textContent = "0.0s";
+        }
+
         return;
     }
 
-    if (
-        !Array.isArray(project.scenes) ||
-        project.scenes.length === 0
-    ) {
 
-        preview.innerHTML = `
-            <div>▶️</div>
-            <h3>No Scenes</h3>
-            <p>Create scenes first.</p>
-        `;
+    /* ---------------------------------------------
+       FIRST SCENE
+    --------------------------------------------- */
 
-        return;
+    const scene =
+        scenes[0];
+
+
+    const duration =
+        Number(scene.duration) > 0
+            ? Number(scene.duration)
+            : 5;
+
+
+    if (durationEl) {
+        durationEl.textContent =
+            duration.toFixed(1) + "s";
     }
 
-    preview.innerHTML = `
-        <div style="font-size:48px;">
-            🎬
-        </div>
 
-        <h3>
-            ${escapeHTML(
-                project.name ||
-                "AI Animated Project"
-            )}
-        </h3>
+    if (timeline) {
 
-        <p>
-            ${project.scenes.length}
-            scene(s) ready for preview.
-        </p>
+        timeline.max =
+            duration;
 
-        <div class="button-row">
+        timeline.value =
+            Math.min(
+                previewPausedTime,
+                duration
+            );
+    }
 
-            <button
-                type="button"
-                class="primary-btn"
-                id="previewFirstSceneBtn">
-                ▶️ Preview Scene
-            </button>
 
-        </div>
-    `;
+    /* ---------------------------------------------
+       DRAW FRAME
+    --------------------------------------------- */
 
-    const button =
-        $("previewFirstSceneBtn");
+    function drawPreviewFrame(time) {
 
-    if (button) {
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
 
-        button.onclick =
-            function () {
 
-                const scene =
-                    project.scenes[0];
+        /* Background */
 
-                if (!scene) {
+        ctx.fillStyle = "#111";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        /* Scene title */
+
+        ctx.fillStyle = "#fff";
+
+        ctx.textAlign = "center";
+
+        ctx.font =
+            "bold 48px Arial";
+
+        ctx.fillText(
+            scene.title ||
+            "Scene 1",
+            canvas.width / 2,
+            100
+        );
+
+
+        /* Scene description */
+
+        if (scene.description) {
+
+            ctx.font =
+                "26px Arial";
+
+            ctx.fillStyle =
+                "#ddd";
+
+            const description =
+                String(
+                    scene.description
+                );
+
+            ctx.fillText(
+                description.substring(
+                    0,
+                    100
+                ),
+                canvas.width / 2,
+                155
+            );
+        }
+
+
+        /* -----------------------------------------
+           CAPTION
+        ----------------------------------------- */
+
+        const captions =
+            Array.isArray(project.captions)
+                ? project.captions
+                : [];
+
+
+        captions.forEach(
+            function(caption) {
+
+                const captionScene =
+                    Number(
+                        caption.sceneIndex
+                    );
+
+
+                /*
+                   Current Preview = Scene 1
+                   Therefore sceneIndex = 0
+                */
+
+                if (
+                    captionScene !== 0
+                ) {
                     return;
                 }
 
-                alert(
-                    "🎬 " +
-                    (scene.title || "Scene 1") +
-                    "\n\n" +
-                    (scene.description || "") +
-                    "\n\n" +
-                    "Duration: " +
-                    (scene.duration || 5) +
-                    " seconds"
+
+                const start =
+                    Number(caption.start) || 0;
+
+                const end =
+                    Number(caption.end) || 0;
+
+
+                if (
+                    time >= start &&
+                    time <= end
+                ) {
+
+                    /* Caption background */
+
+                    const boxWidth =
+                        Math.min(
+                            canvas.width - 120,
+                            1000
+                        );
+
+                    const boxHeight =
+                        90;
+
+                    const boxX =
+                        (canvas.width -
+                            boxWidth) / 2;
+
+                    const boxY =
+                        canvas.height - 150;
+
+
+                    ctx.fillStyle =
+                        "rgba(0,0,0,0.75)";
+
+                    ctx.fillRect(
+                        boxX,
+                        boxY,
+                        boxWidth,
+                        boxHeight
+                    );
+
+
+                    /* Caption text */
+
+                    ctx.fillStyle =
+                        "#fff";
+
+                    ctx.font =
+                        "bold 42px Arial";
+
+                    ctx.textAlign =
+                        "center";
+
+                    ctx.fillText(
+                        String(
+                            caption.text || ""
+                        ),
+                        canvas.width / 2,
+                        boxY + 58
+                    );
+                }
+
+            }
+        );
+
+
+        /* -----------------------------------------
+           TIME
+        ----------------------------------------- */
+
+        if (currentTimeEl) {
+
+            currentTimeEl.textContent =
+                time.toFixed(1) + "s";
+        }
+
+
+        if (timeline) {
+
+            timeline.max =
+                duration;
+
+            timeline.value =
+                time;
+        }
+    }
+
+
+    /* ---------------------------------------------
+       INITIAL FRAME
+    --------------------------------------------- */
+
+    drawPreviewFrame(
+        previewPausedTime
+    );
+
+
+    /* ---------------------------------------------
+       PLAY
+    --------------------------------------------- */
+
+    if (playBtn) {
+
+        playBtn.onclick =
+            function() {
+
+                if (previewIsPlaying) {
+                    return;
+                }
+
+
+                previewIsPlaying =
+                    true;
+
+
+                previewStartTimestamp =
+                    performance.now() -
+                    (
+                        previewPausedTime *
+                        1000
+                    );
+
+
+                function animate(
+                    timestamp
+                ) {
+
+                    if (
+                        !previewIsPlaying
+                    ) {
+                        return;
+                    }
+
+
+                    const elapsed =
+                        (
+                            timestamp -
+                            previewStartTimestamp
+                        ) / 1000;
+
+
+                    previewPausedTime =
+                        elapsed;
+
+
+                    if (
+                        previewPausedTime >=
+                        duration
+                    ) {
+
+                        previewPausedTime =
+                            duration;
+
+                        previewIsPlaying =
+                            false;
+
+                        drawPreviewFrame(
+                            previewPausedTime
+                        );
+
+                        return;
+                    }
+
+
+                    drawPreviewFrame(
+                        previewPausedTime
+                    );
+
+
+                    previewAnimationFrame =
+                        requestAnimationFrame(
+                            animate
+                        );
+                }
+
+
+                previewAnimationFrame =
+                    requestAnimationFrame(
+                        animate
+                    );
+            };
+    }
+
+
+    /* ---------------------------------------------
+       PAUSE
+    --------------------------------------------- */
+
+    if (pauseBtn) {
+
+        pauseBtn.onclick =
+            function() {
+
+                previewIsPlaying =
+                    false;
+
+
+                if (
+                    previewAnimationFrame
+                ) {
+
+                    cancelAnimationFrame(
+                        previewAnimationFrame
+                    );
+
+                    previewAnimationFrame =
+                        null;
+                }
+            };
+    }
+
+
+    /* ---------------------------------------------
+       RESTART
+    --------------------------------------------- */
+
+    if (restartBtn) {
+
+        restartBtn.onclick =
+            function() {
+
+                previewIsPlaying =
+                    false;
+
+
+                if (
+                    previewAnimationFrame
+                ) {
+
+                    cancelAnimationFrame(
+                        previewAnimationFrame
+                    );
+
+                    previewAnimationFrame =
+                        null;
+                }
+
+
+                previewPausedTime =
+                    0;
+
+
+                drawPreviewFrame(0);
+            };
+    }
+
+
+    /* ---------------------------------------------
+       TIMELINE
+    --------------------------------------------- */
+
+    if (timeline) {
+
+        timeline.oninput =
+            function() {
+
+                previewIsPlaying =
+                    false;
+
+
+                if (
+                    previewAnimationFrame
+                ) {
+
+                    cancelAnimationFrame(
+                        previewAnimationFrame
+                    );
+
+                    previewAnimationFrame =
+                        null;
+                }
+
+
+                previewPausedTime =
+                    Number(
+                        timeline.value
+                    );
+
+
+                drawPreviewFrame(
+                    previewPausedTime
+                );
+            };
+    }
+
+
+    /* ---------------------------------------------
+       VOLUME
+    --------------------------------------------- */
+
+    if (volume) {
+
+        volume.oninput =
+            function() {
+
+                /*
+                   Reserved for preview audio.
+                   Current canvas preview has
+                   no audio source.
+                */
+
+                console.log(
+                    "Preview volume:",
+                    volume.value
                 );
             };
     }
 }
+
+
 /* =====================================================
    MUSIC & SOUND EFFECTS
 ===================================================== */
