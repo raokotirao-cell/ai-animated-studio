@@ -1304,233 +1304,265 @@ function editCaption(index) {
 }
 
 /* =====================================================
-   BACKGROUNDS
+BACKGROUNDS
 ===================================================== */
 
 function addBackground() {
-  if (!project.name) {
-    alert(
-      "Please create a project first."
-    );
 
-    openNewProject();
-    return;
-  }
+if (!project.name) {
+alert("Please create a project first.");
+openNewProject();
+return;
+}
 
-  const name = prompt(
-    "Background name:"
-  );
+const name = prompt("Background name:");
 
-  if (!name || !name.trim()) {
-    return;
-  }
+if (!name || !name.trim()) {
+return;
+}
 
-  if (!project.backgrounds) {
-    project.backgrounds = [];
-  }
+if (!Array.isArray(project.backgrounds)) {
+project.backgrounds = [];
+}
 
-  project.backgrounds.push({
-    id: Date.now(),
-    name: name.trim(),
-    description: "",
-    emoji: "🌄"
-  });
+project.backgrounds.push({
+id: Date.now(),
+name: name.trim(),
+description: "",
+emoji: "🌄"
+});
 
-  project.status =
-    "Background added";
+project.status = "Background added";
 
-  renderBackgrounds();
-  updateProjectUI();
-  saveProject();
+renderBackgrounds();
+updateProjectUI();
+saveProject();
 
-  alert("Background added.");
 }
 
 /* =====================================================
-   RENDER BACKGROUNDS
+RENDER BACKGROUNDS
 ===================================================== */
 
 function renderBackgrounds() {
-  const list = $("backgroundList");
 
-  if (!list) {
-    return;
+const list = $("backgroundList");
+
+if (!list) {
+return;
+}
+
+if (!Array.isArray(project.backgrounds)) {
+project.backgrounds = [];
+}
+
+if (project.backgrounds.length === 0) {
+
+
+list.innerHTML = `
+  <div class="empty-state">
+
+    <div>🌄</div>
+
+    <h3>No backgrounds yet</h3>
+
+    <p>
+      Add your first background.
+    </p>
+
+  </div>
+`;
+
+return;
+
+
+}
+
+list.innerHTML = "";
+
+project.backgrounds.forEach(
+function(background, index) {
+
+
+  const card =
+    document.createElement("div");
+
+  card.className =
+    "character-card";
+
+  card.innerHTML = `
+    <div class="character-avatar">
+      ${escapeHTML(
+        background.emoji || "🌄"
+      )}
+    </div>
+
+    <h3>
+      ${escapeHTML(
+        background.name ||
+        "Untitled Background"
+      )}
+    </h3>
+
+    <p>
+      ${escapeHTML(
+        background.description ||
+        "No description yet."
+      )}
+    </p>
+
+    <div class="button-row">
+
+      <button
+        type="button"
+        class="secondary-btn"
+        data-edit-background="${index}">
+        ✏️ Edit
+      </button>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        data-delete-background="${index}">
+        🗑️ Delete
+      </button>
+
+    </div>
+  `;
+
+  list.appendChild(card);
+
+}
+
+
+);
+
+/* EDIT BUTTON */
+
+list.querySelectorAll(
+"[data-edit-background]"
+).forEach(function(button) {
+
+
+button.addEventListener(
+  "click",
+  function() {
+
+    editBackground(
+      Number(
+        button.dataset.editBackground
+      )
+    );
+
   }
+);
 
-  if (!project.backgrounds) {
-    project.backgrounds = [];
-  }
 
-  if (project.backgrounds.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
+});
 
-        <div>🌄</div>
+/* DELETE BUTTON */
 
-        <h3>
-          No backgrounds yet
-        </h3>
+list.querySelectorAll(
+"[data-delete-background]"
+).forEach(function(button) {
 
-        <p>
-          Add your first background.
-        </p>
 
-      </div>
-    `;
+button.addEventListener(
+  "click",
+  function() {
 
-    return;
-  }
+    const index =
+      Number(
+        button.dataset.deleteBackground
+      );
 
-  list.innerHTML = "";
-
-  project.backgrounds.forEach(
-    function (background, index) {
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "character-card";
-
-      card.innerHTML = `
-        <div class="character-avatar">
-          ${escapeHTML(
-            background.emoji || "🌄"
-          )}
-        </div>
-
-        <h3>
-          ${escapeHTML(
-            background.name
-          )}
-        </h3>
-
-        <p>
-          ${escapeHTML(
-            background.description ||
-            "No description yet."
-          )}
-        </p>
-
-        <div class="button-row">
-
-          <button
-            type="button"
-            class="secondary-btn"
-            data-edit-background="${index}">
-            ✏️ Edit
-          </button>
-
-          <button
-            type="button"
-            class="secondary-btn"
-            data-delete-background="${index}">
-            🗑️ Delete
-          </button>
-
-        </div>
-      `;
-
-      list.appendChild(card);
+    if (
+      !confirm(
+        "Delete this background?"
+      )
+    ) {
+      return;
     }
-  );
 
-  list.querySelectorAll(
-    "[data-edit-background]"
-  ).forEach(function (button) {
-    button.addEventListener(
-      "click",
-      function () {
-        editBackground(
-          Number(
-            button.dataset.editBackground
-          )
-        );
-      }
+    project.backgrounds.splice(
+      index,
+      1
     );
-  });
 
-  list.querySelectorAll(
-    "[data-delete-background]"
-  ).forEach(function (button) {
-    button.addEventListener(
-      "click",
-      function () {
-        const index = Number(
-          button.dataset.deleteBackground
-        );
+    project.status =
+      "Background deleted";
 
-        if (
-          !confirm(
-            "Delete this background?"
-          )
-        ) {
-          return;
-        }
+    renderBackgrounds();
 
-        project.backgrounds.splice(
-          index,
-          1
-        );
+    updateProjectUI();
 
-        project.status =
-          "Background deleted";
+    saveProject();
 
-        renderBackgrounds();
-        updateProjectUI();
-        saveProject();
-      }
-    );
-  });
+  }
+);
+
+
+});
+
 }
 
 /* =====================================================
-   EDIT BACKGROUND
+EDIT BACKGROUND
 ===================================================== */
 
 function editBackground(index) {
-  if (!project.backgrounds) {
-    return;
-  }
 
-  const background =
-    project.backgrounds[index];
-
-  if (!background) {
-    return;
-  }
-
-  const name = prompt(
-    "Background name:",
-    background.name
-  );
-
-  if (name === null) {
-    return;
-  }
-
-  const description = prompt(
-    "Background description:",
-    background.description || ""
-  );
-
-  if (description === null) {
-    return;
-  }
-
-  background.name =
-    name.trim() ||
-    background.name;
-
-  background.description =
-    description.trim();
-
-  project.status =
-    "Background updated";
-
-  renderBackgrounds();
-  updateProjectUI();
-  saveProject();
+if (!Array.isArray(project.backgrounds)) {
+return;
 }
+
+const background =
+project.backgrounds[index];
+
+if (!background) {
+return;
+}
+
+const name =
+prompt(
+"Background name:",
+background.name || ""
+);
+
+if (name === null) {
+return;
+}
+
+const description =
+prompt(
+"Background description:",
+background.description || ""
+);
+
+if (description === null) {
+return;
+}
+
+background.name =
+name.trim() ||
+background.name ||
+"Untitled Background";
+
+background.description =
+description.trim();
+
+project.status =
+"Background updated";
+
+renderBackgrounds();
+
+updateProjectUI();
+
+saveProject();
+
+}
+
+
 
 /* =====================================================
    SETTINGS
