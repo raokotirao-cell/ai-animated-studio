@@ -34,13 +34,11 @@ function $(id) {
 
 function escapeHTML(value) {
   return String(value ?? "")
-    
-.replaceAll("&", "&amp;")
+    .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
 }
 
 /* =====================================================
@@ -86,27 +84,31 @@ function updateProjectUI() {
 
   if (scenes) {
     scenes.textContent =
-      project.scenes.length;
+      Array.isArray(project.scenes)
+        ? project.scenes.length
+        : 0;
   }
 
   if (characters) {
     characters.textContent =
-      project.characters.length;
+      Array.isArray(project.characters)
+        ? project.characters.length
+        : 0;
   }
 
   if (status) {
     status.textContent =
-      project.status;
+      project.status || "Ready";
   }
 
   if ($("projectName")) {
     $("projectName").value =
-      project.name;
+      project.name || "";
   }
 
   if ($("videoResolution")) {
     $("videoResolution").value =
-      project.resolution;
+      project.resolution || "720p";
   }
 }
 
@@ -126,10 +128,7 @@ function saveProject() {
     updateProjectUI();
 
   } catch (error) {
-    console.error(
-      "Save error:",
-      error
-    );
+    console.error("Save error:", error);
   }
 }
 
@@ -190,15 +189,10 @@ function loadProject() {
     };
 
     updateStoryUI();
-
     renderScenes();
-
     renderCharacters();
-
     renderCaptions();
-
     renderBackgrounds();
-
     updateProjectUI();
 
   } catch (error) {
@@ -254,40 +248,26 @@ function createProject() {
     alert(
       "Please enter a project name."
     );
-
     return;
   }
 
   project = {
     name: name,
-
     storyTitle: "",
-
     storyText: "",
-
     scenes: [],
-
     characters: [],
-
     backgrounds: [],
-
     captions: [],
-
     resolution: "720p",
-
     status: "Ready"
   };
 
   updateProjectUI();
-
   updateStoryUI();
-
   renderScenes();
-
   renderCharacters();
-
   renderCaptions();
-
   renderBackgrounds();
 
   saveProject();
@@ -320,7 +300,6 @@ function saveStory() {
     );
 
     openNewProject();
-
     return;
   }
 
@@ -355,7 +334,6 @@ function createScenes() {
     );
 
     openNewProject();
-
     return;
   }
 
@@ -368,7 +346,6 @@ function createScenes() {
     alert(
       "Please write a story first."
     );
-
     return;
   }
 
@@ -437,9 +414,7 @@ function createScenes() {
     "Scenes created";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 
   showPage("scenes");
@@ -456,7 +431,6 @@ function addScene() {
     );
 
     openNewProject();
-
     return;
   }
 
@@ -499,9 +473,7 @@ function addScene() {
     "Scene added";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -514,6 +486,10 @@ function renderScenes() {
     $("sceneList");
 
   if (!list) return;
+
+  if (!Array.isArray(project.scenes)) {
+    project.scenes = [];
+  }
 
   if (project.scenes.length === 0) {
     list.innerHTML = `
@@ -531,6 +507,7 @@ function renderScenes() {
 
   project.scenes.forEach(
     function (scene, index) {
+
       const card =
         document.createElement("div");
 
@@ -541,7 +518,6 @@ function renderScenes() {
         <div class="scene-card-header">
 
           <div>
-
             <h3>
               🎬 Scene ${index + 1}
             </h3>
@@ -552,7 +528,6 @@ function renderScenes() {
                 "Untitled Scene"
               )}
             </span>
-
           </div>
 
           <button
@@ -808,16 +783,20 @@ function renderScenes() {
   list.querySelectorAll(
     "[data-save-scene]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         saveScene(
           Number(
             button.dataset.saveScene
           )
         );
+
       }
     );
+
   });
 
   /* DELETE SCENE */
@@ -825,9 +804,11 @@ function renderScenes() {
   list.querySelectorAll(
     "[data-delete-scene]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         const index =
           Number(
             button.dataset.deleteScene
@@ -852,12 +833,12 @@ function renderScenes() {
           "Scene deleted";
 
         renderScenes();
-
         updateProjectUI();
-
         saveProject();
+
       }
     );
+
   });
 }
 
@@ -925,7 +906,9 @@ function saveScene(index) {
     durationInput
       ? Math.max(
           1,
-          Number(durationInput.value) || 5
+          Number(
+            durationInput.value
+          ) || 5
         )
       : 5;
 
@@ -963,9 +946,7 @@ function saveScene(index) {
     "Scene saved";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 
   alert(
@@ -988,7 +969,7 @@ function editScene(index) {
   const title =
     prompt(
       "Scene title:",
-      scene.title
+      scene.title || ""
     );
 
   if (title === null) return;
@@ -996,7 +977,7 @@ function editScene(index) {
   const description =
     prompt(
       "Scene description:",
-      scene.description
+      scene.description || ""
     );
 
   if (description === null) return;
@@ -1012,9 +993,7 @@ function editScene(index) {
     "Scene updated";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1042,7 +1021,6 @@ function addCharacter() {
     );
 
     openNewProject();
-
     return;
   }
 
@@ -1073,9 +1051,7 @@ function addCharacter() {
     "Character added";
 
   renderCharacters();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1089,9 +1065,14 @@ function renderCharacters() {
 
   if (!list) return;
 
+  if (!Array.isArray(project.characters)) {
+    project.characters = [];
+  }
+
   if (
     project.characters.length === 0
   ) {
+
     list.innerHTML = `
       <div class="empty-state">
 
@@ -1115,6 +1096,7 @@ function renderCharacters() {
 
   project.characters.forEach(
     function (character, index) {
+
       const card =
         document.createElement("div");
 
@@ -1130,7 +1112,7 @@ function renderCharacters() {
 
         <h3>
           ${escapeHTML(
-            character.name
+            character.name || "Unnamed"
           )}
         </h3>
 
@@ -1169,16 +1151,20 @@ function renderCharacters() {
   list.querySelectorAll(
     "[data-edit-character]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         editCharacter(
           Number(
             button.dataset.editCharacter
           )
         );
+
       }
     );
+
   });
 
   /* DELETE CHARACTER */
@@ -1186,9 +1172,11 @@ function renderCharacters() {
   list.querySelectorAll(
     "[data-delete-character]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         const index =
           Number(
             button.dataset.deleteCharacter
@@ -1211,12 +1199,12 @@ function renderCharacters() {
           "Character deleted";
 
         renderCharacters();
-
         updateProjectUI();
-
         saveProject();
+
       }
     );
+
   });
 }
 
@@ -1233,7 +1221,7 @@ function editCharacter(index) {
   const name =
     prompt(
       "Character name:",
-      character.name
+      character.name || ""
     );
 
   if (name === null) return;
@@ -1241,7 +1229,7 @@ function editCharacter(index) {
   const description =
     prompt(
       "Character description:",
-      character.description
+      character.description || ""
     );
 
   if (description === null) return;
@@ -1257,9 +1245,7 @@ function editCharacter(index) {
     "Character updated";
 
   renderCharacters();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1274,7 +1260,6 @@ function addCaption() {
     );
 
     openNewProject();
-
     return;
   }
 
@@ -1285,7 +1270,6 @@ function addCaption() {
     alert(
       "Caption input not found."
     );
-
     return;
   }
 
@@ -1296,7 +1280,6 @@ function addCaption() {
     alert(
       "Enter caption text first."
     );
-
     return;
   }
 
@@ -1318,9 +1301,7 @@ function addCaption() {
     "Caption added";
 
   renderCaptions();
-
   updateProjectUI();
-
   saveProject();
 
   alert(
@@ -1338,13 +1319,14 @@ function renderCaptions() {
 
   if (!list) return;
 
-  if (!project.captions) {
+  if (!Array.isArray(project.captions)) {
     project.captions = [];
   }
 
   if (
     project.captions.length === 0
   ) {
+
     list.innerHTML = `
       <div class="empty-state">
 
@@ -1368,6 +1350,7 @@ function renderCaptions() {
 
   project.captions.forEach(
     function (caption, index) {
+
       const card =
         document.createElement("div");
 
@@ -1385,7 +1368,7 @@ function renderCaptions() {
 
         <p>
           ${escapeHTML(
-            caption.text
+            caption.text || ""
           )}
         </p>
 
@@ -1417,16 +1400,20 @@ function renderCaptions() {
   list.querySelectorAll(
     "[data-edit-caption]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         editCaption(
           Number(
             button.dataset.editCaption
           )
         );
+
       }
     );
+
   });
 
   /* DELETE CAPTION */
@@ -1434,9 +1421,11 @@ function renderCaptions() {
   list.querySelectorAll(
     "[data-delete-caption]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         const index =
           Number(
             button.dataset.deleteCaption
@@ -1459,20 +1448,20 @@ function renderCaptions() {
           "Caption deleted";
 
         renderCaptions();
-
         updateProjectUI();
-
         saveProject();
+
       }
     );
+
   });
 }
+
 /* =====================================================
    EDIT CAPTION
 ===================================================== */
 
 function editCaption(index) {
-
   if (!project.captions) {
     return;
   }
@@ -1487,7 +1476,7 @@ function editCaption(index) {
   const text =
     prompt(
       "Caption text:",
-      caption.text
+      caption.text || ""
     );
 
   if (text === null) {
@@ -1510,20 +1499,15 @@ function editCaption(index) {
     "Caption updated";
 
   renderCaptions();
-
   updateProjectUI();
-
   saveProject();
-
 }
-
 
 /* =====================================================
    BACKGROUNDS
 ===================================================== */
 
 function addBackground() {
-
   if (!project.name) {
 
     alert(
@@ -1561,33 +1545,31 @@ function addBackground() {
 
     emoji:
       "🌄"
-
   });
 
   project.status =
     "Background added";
 
   renderBackgrounds();
-
   updateProjectUI();
-
   saveProject();
 
+  alert(
+    "Background added."
+  );
 }
-
 
 /* =====================================================
    RENDER BACKGROUNDS
 ===================================================== */
 
 function renderBackgrounds() {
-
   const list =
     $("backgroundList");
 
   if (!list) return;
 
-  if (!project.backgrounds) {
+  if (!Array.isArray(project.backgrounds)) {
     project.backgrounds = [];
   }
 
@@ -1596,7 +1578,6 @@ function renderBackgrounds() {
   ) {
 
     list.innerHTML = `
-
       <div class="empty-state">
 
         <div>🌄</div>
@@ -1610,7 +1591,6 @@ function renderBackgrounds() {
         </p>
 
       </div>
-
     `;
 
     return;
@@ -1637,7 +1617,7 @@ function renderBackgrounds() {
 
         <h3>
           ${escapeHTML(
-            background.name
+            background.name || "Unnamed Background"
           )}
         </h3>
 
@@ -1669,14 +1649,10 @@ function renderBackgrounds() {
       `;
 
       list.appendChild(card);
-
     }
   );
 
-
-  /* =================================================
-     EDIT BACKGROUND BUTTON
-  ================================================= */
+  /* EDIT BACKGROUND BUTTON */
 
   list.querySelectorAll(
     "[data-edit-background]"
@@ -1697,10 +1673,7 @@ function renderBackgrounds() {
 
   });
 
-
-  /* =================================================
-     DELETE BACKGROUND BUTTON
-  ================================================= */
+  /* DELETE BACKGROUND BUTTON */
 
   list.querySelectorAll(
     "[data-delete-background]"
@@ -1720,7 +1693,6 @@ function renderBackgrounds() {
             "Delete this background?"
           )
         ) {
-
           return;
         }
 
@@ -1733,25 +1705,20 @@ function renderBackgrounds() {
           "Background deleted";
 
         renderBackgrounds();
-
         updateProjectUI();
-
         saveProject();
 
       }
     );
 
   });
-
 }
-
 
 /* =====================================================
    EDIT BACKGROUND
 ===================================================== */
 
 function editBackground(index) {
-
   if (!project.backgrounds) {
     return;
   }
@@ -1766,7 +1733,7 @@ function editBackground(index) {
   const name =
     prompt(
       "Background name:",
-      background.name
+      background.name || ""
     );
 
   if (name === null) {
@@ -1794,21 +1761,18 @@ function editBackground(index) {
     "Background updated";
 
   renderBackgrounds();
-
   updateProjectUI();
-
   saveProject();
-
 }
-
-
 
 /* =====================================================
    SETTINGS
 ===================================================== */
 
 function saveSettings() {
+
   if ($("projectName")) {
+
     const name =
       $("projectName")
         .value
@@ -1829,7 +1793,6 @@ function saveSettings() {
     "Settings saved";
 
   updateProjectUI();
-
   saveProject();
 
   alert(
@@ -2039,6 +2002,7 @@ document.addEventListener(
       $("newProjectModal");
 
     if (modal) {
+
       modal.addEventListener(
         "click",
         function (event) {
@@ -2051,6 +2015,7 @@ document.addEventListener(
 
         }
       );
+
     }
 
     /* =================================================
