@@ -1333,6 +1333,14 @@ function renderCharacters() {
 
 }
 
+    /* Characters */
+
+    if ($("addCharacterBtn")) {
+
+      $("addCharacterBtn").onclick =
+        addCharacter;
+
+    }
 
 /* =====================================================
    EDIT CHARACTER
@@ -1644,14 +1652,6 @@ document.addEventListener(
     }
 
 
-    /* Characters */
-
-    if ($("addCharacterBtn")) {
-
-      $("addCharacterBtn").onclick =
-        addCharacter;
-
-    }
 
      /* =====================================================
    BACKGROUNDS
