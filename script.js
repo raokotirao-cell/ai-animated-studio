@@ -56,6 +56,9 @@ function showPage(pageId) {
     if (page) {
         page.classList.add("active");
     }
+   if (pageId === "captions") {
+    refreshCaptionScenes();
+}
 
     document.querySelectorAll(".nav-item").forEach(function (button) {
         if (button.dataset.page === pageId) {
