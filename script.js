@@ -1,3 +1,4 @@
+
 alert("SCRIPT WORKING");
 
 "use strict";
@@ -5,12 +6,11 @@ alert("SCRIPT WORKING");
 /* =====================================================
    AI ANIMATED STUDIO
    CLEAN CORE SCRIPT
-   ===================================================== */
-
+===================================================== */
 
 /* =====================================================
    PROJECT DATA
-   ===================================================== */
+===================================================== */
 
 let project = {
   name: "",
@@ -24,38 +24,31 @@ let project = {
   status: "Ready"
 };
 
-
 /* =====================================================
    HELPERS
-   ===================================================== */
+===================================================== */
 
 function $(id) {
   return document.getElementById(id);
 }
 
-
 function escapeHTML(value) {
-
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
 }
-
 
 /* =====================================================
    PAGE NAVIGATION
-   ===================================================== */
+===================================================== */
 
 function showPage(pageId) {
-
-  document.querySelectorAll(".page").forEach(function(page) {
+  document.querySelectorAll(".page").forEach(function (page) {
     page.classList.remove("active");
   });
-
 
   const page = $(pageId);
 
@@ -63,148 +56,101 @@ function showPage(pageId) {
     page.classList.add("active");
   }
 
-
-  document.querySelectorAll(".nav-item").forEach(function(button) {
-
+  document.querySelectorAll(".nav-item").forEach(function (button) {
     if (button.dataset.page === pageId) {
-
       button.classList.add("active");
-
     } else {
-
       button.classList.remove("active");
-
     }
-
   });
-
 
   window.scrollTo(0, 0);
 }
 
-
 /* =====================================================
    PROJECT UI
-   ===================================================== */
+===================================================== */
 
 function updateProjectUI() {
-
   const name = $("projectNameDisplay");
   const scenes = $("sceneCountDisplay");
   const characters = $("characterCountDisplay");
   const status = $("projectStatusDisplay");
 
-
   if (name) {
-
     name.textContent =
       project.name || "No project created";
-
   }
-
 
   if (scenes) {
-
     scenes.textContent =
       project.scenes.length;
-
   }
-
 
   if (characters) {
-
     characters.textContent =
       project.characters.length;
-
   }
-
 
   if (status) {
-
     status.textContent =
       project.status;
-
   }
-
 
   if ($("projectName")) {
-
     $("projectName").value =
       project.name;
-
   }
-
 
   if ($("videoResolution")) {
-
     $("videoResolution").value =
       project.resolution;
-
   }
-
 }
-
 
 /* =====================================================
    SAVE PROJECT
-   ===================================================== */
+===================================================== */
 
 function saveProject() {
-
   try {
-
     localStorage.setItem(
       "aiAnimatedStudioProject",
       JSON.stringify(project)
     );
 
-
     project.status = "Saved";
 
     updateProjectUI();
 
-
   } catch (error) {
-
     console.error(
       "Save error:",
       error
     );
-
   }
-
 }
-
 
 /* =====================================================
    LOAD PROJECT
-   ===================================================== */
+===================================================== */
 
 function loadProject() {
-
   try {
-
     const saved =
       localStorage.getItem(
         "aiAnimatedStudioProject"
       );
 
-
     if (!saved) {
-
       updateProjectUI();
-
       return;
-
     }
-
 
     const data =
       JSON.parse(saved);
 
-
     project = {
-
       name:
         data.name || "",
 
@@ -239,9 +185,7 @@ function loadProject() {
 
       status:
         "Saved"
-
     };
-
 
     updateStoryUI();
 
@@ -255,91 +199,64 @@ function loadProject() {
 
     updateProjectUI();
 
-
   } catch (error) {
-
     console.error(
       "Load error:",
       error
     );
-
   }
-
 }
-
 
 /* =====================================================
    NEW PROJECT
-   ===================================================== */
+===================================================== */
 
 function openNewProject() {
-
   const modal =
     $("newProjectModal");
 
   if (!modal) return;
 
-
   modal.classList.remove("hidden");
-
 
   const input =
     $("newProjectName");
 
-
   if (input) {
-
     input.value =
       project.name || "";
 
     input.focus();
-
   }
-
 }
 
-
 function closeNewProject() {
-
   const modal =
     $("newProjectModal");
 
-
   if (modal) {
-
     modal.classList.add("hidden");
-
   }
-
 }
 
-
 function createProject() {
-
   const input =
     $("newProjectName");
 
-
   if (!input) return;
-
 
   const name =
     input.value.trim();
 
-
   if (!name) {
-
     alert(
       "Please enter a project name."
     );
 
     return;
-
   }
 
-
   project = {
-
     name: name,
 
     storyTitle: "",
@@ -357,9 +274,7 @@ function createProject() {
     resolution: "720p",
 
     status: "Ready"
-
   };
-
 
   updateProjectUI();
 
@@ -378,38 +293,26 @@ function createProject() {
   closeNewProject();
 
   showPage("story");
-
 }
-
 
 /* =====================================================
    STORY
-   ===================================================== */
+===================================================== */
 
 function updateStoryUI() {
-
   if ($("storyTitle")) {
-
     $("storyTitle").value =
       project.storyTitle || "";
-
   }
-
 
   if ($("storyText")) {
-
     $("storyText").value =
       project.storyText || "";
-
   }
-
 }
 
-
 function saveStory() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -417,44 +320,34 @@ function saveStory() {
     openNewProject();
 
     return;
-
   }
-
 
   project.storyTitle =
     $("storyTitle")
       ? $("storyTitle").value.trim()
       : "";
 
-
   project.storyText =
     $("storyText")
       ? $("storyText").value.trim()
       : "";
 
-
   project.status =
     "Story saved";
 
-
   saveProject();
-
 
   alert(
     "Story saved successfully."
   );
-
 }
-
 
 /* =====================================================
    STORY → SCENES
-   ===================================================== */
+===================================================== */
 
 function createScenes() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -462,68 +355,50 @@ function createScenes() {
     openNewProject();
 
     return;
-
   }
-
 
   const story =
     $("storyText")
       ? $("storyText").value.trim()
       : "";
 
-
   if (!story) {
-
     alert(
       "Please write a story first."
     );
 
     return;
-
   }
-
 
   project.storyTitle =
     $("storyTitle")
       ? $("storyTitle").value.trim()
       : "";
 
-
   project.storyText =
     story;
-
 
   let parts =
     story
       .split(/\n\s*\n/)
-      .map(function(text) {
-
+      .map(function (text) {
         return text.trim();
-
       })
       .filter(Boolean);
 
-
   if (parts.length <= 1) {
-
     parts =
       story
         .split(/(?<=[.!?])\s+/)
-        .map(function(text) {
-
+        .map(function (text) {
           return text.trim();
-
         })
         .filter(Boolean);
-
   }
 
-
   project.scenes =
-    parts.map(function(text, index) {
-
+    parts.map(function (text, index) {
       return {
-
         id:
           Date.now() + index,
 
@@ -553,15 +428,11 @@ function createScenes() {
 
         animation:
           "None"
-
       };
-
     });
-
 
   project.status =
     "Scenes created";
-
 
   renderScenes();
 
@@ -570,18 +441,14 @@ function createScenes() {
   saveProject();
 
   showPage("scenes");
-
 }
-
 
 /* =====================================================
    ADD SCENE
-   ===================================================== */
+===================================================== */
 
 function addScene() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -589,16 +456,12 @@ function addScene() {
     openNewProject();
 
     return;
-
   }
-
 
   const number =
     project.scenes.length + 1;
 
-
   project.scenes.push({
-
     id:
       Date.now(),
 
@@ -628,74 +491,51 @@ function addScene() {
 
     animation:
       "None"
-
   });
-
 
   project.status =
     "Scene added";
-
 
   renderScenes();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    RENDER SCENES
-   ===================================================== */
+===================================================== */
 
 function renderScenes() {
-
   const list =
     $("sceneList");
 
-
   if (!list) return;
 
-
   if (project.scenes.length === 0) {
-
     list.innerHTML = `
-
       <div class="empty-state">
-
         <div>🎬</div>
-
         <h3>No scenes yet</h3>
-
         <p>Create your first scene.</p>
-
       </div>
-
     `;
 
     return;
-
   }
-
 
   list.innerHTML = "";
 
-
   project.scenes.forEach(
-    function(scene, index) {
-
-
+    function (scene, index) {
       const card =
         document.createElement("div");
-
 
       card.className =
         "scene-card";
 
-
       card.innerHTML = `
-
         <div class="scene-card-header">
 
           <div>
@@ -713,7 +553,6 @@ function renderScenes() {
 
           </div>
 
-
           <button
             type="button"
             class="secondary-btn"
@@ -723,9 +562,7 @@ function renderScenes() {
 
         </div>
 
-
         <div class="scene-editor-grid">
-
 
           <div class="scene-field">
 
@@ -743,7 +580,6 @@ function renderScenes() {
 
           </div>
 
-
           <div class="scene-field">
 
             <label>
@@ -758,7 +594,6 @@ function renderScenes() {
               value="${scene.duration || 5}">
 
           </div>
-
 
           <div class="scene-field scene-full">
 
@@ -776,7 +611,6 @@ function renderScenes() {
 
           </div>
 
-
           <div class="scene-field">
 
             <label>
@@ -792,7 +626,6 @@ function renderScenes() {
               placeholder="Village, forest, city...">
 
           </div>
-
 
           <div class="scene-field">
 
@@ -812,7 +645,6 @@ function renderScenes() {
 
           </div>
 
-
           <div class="scene-field scene-full">
 
             <label>
@@ -828,7 +660,6 @@ function renderScenes() {
             )}</textarea>
 
           </div>
-
 
           <div class="scene-field">
 
@@ -891,7 +722,6 @@ function renderScenes() {
 
           </div>
 
-
           <div class="scene-field">
 
             <label>
@@ -953,9 +783,7 @@ function renderScenes() {
 
           </div>
 
-
         </div>
-
 
         <div class="button-row">
 
@@ -967,164 +795,129 @@ function renderScenes() {
           </button>
 
         </div>
-
       `;
 
-
       list.appendChild(card);
-
     }
   );
-
 
   /* SAVE SCENE */
 
   list.querySelectorAll(
     "[data-save-scene]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         saveScene(
           Number(
             button.dataset.saveScene
           )
         );
-
       }
     );
-
   });
-
 
   /* DELETE SCENE */
 
   list.querySelectorAll(
     "[data-delete-scene]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         const index =
           Number(
             button.dataset.deleteScene
           );
-
 
         if (
           !confirm(
             "Delete this scene?"
           )
         ) {
-
           return;
-
         }
-
 
         project.scenes.splice(
           index,
           1
         );
 
-
         renumberScenes();
-
 
         project.status =
           "Scene deleted";
-
 
         renderScenes();
 
         updateProjectUI();
 
         saveProject();
-
       }
     );
-
   });
-
 }
-
 
 /* =====================================================
    SAVE SCENE
-   ===================================================== */
+===================================================== */
 
 function saveScene(index) {
-
   const scene =
     project.scenes[index];
 
-
   if (!scene) return;
-
 
   const titleInput =
     document.querySelector(
       `[data-scene-title="${index}"]`
     );
 
-
   const descriptionInput =
     document.querySelector(
       `[data-scene-description="${index}"]`
     );
-
 
   const durationInput =
     document.querySelector(
       `[data-scene-duration="${index}"]`
     );
 
-
   const backgroundInput =
     document.querySelector(
       `[data-scene-background="${index}"]`
     );
-
 
   const charactersInput =
     document.querySelector(
       `[data-scene-characters="${index}"]`
     );
 
-
   const dialogueInput =
     document.querySelector(
       `[data-scene-dialogue="${index}"]`
     );
-
 
   const cameraInput =
     document.querySelector(
       `[data-scene-camera="${index}"]`
     );
 
-
   const animationInput =
     document.querySelector(
       `[data-scene-animation="${index}"]`
     );
-
 
   scene.title =
     titleInput
       ? titleInput.value.trim()
       : scene.title;
 
-
   scene.description =
     descriptionInput
       ? descriptionInput.value.trim()
       : scene.description;
-
 
   scene.duration =
     durationInput
@@ -1134,45 +927,38 @@ function saveScene(index) {
         )
       : 5;
 
-
   scene.background =
     backgroundInput
       ? backgroundInput.value.trim()
       : "";
 
-
   scene.characters =
     charactersInput
       ? charactersInput.value
           .split(",")
-          .map(function(name) {
+          .map(function (name) {
             return name.trim();
           })
           .filter(Boolean)
       : [];
-
 
   scene.dialogue =
     dialogueInput
       ? dialogueInput.value.trim()
       : "";
 
-
   scene.camera =
     cameraInput
       ? cameraInput.value
       : "Static";
-
 
   scene.animation =
     animationInput
       ? animationInput.value
       : "None";
 
-
   project.status =
     "Scene saved";
-
 
   renderScenes();
 
@@ -1180,28 +966,22 @@ function saveScene(index) {
 
   saveProject();
 
-
   alert(
     "Scene " +
     (index + 1) +
     " saved successfully."
   );
-
 }
-
 
 /* =====================================================
    EDIT SCENE
-   ===================================================== */
+===================================================== */
 
 function editScene(index) {
-
   const scene =
     project.scenes[index];
 
-
   if (!scene) return;
-
 
   const title =
     prompt(
@@ -1209,9 +989,7 @@ function editScene(index) {
       scene.title
     );
 
-
   if (title === null) return;
-
 
   const description =
     prompt(
@@ -1219,58 +997,44 @@ function editScene(index) {
       scene.description
     );
 
-
   if (description === null) return;
-
 
   scene.title =
     title.trim() ||
     "Scene " + (index + 1);
 
-
   scene.description =
     description.trim();
 
-
   project.status =
     "Scene updated";
-
 
   renderScenes();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    RENUMBER SCENES
-   ===================================================== */
+===================================================== */
 
 function renumberScenes() {
-
   project.scenes.forEach(
-    function(scene, index) {
-
+    function (scene, index) {
       scene.number =
         index + 1;
-
     }
   );
-
 }
-
 
 /* =====================================================
    CHARACTERS
-   ===================================================== */
+===================================================== */
 
 function addCharacter() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -1278,23 +1042,18 @@ function addCharacter() {
     openNewProject();
 
     return;
-
   }
-
 
   const name =
     prompt(
       "Character name:"
     );
 
-
   if (!name || !name.trim()) {
     return;
   }
 
-
   project.characters.push({
-
     id:
       Date.now(),
 
@@ -1306,42 +1065,32 @@ function addCharacter() {
 
     emoji:
       "👤"
-
   });
-
 
   project.status =
     "Character added";
-
 
   renderCharacters();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    RENDER CHARACTERS
-   ===================================================== */
+===================================================== */
 
 function renderCharacters() {
-
   const list =
     $("characterList");
 
-
   if (!list) return;
-
 
   if (
     project.characters.length === 0
   ) {
-
     list.innerHTML = `
-
       <div class="empty-state">
 
         <div>👤</div>
@@ -1355,37 +1104,27 @@ function renderCharacters() {
         </p>
 
       </div>
-
     `;
 
     return;
-
   }
-
 
   list.innerHTML = "";
 
-
   project.characters.forEach(
-    function(character, index) {
-
-
+    function (character, index) {
       const card =
         document.createElement("div");
-
 
       card.className =
         "character-card";
 
-
       card.innerHTML = `
-
         <div class="character-avatar">
           ${escapeHTML(
             character.emoji || "👤"
           )}
         </div>
-
 
         <h3>
           ${escapeHTML(
@@ -1393,14 +1132,12 @@ function renderCharacters() {
           )}
         </h3>
 
-
         <p>
           ${escapeHTML(
             character.description ||
             "No description yet."
           )}
         </p>
-
 
         <div class="button-row">
 
@@ -1411,7 +1148,6 @@ function renderCharacters() {
             ✏️ Edit
           </button>
 
-
           <button
             type="button"
             class="secondary-btn"
@@ -1420,101 +1156,77 @@ function renderCharacters() {
           </button>
 
         </div>
-
       `;
 
-
       list.appendChild(card);
-
     }
   );
-
 
   /* EDIT CHARACTER */
 
   list.querySelectorAll(
     "[data-edit-character]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editCharacter(
           Number(
             button.dataset.editCharacter
           )
         );
-
       }
     );
-
   });
-
 
   /* DELETE CHARACTER */
 
   list.querySelectorAll(
     "[data-delete-character]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         const index =
           Number(
             button.dataset.deleteCharacter
           );
-
 
         if (
           !confirm(
             "Delete this character?"
           )
         ) {
-
           return;
-
         }
-
 
         project.characters.splice(
           index,
           1
         );
 
-
         project.status =
           "Character deleted";
-
 
         renderCharacters();
 
         updateProjectUI();
 
         saveProject();
-
       }
     );
-
   });
-
 }
-
 
 /* =====================================================
    EDIT CHARACTER
-   ===================================================== */
+===================================================== */
 
 function editCharacter(index) {
-
   const character =
     project.characters[index];
 
-
   if (!character) return;
-
 
   const name =
     prompt(
@@ -1522,9 +1234,7 @@ function editCharacter(index) {
       character.name
     );
 
-
   if (name === null) return;
-
 
   const description =
     prompt(
@@ -1532,40 +1242,31 @@ function editCharacter(index) {
       character.description
     );
 
-
   if (description === null) return;
-
 
   character.name =
     name.trim() ||
     character.name;
 
-
   character.description =
     description.trim();
 
-
   project.status =
     "Character updated";
-
 
   renderCharacters();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    CAPTIONS
-   ===================================================== */
+===================================================== */
 
 function addCaption() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -1573,62 +1274,46 @@ function addCaption() {
     openNewProject();
 
     return;
-
   }
-
 
   const input =
     $("captionText");
 
-
   if (!input) {
-
     alert(
       "Caption input not found."
     );
 
     return;
-
   }
-
 
   const text =
     input.value.trim();
 
-
   if (!text) {
-
     alert(
       "Enter caption text first."
     );
 
     return;
-
   }
-
 
   if (!project.captions) {
     project.captions = [];
   }
 
-
   project.captions.push({
-
     id:
       Date.now(),
 
     text:
       text
-
   });
-
 
   input.value = "";
 
-
   project.status =
     "Caption added";
-
 
   renderCaptions();
 
@@ -1636,38 +1321,29 @@ function addCaption() {
 
   saveProject();
 
-
   alert(
     "Caption added."
   );
-
 }
-
 
 /* =====================================================
    RENDER CAPTIONS
-   ===================================================== */
+===================================================== */
 
 function renderCaptions() {
-
   const list =
     $("captionList");
 
-
   if (!list) return;
-
 
   if (!project.captions) {
     project.captions = [];
   }
 
-
   if (
     project.captions.length === 0
   ) {
-
     list.innerHTML = `
-
       <div class="empty-state">
 
         <div>💬</div>
@@ -1681,47 +1357,35 @@ function renderCaptions() {
         </p>
 
       </div>
-
     `;
 
     return;
-
   }
-
 
   list.innerHTML = "";
 
-
   project.captions.forEach(
-    function(caption, index) {
-
-
+    function (caption, index) {
       const card =
         document.createElement("div");
-
 
       card.className =
         "character-card";
 
-
       card.innerHTML = `
-
         <div class="character-avatar">
           💬
         </div>
 
-
         <h3>
           Caption ${index + 1}
         </h3>
-
 
         <p>
           ${escapeHTML(
             caption.text
           )}
         </p>
-
 
         <div class="button-row">
 
@@ -1732,7 +1396,6 @@ function renderCaptions() {
             ✏️ Edit
           </button>
 
-
           <button
             type="button"
             class="secondary-btn"
@@ -1741,104 +1404,79 @@ function renderCaptions() {
           </button>
 
         </div>
-
       `;
 
-
       list.appendChild(card);
-
     }
   );
-
 
   /* EDIT CAPTION */
 
   list.querySelectorAll(
     "[data-edit-caption]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editCaption(
           Number(
             button.dataset.editCaption
           )
         );
-
       }
     );
-
   });
-
 
   /* DELETE CAPTION */
 
   list.querySelectorAll(
     "[data-delete-caption]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         const index =
           Number(
             button.dataset.deleteCaption
           );
-
 
         if (
           !confirm(
             "Delete this caption?"
           )
         ) {
-
           return;
-
         }
-
 
         project.captions.splice(
           index,
           1
         );
 
-
         project.status =
           "Caption deleted";
-
 
         renderCaptions();
 
         updateProjectUI();
 
         saveProject();
-
       }
     );
-
   });
-
 }
-
 
 /* =====================================================
    EDIT CAPTION
-   ===================================================== */
+===================================================== */
 
 function editCaption(index) {
-
   if (!project.captions) return;
-
 
   const caption =
     project.captions[index];
 
-
   if (!caption) return;
-
 
   const text =
     prompt(
@@ -1846,46 +1484,35 @@ function editCaption(index) {
       caption.text
     );
 
-
   if (text === null) return;
 
-
   if (!text.trim()) {
-
     alert(
       "Caption cannot be empty."
     );
 
     return;
-
   }
-
 
   caption.text =
     text.trim();
 
-
   project.status =
     "Caption updated";
-
 
   renderCaptions();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    BACKGROUNDS
-   ===================================================== */
+===================================================== */
 
 function addBackground() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
@@ -1893,28 +1520,22 @@ function addBackground() {
     openNewProject();
 
     return;
-
   }
-
 
   const name =
     prompt(
       "Background name:"
     );
 
-
   if (!name || !name.trim()) {
     return;
   }
-
 
   if (!project.backgrounds) {
     project.backgrounds = [];
   }
 
-
   project.backgrounds.push({
-
     id:
       Date.now(),
 
@@ -1926,47 +1547,36 @@ function addBackground() {
 
     emoji:
       "🌄"
-
   });
-
 
   project.status =
     "Background added";
-
 
   renderBackgrounds();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    RENDER BACKGROUNDS
-   ===================================================== */
+===================================================== */
 
 function renderBackgrounds() {
-
   const list =
     $("backgroundList");
 
-
   if (!list) return;
-
 
   if (!project.backgrounds) {
     project.backgrounds = [];
   }
 
-
   if (
     project.backgrounds.length === 0
   ) {
-
     list.innerHTML = `
-
       <div class="empty-state">
 
         <div>🌄</div>
@@ -1980,37 +1590,27 @@ function renderBackgrounds() {
         </p>
 
       </div>
-
     `;
 
     return;
-
   }
-
 
   list.innerHTML = "";
 
-
   project.backgrounds.forEach(
-    function(background, index) {
-
-
+    function (background, index) {
       const card =
         document.createElement("div");
-
 
       card.className =
         "character-card";
 
-
       card.innerHTML = `
-
         <div class="character-avatar">
           ${escapeHTML(
             background.emoji || "🌄"
           )}
         </div>
-
 
         <h3>
           ${escapeHTML(
@@ -2018,14 +1618,12 @@ function renderBackgrounds() {
           )}
         </h3>
 
-
         <p>
           ${escapeHTML(
             background.description ||
             "No description yet."
           )}
         </p>
-
 
         <div class="button-row">
 
@@ -2036,7 +1634,6 @@ function renderBackgrounds() {
             ✏️ Edit
           </button>
 
-
           <button
             type="button"
             class="secondary-btn"
@@ -2045,106 +1642,81 @@ function renderBackgrounds() {
           </button>
 
         </div>
-
       `;
 
-
       list.appendChild(card);
-
     }
   );
-
 
   /* EDIT BACKGROUND */
 
   list.querySelectorAll(
     "[data-edit-background]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editBackground(
           Number(
             button.dataset.editBackground
           )
         );
-
       }
     );
-
   });
-
 
   /* DELETE BACKGROUND */
 
   list.querySelectorAll(
     "[data-delete-background]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         const index =
           Number(
             button.dataset.deleteBackground
           );
-
 
         if (
           !confirm(
             "Delete this background?"
           )
         ) {
-
           return;
-
         }
-
 
         project.backgrounds.splice(
           index,
           1
         );
 
-
         project.status =
           "Background deleted";
-
 
         renderBackgrounds();
 
         updateProjectUI();
 
         saveProject();
-
       }
     );
-
   });
-
 }
-
 
 /* =====================================================
    EDIT BACKGROUND
-   ===================================================== */
+===================================================== */
 
 function editBackground(index) {
-
   if (!project.backgrounds) {
     return;
   }
 
-
   const background =
     project.backgrounds[index];
 
-
   if (!background) return;
-
 
   const name =
     prompt(
@@ -2152,9 +1724,7 @@ function editBackground(index) {
       background.name
     );
 
-
   if (name === null) return;
-
 
   const description =
     prompt(
@@ -2162,177 +1732,137 @@ function editBackground(index) {
       background.description || ""
     );
 
-
   if (description === null) return;
-
 
   background.name =
     name.trim() ||
     background.name;
 
-
   background.description =
     description.trim();
 
-
   project.status =
     "Background updated";
-
 
   renderBackgrounds();
 
   updateProjectUI();
 
   saveProject();
-
 }
-
 
 /* =====================================================
    SETTINGS
-   ===================================================== */
+===================================================== */
 
 function saveSettings() {
-
   if ($("projectName")) {
-
     const name =
       $("projectName")
         .value
         .trim();
 
-
     if (name) {
-
       project.name =
         name;
-
     }
-
   }
-
 
   if ($("videoResolution")) {
-
     project.resolution =
       $("videoResolution").value;
-
   }
-
 
   project.status =
     "Settings saved";
-
 
   updateProjectUI();
 
   saveProject();
 
-
   alert(
     "Settings saved."
   );
-
 }
-
 
 /* =====================================================
    EXPORT
-   ===================================================== */
+===================================================== */
 
 function exportVideo() {
-
   const status =
     $("exportStatus");
-
 
   project.status =
     "Export engine pending";
 
-
   updateProjectUI();
 
-
   if (status) {
-
     status.textContent =
       "Video export engine will be added in the next stage.";
-
   }
-
 }
-
 
 /* =====================================================
    INITIALIZE
-   ===================================================== */
+===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
-  function() {
-
+  function () {
 
     /* =================================================
        LOAD PROJECT
-       ================================================= */
+    ================================================= */
 
     loadProject();
 
-
     /* =================================================
        SIDEBAR
-       ================================================= */
+    ================================================= */
 
     document.querySelectorAll(
       ".nav-item"
-    ).forEach(function(button) {
+    ).forEach(function (button) {
 
       button.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           event.preventDefault();
-
 
           const page =
             button.dataset.page;
 
-
           if (page) {
-
             showPage(page);
-
           }
 
         }
       );
 
     });
-
 
     /* =================================================
        DASHBOARD BUTTONS
-       ================================================= */
+    ================================================= */
 
     document.querySelectorAll(
       ".dashboard-action"
-    ).forEach(function(button) {
+    ).forEach(function (button) {
 
       button.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           event.preventDefault();
-
 
           const page =
             button.dataset.page;
 
-
           if (page) {
-
             showPage(page);
-
           }
 
         }
@@ -2340,190 +1870,144 @@ document.addEventListener(
 
     });
 
-
     /* =================================================
        NEW PROJECT
-       ================================================= */
+    ================================================= */
 
     if ($("newProjectBtn")) {
-
       $("newProjectBtn").onclick =
         openNewProject;
-
     }
-
 
     if ($("dashboardNewProject")) {
-
       $("dashboardNewProject").onclick =
         openNewProject;
-
     }
-
 
     /* =================================================
        CLOSE MODAL
-       ================================================= */
+    ================================================= */
 
     if ($("closeModalBtn")) {
-
       $("closeModalBtn").onclick =
         closeNewProject;
-
     }
-
 
     /* =================================================
        CREATE PROJECT
-       ================================================= */
+    ================================================= */
 
     if ($("createProjectBtn")) {
-
       $("createProjectBtn").onclick =
         createProject;
-
     }
-
 
     /* =================================================
        STORY
-       ================================================= */
+    ================================================= */
 
     if ($("saveStoryBtn")) {
-
       $("saveStoryBtn").onclick =
         saveStory;
-
     }
-
 
     if ($("storyToScenesBtn")) {
-
       $("storyToScenesBtn").onclick =
         createScenes;
-
     }
-
 
     /* =================================================
        SCENES
-       ================================================= */
+    ================================================= */
 
     if ($("addSceneBtn")) {
-
       $("addSceneBtn").onclick =
         addScene;
-
     }
-
 
     /* =================================================
        CHARACTERS
-       ================================================= */
+    ================================================= */
 
     if ($("addCharacterBtn")) {
-
       $("addCharacterBtn").onclick =
         addCharacter;
-
     }
-
 
     /* =================================================
        CAPTIONS
-       ================================================= */
+    ================================================= */
 
     if ($("addCaptionBtn")) {
-
       $("addCaptionBtn").onclick =
         addCaption;
-
     }
-
 
     /* =================================================
        BACKGROUNDS
-       ================================================= */
+    ================================================= */
 
     if ($("addBackgroundBtn")) {
-
       $("addBackgroundBtn").onclick =
         addBackground;
-
     }
-
 
     /* =================================================
        SETTINGS
-       ================================================= */
+    ================================================= */
 
     if ($("saveSettingsBtn")) {
-
       $("saveSettingsBtn").onclick =
         saveSettings;
-
     }
-
 
     /* =================================================
        EXPORT
-       ================================================= */
+    ================================================= */
 
     if ($("exportVideoBtn")) {
-
       $("exportVideoBtn").onclick =
         exportVideo;
-
     }
-
 
     /* =================================================
        SAVE PROJECT BUTTON
-       ================================================= */
+    ================================================= */
 
     if ($("saveProjectBtn")) {
-
       $("saveProjectBtn").onclick =
         saveProject;
-
     }
-
 
     /* =================================================
        MODAL BACKGROUND CLICK
-       ================================================= */
+    ================================================= */
 
     const modal =
       $("newProjectModal");
 
-
     if (modal) {
-
       modal.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           if (
             event.target === modal
           ) {
-
             closeNewProject();
-
           }
 
         }
       );
-
     }
-
 
     /* =================================================
        KEYBOARD SAVE
-       ================================================= */
+    ================================================= */
 
     document.addEventListener(
       "keydown",
-      function(event) {
+      function (event) {
 
         if (
           (event.ctrlKey ||
@@ -2540,10 +2024,9 @@ document.addEventListener(
       }
     );
 
-
     /* =================================================
        FINAL UI REFRESH
-       ================================================= */
+    ================================================= */
 
     updateProjectUI();
 
@@ -2559,10 +2042,10 @@ document.addEventListener(
 
     showPage("dashboard");
 
-
     console.log(
       "AI Animated Studio ready."
     );
 
   }
 );
+
