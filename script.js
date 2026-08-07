@@ -1,4 +1,3 @@
-alert("SCRIPT WORKING");
 
 "use strict";
 
@@ -6,6 +5,8 @@ alert("SCRIPT WORKING");
    AI ANIMATED STUDIO
    CLEAN CORE SCRIPT
 ===================================================== */
+
+alert("SCRIPT WORKING");
 
 /* =====================================================
    PROJECT DATA
@@ -24,7 +25,7 @@ let project = {
 };
 
 /* =====================================================
-   HELPERS
+   HELPER
 ===================================================== */
 
 function $(id) {
@@ -45,8 +46,7 @@ function escapeHTML(value) {
 ===================================================== */
 
 function showPage(pageId) {
-
-  document.querySelectorAll(".page").forEach(function(page) {
+  document.querySelectorAll(".page").forEach(function (page) {
     page.classList.remove("active");
   });
 
@@ -56,14 +56,12 @@ function showPage(pageId) {
     page.classList.add("active");
   }
 
-  document.querySelectorAll(".nav-item").forEach(function(button) {
-
+  document.querySelectorAll(".nav-item").forEach(function (button) {
     if (button.dataset.page === pageId) {
       button.classList.add("active");
     } else {
       button.classList.remove("active");
     }
-
   });
 
   window.scrollTo(0, 0);
@@ -74,44 +72,33 @@ function showPage(pageId) {
 ===================================================== */
 
 function updateProjectUI() {
-
   const name = $("projectNameDisplay");
   const scenes = $("sceneCountDisplay");
   const characters = $("characterCountDisplay");
   const status = $("projectStatusDisplay");
 
   if (name) {
-    name.textContent =
-      project.name || "No project created";
+    name.textContent = project.name || "No project created";
   }
 
   if (scenes) {
-    scenes.textContent =
-      Array.isArray(project.scenes)
-        ? project.scenes.length
-        : 0;
+    scenes.textContent = project.scenes.length;
   }
 
   if (characters) {
-    characters.textContent =
-      Array.isArray(project.characters)
-        ? project.characters.length
-        : 0;
+    characters.textContent = project.characters.length;
   }
 
   if (status) {
-    status.textContent =
-      project.status || "Ready";
+    status.textContent = project.status || "Ready";
   }
 
   if ($("projectName")) {
-    $("projectName").value =
-      project.name || "";
+    $("projectName").value = project.name || "";
   }
 
   if ($("videoResolution")) {
-    $("videoResolution").value =
-      project.resolution || "720p";
+    $("videoResolution").value = project.resolution || "720p";
   }
 }
 
@@ -120,25 +107,21 @@ function updateProjectUI() {
 ===================================================== */
 
 function saveProject() {
-
   try {
-
     localStorage.setItem(
       "aiAnimatedStudioProject",
       JSON.stringify(project)
     );
 
-    project.status = "Saved";
+    if (project.status === "Ready") {
+      project.status = "Saved";
+    }
 
     updateProjectUI();
 
+    console.log("Project saved.");
   } catch (error) {
-
-    console.error(
-      "Save error:",
-      error
-    );
-
+    console.error("Save error:", error);
   }
 }
 
@@ -147,81 +130,68 @@ function saveProject() {
 ===================================================== */
 
 function loadProject() {
-
   try {
-
-    const saved =
-      localStorage.getItem(
-        "aiAnimatedStudioProject"
-      );
+    const saved = localStorage.getItem(
+      "aiAnimatedStudioProject"
+    );
 
     if (!saved) {
-
       updateProjectUI();
-
       return;
     }
 
-    const data =
-      JSON.parse(saved);
+    const data = JSON.parse(saved);
 
     project = {
+      name: data.name || "",
+      storyTitle: data.storyTitle || "",
+      storyText: data.storyText || "",
 
-      name:
-        data.name || "",
+      scenes: Array.isArray(data.scenes)
+        ? data.scenes
+        : [],
 
-      storyTitle:
-        data.storyTitle || "",
+      characters: Array.isArray(data.characters)
+        ? data.characters
+        : [],
 
-      storyText:
-        data.storyText || "",
+      backgrounds: Array.isArray(data.backgrounds)
+        ? data.backgrounds
+        : [],
 
-      scenes:
-        Array.isArray(data.scenes)
-          ? data.scenes
-          : [],
+      captions: Array.isArray(data.captions)
+        ? data.captions
+        : [],
 
-      characters:
-        Array.isArray(data.characters)
-          ? data.characters
-          : [],
+      resolution: data.resolution || "720p",
 
-      backgrounds:
-        Array.isArray(data.backgrounds)
-          ? data.backgrounds
-          : [],
-
-      captions:
-        Array.isArray(data.captions)
-          ? data.captions
-          : [],
-
-      resolution:
-        data.resolution || "720p",
-
-      status:
-        "Saved"
+      status: "Saved"
     };
 
     updateStoryUI();
-
     renderScenes();
-
     renderCharacters();
-
     renderCaptions();
-
     renderBackgrounds();
-
     updateProjectUI();
 
+    console.log("Project loaded.");
   } catch (error) {
+    console.error("Load error:", error);
 
-    console.error(
-      "Load error:",
-      error
-    );
+    project = {
+      name: "",
+      storyTitle: "",
+      storyText: "",
+      scenes: [],
+      characters: [],
+      backgrounds: [],
+      captions: [],
+      resolution: "720p",
+      status: "Ready"
+    };
 
+    updateProjectUI();
   }
 }
 
@@ -230,32 +200,28 @@ function loadProject() {
 ===================================================== */
 
 function openNewProject() {
-
-  const modal =
-    $("newProjectModal");
+  const modal = $("newProjectModal");
 
   if (!modal) {
+    console.warn("newProjectModal not found.");
     return;
   }
 
   modal.classList.remove("hidden");
 
-  const input =
-    $("newProjectName");
+  const input = $("newProjectName");
 
   if (input) {
+    input.value = project.name || "";
 
-    input.value =
-      project.name || "";
-
-    input.focus();
+    setTimeout(function () {
+      input.focus();
+    }, 100);
   }
 }
 
 function closeNewProject() {
-
-  const modal =
-    $("newProjectModal");
+  const modal = $("newProjectModal");
 
   if (modal) {
     modal.classList.add("hidden");
@@ -263,57 +229,37 @@ function closeNewProject() {
 }
 
 function createProject() {
-
-  const input =
-    $("newProjectName");
+  const input = $("newProjectName");
 
   if (!input) {
+    alert("Project name input not found.");
     return;
   }
 
-  const name =
-    input.value.trim();
+  const name = input.value.trim();
 
   if (!name) {
-
-    alert(
-      "Please enter a project name."
-    );
-
+    alert("Please enter a project name.");
     return;
   }
 
   project = {
-
     name: name,
-
     storyTitle: "",
-
     storyText: "",
-
     scenes: [],
-
     characters: [],
-
     backgrounds: [],
-
     captions: [],
-
     resolution: "720p",
-
     status: "Ready"
   };
 
   updateProjectUI();
-
   updateStoryUI();
-
   renderScenes();
-
   renderCharacters();
-
   renderCaptions();
-
   renderBackgrounds();
 
   saveProject();
@@ -321,6 +267,8 @@ function createProject() {
   closeNewProject();
 
   showPage("story");
+
+  alert("Project created successfully.");
 }
 
 /* =====================================================
@@ -328,51 +276,35 @@ function createProject() {
 ===================================================== */
 
 function updateStoryUI() {
-
   if ($("storyTitle")) {
-
-    $("storyTitle").value =
-      project.storyTitle || "";
+    $("storyTitle").value = project.storyTitle || "";
   }
 
   if ($("storyText")) {
-
-    $("storyText").value =
-      project.storyText || "";
+    $("storyText").value = project.storyText || "";
   }
 }
 
 function saveStory() {
-
   if (!project.name) {
-
-    alert(
-      "Please create a project first."
-    );
-
+    alert("Please create a project first.");
     openNewProject();
-
     return;
   }
 
-  project.storyTitle =
-    $("storyTitle")
-      ? $("storyTitle").value.trim()
-      : "";
+  project.storyTitle = $("storyTitle")
+    ? $("storyTitle").value.trim()
+    : "";
 
-  project.storyText =
-    $("storyText")
-      ? $("storyText").value.trim()
-      : "";
+  project.storyText = $("storyText")
+    ? $("storyText").value.trim()
+    : "";
 
-  project.status =
-    "Story saved";
+  project.status = "Story saved";
 
   saveProject();
 
-  alert(
-    "Story saved successfully."
-  );
+  alert("Story saved successfully.");
 }
 
 /* =====================================================
@@ -380,107 +312,70 @@ function saveStory() {
 ===================================================== */
 
 function createScenes() {
-
   if (!project.name) {
-
-    alert(
-      "Please create a project first."
-    );
-
+    alert("Please create a project first.");
     openNewProject();
-
     return;
   }
 
-  const story =
-    $("storyText")
-      ? $("storyText").value.trim()
-      : "";
+  const story = $("storyText")
+    ? $("storyText").value.trim()
+    : "";
 
   if (!story) {
-
-    alert(
-      "Please write a story first."
-    );
-
+    alert("Please write a story first.");
     return;
   }
 
-  project.storyTitle =
-    $("storyTitle")
-      ? $("storyTitle").value.trim()
-      : "";
+  project.storyTitle = $("storyTitle")
+    ? $("storyTitle").value.trim()
+    : "";
 
-  project.storyText =
-    story;
+  project.storyText = story;
 
-  let parts =
-    story
-      .split(/\n\s*\n/)
-      .map(function(text) {
+  let parts = story
+    .split(/\n\s*\n/)
+    .map(function (text) {
+      return text.trim();
+    })
+    .filter(Boolean);
+
+  if (parts.length <= 1) {
+    parts = story
+      .split(/(?<=[.!?])\s+/)
+      .map(function (text) {
         return text.trim();
       })
       .filter(Boolean);
-
-  if (parts.length <= 1) {
-
-    parts =
-      story
-        .split(/(?<=[.!?])\s+/)
-        .map(function(text) {
-          return text.trim();
-        })
-        .filter(Boolean);
   }
 
-  project.scenes =
-    parts.map(function(text, index) {
+  project.scenes = parts.map(function (text, index) {
+    return {
+      id: Date.now() + index,
+      number: index + 1,
+      title: "Scene " + (index + 1),
+      description: text,
+      duration: 5,
+      background: "",
+      characters: [],
+      dialogue: "",
+      camera: "Static",
+      animation: "None"
+    };
+  });
 
-      return {
-
-        id:
-          Date.now() + index,
-
-        number:
-          index + 1,
-
-        title:
-          "Scene " + (index + 1),
-
-        description:
-          text,
-
-        duration:
-          5,
-
-        background:
-          "",
-
-        characters:
-          [],
-
-        dialogue:
-          "",
-
-        camera:
-          "Static",
-
-        animation:
-          "None"
-      };
-
-    });
-
-  project.status =
-    "Scenes created";
+  project.status = "Scenes created";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 
   showPage("scenes");
+
+  alert(
+    project.scenes.length +
+      " scene(s) created successfully."
+  );
 }
 
 /* =====================================================
@@ -488,61 +383,31 @@ function createScenes() {
 ===================================================== */
 
 function addScene() {
-
   if (!project.name) {
-
-    alert(
-      "Please create a project first."
-    );
-
+    alert("Please create a project first.");
     openNewProject();
-
     return;
   }
 
-  const number =
-    project.scenes.length + 1;
+  const number = project.scenes.length + 1;
 
   project.scenes.push({
-
-    id:
-      Date.now(),
-
-    number:
-      number,
-
-    title:
-      "Scene " + number,
-
-    description:
-      "Describe this scene.",
-
-    duration:
-      5,
-
-    background:
-      "",
-
-    characters:
-      [],
-
-    dialogue:
-      "",
-
-    camera:
-      "Static",
-
-    animation:
-      "None"
+    id: Date.now(),
+    number: number,
+    title: "Scene " + number,
+    description: "Describe this scene.",
+    duration: 5,
+    background: "",
+    characters: [],
+    dialogue: "",
+    camera: "Static",
+    animation: "None"
   });
 
-  project.status =
-    "Scene added";
+  project.status = "Scene added";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -551,20 +416,13 @@ function addScene() {
 ===================================================== */
 
 function renderScenes() {
-
-  const list =
-    $("sceneList");
+  const list = $("sceneList");
 
   if (!list) {
     return;
   }
 
-  if (!Array.isArray(project.scenes)) {
-    project.scenes = [];
-  }
-
   if (project.scenes.length === 0) {
-
     list.innerHTML = `
       <div class="empty-state">
         <div>🎬</div>
@@ -578,345 +436,295 @@ function renderScenes() {
 
   list.innerHTML = "";
 
-  project.scenes.forEach(
-    function(scene, index) {
+  project.scenes.forEach(function (scene, index) {
+    const card = document.createElement("div");
 
-      const card =
-        document.createElement("div");
+    card.className = "scene-card";
 
-      card.className =
-        "scene-card";
+    card.innerHTML = `
+      <div class="scene-card-header">
 
-      card.innerHTML = `
+        <div>
+          <h3>🎬 Scene ${index + 1}</h3>
 
-        <div class="scene-card-header">
+          <span>
+            ${escapeHTML(
+              scene.title || "Untitled Scene"
+            )}
+          </span>
+        </div>
 
-          <div>
+        <button
+          type="button"
+          class="secondary-btn"
+          data-delete-scene="${index}">
+          🗑️ Delete
+        </button>
 
-            <h3>
-              🎬 Scene ${index + 1}
-            </h3>
+      </div>
 
-            <span>
-              ${escapeHTML(
-                scene.title ||
-                "Untitled Scene"
-              )}
-            </span>
+      <div class="scene-editor-grid">
 
-          </div>
+        <div class="scene-field">
 
-          <button
-            type="button"
-            class="secondary-btn"
-            data-delete-scene="${index}">
-            🗑️ Delete
-          </button>
+          <label>Scene Title</label>
+
+          <input
+            type="text"
+            data-scene-title="${index}"
+            value="${escapeHTML(scene.title || "")}"
+            placeholder="Scene title">
 
         </div>
 
-        <div class="scene-editor-grid">
+        <div class="scene-field">
 
-          <div class="scene-field">
+          <label>Duration (seconds)</label>
 
-            <label>
-              Scene Title
-            </label>
-
-            <input
-              type="text"
-              data-scene-title="${index}"
-              value="${escapeHTML(
-                scene.title || ""
-              )}"
-              placeholder="Scene title">
-
-          </div>
-
-          <div class="scene-field">
-
-            <label>
-              Duration (seconds)
-            </label>
-
-            <input
-              type="number"
-              min="1"
-              max="300"
-              data-scene-duration="${index}"
-              value="${scene.duration || 5}">
-
-          </div>
-
-          <div class="scene-field scene-full">
-
-            <label>
-              Scene Description
-            </label>
-
-            <textarea
-              rows="4"
-              data-scene-description="${index}"
-              placeholder="Describe what happens in this scene..."
-            >${escapeHTML(
-              scene.description || ""
-            )}</textarea>
-
-          </div>
-
-          <div class="scene-field">
-
-            <label>
-              🌄 Background
-            </label>
-
-            <input
-              type="text"
-              data-scene-background="${index}"
-              value="${escapeHTML(
-                scene.background || ""
-              )}"
-              placeholder="Village, forest, city...">
-
-          </div>
-
-          <div class="scene-field">
-
-            <label>
-              👤 Characters
-            </label>
-
-            <input
-              type="text"
-              data-scene-characters="${index}"
-              value="${escapeHTML(
-                Array.isArray(scene.characters)
-                  ? scene.characters.join(", ")
-                  : scene.characters || ""
-              )}"
-              placeholder="Character names">
-
-          </div>
-
-          <div class="scene-field scene-full">
-
-            <label>
-              💬 Dialogue
-            </label>
-
-            <textarea
-              rows="3"
-              data-scene-dialogue="${index}"
-              placeholder="Character dialogue..."
-            >${escapeHTML(
-              scene.dialogue || ""
-            )}</textarea>
-
-          </div>
-
-          <div class="scene-field">
-
-            <label>
-              📷 Camera
-            </label>
-
-            <select
-              data-scene-camera="${index}">
-
-              <option
-                value="Static"
-                ${scene.camera === "Static"
-                  ? "selected"
-                  : ""}>
-                Static
-              </option>
-
-              <option
-                value="Zoom In"
-                ${scene.camera === "Zoom In"
-                  ? "selected"
-                  : ""}>
-                Zoom In
-              </option>
-
-              <option
-                value="Zoom Out"
-                ${scene.camera === "Zoom Out"
-                  ? "selected"
-                  : ""}>
-                Zoom Out
-              </option>
-
-              <option
-                value="Pan Left"
-                ${scene.camera === "Pan Left"
-                  ? "selected"
-                  : ""}>
-                Pan Left
-              </option>
-
-              <option
-                value="Pan Right"
-                ${scene.camera === "Pan Right"
-                  ? "selected"
-                  : ""}>
-                Pan Right
-              </option>
-
-              <option
-                value="Close Up"
-                ${scene.camera === "Close Up"
-                  ? "selected"
-                  : ""}>
-                Close Up
-              </option>
-
-            </select>
-
-          </div>
-
-          <div class="scene-field">
-
-            <label>
-              ✨ Animation
-            </label>
-
-            <select
-              data-scene-animation="${index}">
-
-              <option
-                value="None"
-                ${scene.animation === "None"
-                  ? "selected"
-                  : ""}>
-                None
-              </option>
-
-              <option
-                value="Idle"
-                ${scene.animation === "Idle"
-                  ? "selected"
-                  : ""}>
-                Idle
-              </option>
-
-              <option
-                value="Walk"
-                ${scene.animation === "Walk"
-                  ? "selected"
-                  : ""}>
-                Walk
-              </option>
-
-              <option
-                value="Run"
-                ${scene.animation === "Run"
-                  ? "selected"
-                  : ""}>
-                Run
-              </option>
-
-              <option
-                value="Talk"
-                ${scene.animation === "Talk"
-                  ? "selected"
-                  : ""}>
-                Talk
-              </option>
-
-              <option
-                value="Action"
-                ${scene.animation === "Action"
-                  ? "selected"
-                  : ""}>
-                Action
-              </option>
-
-            </select>
-
-          </div>
+          <input
+            type="number"
+            min="1"
+            max="300"
+            data-scene-duration="${index}"
+            value="${scene.duration || 5}">
 
         </div>
 
-        <div class="button-row">
+        <div class="scene-field scene-full">
 
-          <button
-            type="button"
-            class="primary-btn"
-            data-save-scene="${index}">
-            💾 Save Scene
-          </button>
+          <label>Scene Description</label>
+
+          <textarea
+            rows="4"
+            data-scene-description="${index}"
+            placeholder="Describe what happens in this scene..."
+          >${escapeHTML(
+            scene.description || ""
+          )}</textarea>
 
         </div>
-      `;
 
-      list.appendChild(card);
-    }
-  );
+        <div class="scene-field">
 
-  /* SAVE SCENE */
+          <label>🌄 Background</label>
+
+          <input
+            type="text"
+            data-scene-background="${index}"
+            value="${escapeHTML(
+              scene.background || ""
+            )}"
+            placeholder="Village, forest, city...">
+
+        </div>
+
+        <div class="scene-field">
+
+          <label>👤 Characters</label>
+
+          <input
+            type="text"
+            data-scene-characters="${index}"
+            value="${escapeHTML(
+              Array.isArray(scene.characters)
+                ? scene.characters.join(", ")
+                : scene.characters || ""
+            )}"
+            placeholder="Character names">
+
+        </div>
+
+        <div class="scene-field scene-full">
+
+          <label>💬 Dialogue</label>
+
+          <textarea
+            rows="3"
+            data-scene-dialogue="${index}"
+            placeholder="Character dialogue..."
+          >${escapeHTML(
+            scene.dialogue || ""
+          )}</textarea>
+
+        </div>
+
+        <div class="scene-field">
+
+          <label>📷 Camera</label>
+
+          <select data-scene-camera="${index}">
+
+            <option value="Static"
+              ${
+                scene.camera === "Static"
+                  ? "selected"
+                  : ""
+              }>
+              Static
+            </option>
+
+            <option value="Zoom In"
+              ${
+                scene.camera === "Zoom In"
+                  ? "selected"
+                  : ""
+              }>
+              Zoom In
+            </option>
+
+            <option value="Zoom Out"
+              ${
+                scene.camera === "Zoom Out"
+                  ? "selected"
+                  : ""
+              }>
+              Zoom Out
+            </option>
+
+            <option value="Pan Left"
+              ${
+                scene.camera === "Pan Left"
+                  ? "selected"
+                  : ""
+              }>
+              Pan Left
+            </option>
+
+            <option value="Pan Right"
+              ${
+                scene.camera === "Pan Right"
+                  ? "selected"
+                  : ""
+              }>
+              Pan Right
+            </option>
+
+            <option value="Close Up"
+              ${
+                scene.camera === "Close Up"
+                  ? "selected"
+                  : ""
+              }>
+              Close Up
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="scene-field">
+
+          <label>✨ Animation</label>
+
+          <select data-scene-animation="${index}">
+
+            <option value="None"
+              ${
+                scene.animation === "None"
+                  ? "selected"
+                  : ""
+              }>
+              None
+            </option>
+
+            <option value="Idle"
+              ${
+                scene.animation === "Idle"
+                  ? "selected"
+                  : ""
+              }>
+              Idle
+            </option>
+
+            <option value="Walk"
+              ${
+                scene.animation === "Walk"
+                  ? "selected"
+                  : ""
+              }>
+              Walk
+            </option>
+
+            <option value="Run"
+              ${
+                scene.animation === "Run"
+                  ? "selected"
+                  : ""
+              }>
+              Run
+            </option>
+
+            <option value="Talk"
+              ${
+                scene.animation === "Talk"
+                  ? "selected"
+                  : ""
+              }>
+              Talk
+            </option>
+
+            <option value="Action"
+              ${
+                scene.animation === "Action"
+                  ? "selected"
+                  : ""
+              }>
+              Action
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="button-row">
+
+        <button
+          type="button"
+          class="primary-btn"
+          data-save-scene="${index}">
+          💾 Save Scene
+        </button>
+
+      </div>
+    `;
+
+    list.appendChild(card);
+  });
 
   list.querySelectorAll(
     "[data-save-scene]"
-  ).forEach(function(button) {
-
-    button.addEventListener(
-      "click",
-      function() {
-
-        saveScene(
-          Number(
-            button.dataset.saveScene
-          )
-        );
-
-      }
-    );
-
+  ).forEach(function (button) {
+    button.addEventListener("click", function () {
+      saveScene(
+        Number(button.dataset.saveScene)
+      );
+    });
   });
-
-  /* DELETE SCENE */
 
   list.querySelectorAll(
     "[data-delete-scene]"
-  ).forEach(function(button) {
+  ).forEach(function (button) {
+    button.addEventListener("click", function () {
+      const index = Number(
+        button.dataset.deleteScene
+      );
 
-    button.addEventListener(
-      "click",
-      function() {
-
-        const index =
-          Number(
-            button.dataset.deleteScene
-          );
-
-        if (
-          !confirm(
-            "Delete this scene?"
-          )
-        ) {
-          return;
-        }
-
-        project.scenes.splice(
-          index,
-          1
-        );
-
-        renumberScenes();
-
-        project.status =
-          "Scene deleted";
-
-        renderScenes();
-
-        updateProjectUI();
-
-        saveProject();
-
+      if (!confirm("Delete this scene?")) {
+        return;
       }
-    );
 
+      project.scenes.splice(index, 1);
+
+      renumberScenes();
+
+      project.status = "Scene deleted";
+
+      renderScenes();
+      updateProjectUI();
+      saveProject();
+    });
   });
 }
 
@@ -925,115 +733,97 @@ function renderScenes() {
 ===================================================== */
 
 function saveScene(index) {
-
-  const scene =
-    project.scenes[index];
+  const scene = project.scenes[index];
 
   if (!scene) {
     return;
   }
 
-  const titleInput =
-    document.querySelector(
-      `[data-scene-title="${index}"]`
+  const titleInput = document.querySelector(
+    `[data-scene-title="${index}"]`
+  );
+
+  const descriptionInput = document.querySelector(
+    `[data-scene-description="${index}"]`
+  );
+
+  const durationInput = document.querySelector(
+    `[data-scene-duration="${index}"]`
+  );
+
+  const backgroundInput = document.querySelector(
+    `[data-scene-background="${index}"]`
+  );
+
+  const charactersInput = document.querySelector(
+    `[data-scene-characters="${index}"]`
+  );
+
+  const dialogueInput = document.querySelector(
+    `[data-scene-dialogue="${index}"]`
+  );
+
+  const cameraInput = document.querySelector(
+    `[data-scene-camera="${index}"]`
+  );
+
+  const animationInput = document.querySelector(
+    `[data-scene-animation="${index}"]`
+  );
+
+  if (titleInput) {
+    scene.title = titleInput.value.trim();
+  }
+
+  if (descriptionInput) {
+    scene.description =
+      descriptionInput.value.trim();
+  }
+
+  if (durationInput) {
+    scene.duration = Math.max(
+      1,
+      Number(durationInput.value) || 5
     );
+  }
 
-  const descriptionInput =
-    document.querySelector(
-      `[data-scene-description="${index}"]`
-    );
+  if (backgroundInput) {
+    scene.background =
+      backgroundInput.value.trim();
+  }
 
-  const durationInput =
-    document.querySelector(
-      `[data-scene-duration="${index}"]`
-    );
+  if (charactersInput) {
+    scene.characters = charactersInput.value
+      .split(",")
+      .map(function (name) {
+        return name.trim();
+      })
+      .filter(Boolean);
+  }
 
-  const backgroundInput =
-    document.querySelector(
-      `[data-scene-background="${index}"]`
-    );
+  if (dialogueInput) {
+    scene.dialogue =
+      dialogueInput.value.trim();
+  }
 
-  const charactersInput =
-    document.querySelector(
-      `[data-scene-characters="${index}"]`
-    );
+  if (cameraInput) {
+    scene.camera = cameraInput.value;
+  }
 
-  const dialogueInput =
-    document.querySelector(
-      `[data-scene-dialogue="${index}"]`
-    );
+  if (animationInput) {
+    scene.animation = animationInput.value;
+  }
 
-  const cameraInput =
-    document.querySelector(
-      `[data-scene-camera="${index}"]`
-    );
-
-  const animationInput =
-    document.querySelector(
-      `[data-scene-animation="${index}"]`
-    );
-
-  scene.title =
-    titleInput
-      ? titleInput.value.trim()
-      : scene.title;
-
-  scene.description =
-    descriptionInput
-      ? descriptionInput.value.trim()
-      : scene.description;
-
-  scene.duration =
-    durationInput
-      ? Math.max(
-          1,
-          Number(durationInput.value) || 5
-        )
-      : 5;
-
-  scene.background =
-    backgroundInput
-      ? backgroundInput.value.trim()
-      : "";
-
-  scene.characters =
-    charactersInput
-      ? charactersInput.value
-          .split(",")
-          .map(function(name) {
-            return name.trim();
-          })
-          .filter(Boolean)
-      : [];
-
-  scene.dialogue =
-    dialogueInput
-      ? dialogueInput.value.trim()
-      : "";
-
-  scene.camera =
-    cameraInput
-      ? cameraInput.value
-      : "Static";
-
-  scene.animation =
-    animationInput
-      ? animationInput.value
-      : "None";
-
-  project.status =
-    "Scene saved";
+  project.status = "Scene saved";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 
   alert(
     "Scene " +
-    (index + 1) +
-    " saved successfully."
+      (index + 1) +
+      " saved successfully."
   );
 }
 
@@ -1042,29 +832,25 @@ function saveScene(index) {
 ===================================================== */
 
 function editScene(index) {
-
-  const scene =
-    project.scenes[index];
+  const scene = project.scenes[index];
 
   if (!scene) {
     return;
   }
 
-  const title =
-    prompt(
-      "Scene title:",
-      scene.title
-    );
+  const title = prompt(
+    "Scene title:",
+    scene.title
+  );
 
   if (title === null) {
     return;
   }
 
-  const description =
-    prompt(
-      "Scene description:",
-      scene.description
-    );
+  const description = prompt(
+    "Scene description:",
+    scene.description
+  );
 
   if (description === null) {
     return;
@@ -1077,13 +863,10 @@ function editScene(index) {
   scene.description =
     description.trim();
 
-  project.status =
-    "Scene updated";
+  project.status = "Scene updated";
 
   renderScenes();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1092,13 +875,9 @@ function editScene(index) {
 ===================================================== */
 
 function renumberScenes() {
-
   project.scenes.forEach(
-    function(scene, index) {
-
-      scene.number =
-        index + 1;
-
+    function (scene, index) {
+      scene.number = index + 1;
     }
   );
 }
@@ -1108,53 +887,31 @@ function renumberScenes() {
 ===================================================== */
 
 function addCharacter() {
-
   if (!project.name) {
-
-    alert(
-      "Please create a project first."
-    );
-
+    alert("Please create a project first.");
     openNewProject();
-
     return;
   }
 
-  const name =
-    prompt(
-      "Character name:"
-    );
+  const name = prompt(
+    "Character name:"
+  );
 
   if (!name || !name.trim()) {
     return;
   }
 
-  if (!Array.isArray(project.characters)) {
-    project.characters = [];
-  }
-
   project.characters.push({
-
-    id:
-      Date.now(),
-
-    name:
-      name.trim(),
-
-    description:
-      "",
-
-    emoji:
-      "👤"
+    id: Date.now(),
+    name: name.trim(),
+    description: "",
+    emoji: "👤"
   });
 
-  project.status =
-    "Character added";
+  project.status = "Character added";
 
   renderCharacters();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1163,20 +920,17 @@ function addCharacter() {
 ===================================================== */
 
 function renderCharacters() {
-
-  const list =
-    $("characterList");
+  const list = $("characterList");
 
   if (!list) {
     return;
   }
 
-  if (!Array.isArray(project.characters)) {
+  if (!project.characters) {
     project.characters = [];
   }
 
   if (project.characters.length === 0) {
-
     list.innerHTML = `
       <div class="empty-state">
         <div>👤</div>
@@ -1191,8 +945,7 @@ function renderCharacters() {
   list.innerHTML = "";
 
   project.characters.forEach(
-    function(character, index) {
-
+    function (character, index) {
       const card =
         document.createElement("div");
 
@@ -1200,7 +953,6 @@ function renderCharacters() {
         "character-card";
 
       card.innerHTML = `
-
         <div class="character-avatar">
           ${escapeHTML(
             character.emoji || "👤"
@@ -1243,41 +995,30 @@ function renderCharacters() {
     }
   );
 
-  /* EDIT CHARACTER */
-
   list.querySelectorAll(
     "[data-edit-character]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editCharacter(
           Number(
             button.dataset.editCharacter
           )
         );
-
       }
     );
-
   });
-
-  /* DELETE CHARACTER */
 
   list.querySelectorAll(
     "[data-delete-character]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
-        const index =
-          Number(
-            button.dataset.deleteCharacter
-          );
+      function () {
+        const index = Number(
+          button.dataset.deleteCharacter
+        );
 
         if (
           !confirm(
@@ -1296,14 +1037,10 @@ function renderCharacters() {
           "Character deleted";
 
         renderCharacters();
-
         updateProjectUI();
-
         saveProject();
-
       }
     );
-
   });
 }
 
@@ -1312,7 +1049,6 @@ function renderCharacters() {
 ===================================================== */
 
 function editCharacter(index) {
-
   const character =
     project.characters[index];
 
@@ -1320,21 +1056,19 @@ function editCharacter(index) {
     return;
   }
 
-  const name =
-    prompt(
-      "Character name:",
-      character.name
-    );
+  const name = prompt(
+    "Character name:",
+    character.name
+  );
 
   if (name === null) {
     return;
   }
 
-  const description =
-    prompt(
-      "Character description:",
-      character.description
-    );
+  const description = prompt(
+    "Character description:",
+    character.description || ""
+  );
 
   if (description === null) {
     return;
@@ -1351,9 +1085,7 @@ function editCharacter(index) {
     "Character updated";
 
   renderCharacters();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1362,53 +1094,33 @@ function editCharacter(index) {
 ===================================================== */
 
 function addCaption() {
-
   if (!project.name) {
-
-    alert(
-      "Please create a project first."
-    );
-
+    alert("Please create a project first.");
     openNewProject();
-
     return;
   }
 
-  const input =
-    $("captionText");
+  const input = $("captionText");
 
   if (!input) {
-
-    alert(
-      "Caption input not found."
-    );
-
+    alert("Caption input not found.");
     return;
   }
 
-  const text =
-    input.value.trim();
+  const text = input.value.trim();
 
   if (!text) {
-
-    alert(
-      "Enter caption text first."
-    );
-
+    alert("Enter caption text first.");
     return;
   }
 
-  if (!Array.isArray(project.captions)) {
+  if (!project.captions) {
     project.captions = [];
   }
 
   project.captions.push({
-
-    id:
-      Date.now(),
-
-    text:
-      text
+    id: Date.now(),
+    text: text
   });
 
   input.value = "";
@@ -1417,14 +1129,10 @@ function addCaption() {
     "Caption added";
 
   renderCaptions();
-
   updateProjectUI();
-
   saveProject();
 
-  alert(
-    "Caption added."
-  );
+  alert("Caption added.");
 }
 
 /* =====================================================
@@ -1432,20 +1140,17 @@ function addCaption() {
 ===================================================== */
 
 function renderCaptions() {
-
-  const list =
-    $("captionList");
+  const list = $("captionList");
 
   if (!list) {
     return;
   }
 
-  if (!Array.isArray(project.captions)) {
+  if (!project.captions) {
     project.captions = [];
   }
 
   if (project.captions.length === 0) {
-
     list.innerHTML = `
       <div class="empty-state">
         <div>💬</div>
@@ -1460,8 +1165,7 @@ function renderCaptions() {
   list.innerHTML = "";
 
   project.captions.forEach(
-    function(caption, index) {
-
+    function (caption, index) {
       const card =
         document.createElement("div");
 
@@ -1469,7 +1173,6 @@ function renderCaptions() {
         "character-card";
 
       card.innerHTML = `
-
         <div class="character-avatar">
           💬
         </div>
@@ -1507,41 +1210,30 @@ function renderCaptions() {
     }
   );
 
-  /* EDIT CAPTION */
-
   list.querySelectorAll(
     "[data-edit-caption]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editCaption(
           Number(
             button.dataset.editCaption
           )
         );
-
       }
     );
-
   });
-
-  /* DELETE CAPTION */
 
   list.querySelectorAll(
     "[data-delete-caption]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
-        const index =
-          Number(
-            button.dataset.deleteCaption
-          );
+      function () {
+        const index = Number(
+          button.dataset.deleteCaption
+        );
 
         if (
           !confirm(
@@ -1560,14 +1252,10 @@ function renderCaptions() {
           "Caption deleted";
 
         renderCaptions();
-
         updateProjectUI();
-
         saveProject();
-
       }
     );
-
   });
 }
 
@@ -1576,7 +1264,6 @@ function renderCaptions() {
 ===================================================== */
 
 function editCaption(index) {
-
   if (!project.captions) {
     return;
   }
@@ -1588,18 +1275,16 @@ function editCaption(index) {
     return;
   }
 
-  const text =
-    prompt(
-      "Caption text:",
-      caption.text
-    );
+  const text = prompt(
+    "Caption text:",
+    caption.text
+  );
 
   if (text === null) {
     return;
   }
 
   if (!text.trim()) {
-
     alert(
       "Caption cannot be empty."
     );
@@ -1614,9 +1299,7 @@ function editCaption(index) {
     "Caption updated";
 
   renderCaptions();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1625,58 +1308,42 @@ function editCaption(index) {
 ===================================================== */
 
 function addBackground() {
-
   if (!project.name) {
-
     alert(
       "Please create a project first."
     );
 
     openNewProject();
-
     return;
   }
 
-  const name =
-    prompt(
-      "Background name:"
-    );
+  const name = prompt(
+    "Background name:"
+  );
 
   if (!name || !name.trim()) {
     return;
   }
 
-  if (!Array.isArray(project.backgrounds)) {
+  if (!project.backgrounds) {
     project.backgrounds = [];
   }
 
   project.backgrounds.push({
-
-    id:
-      Date.now(),
-
-    name:
-      name.trim(),
-
-    description:
-      "",
-
-    emoji:
-      "🌄"
+    id: Date.now(),
+    name: name.trim(),
+    description: "",
+    emoji: "🌄"
   });
 
   project.status =
     "Background added";
 
   renderBackgrounds();
-
   updateProjectUI();
-
   saveProject();
 
-  alert(
-    "Background added."
-  );
+  alert("Background added.");
 }
 
 /* =====================================================
@@ -1684,25 +1351,30 @@ function addBackground() {
 ===================================================== */
 
 function renderBackgrounds() {
-
-  const list =
-    $("backgroundList");
+  const list = $("backgroundList");
 
   if (!list) {
     return;
   }
 
-  if (!Array.isArray(project.backgrounds)) {
+  if (!project.backgrounds) {
     project.backgrounds = [];
   }
 
   if (project.backgrounds.length === 0) {
-
     list.innerHTML = `
       <div class="empty-state">
+
         <div>🌄</div>
-        <h3>No backgrounds yet</h3>
-        <p>Add your first background.</p>
+
+        <h3>
+          No backgrounds yet
+        </h3>
+
+        <p>
+          Add your first background.
+        </p>
+
       </div>
     `;
 
@@ -1712,8 +1384,7 @@ function renderBackgrounds() {
   list.innerHTML = "";
 
   project.backgrounds.forEach(
-    function(background, index) {
-
+    function (background, index) {
       const card =
         document.createElement("div");
 
@@ -1721,7 +1392,6 @@ function renderBackgrounds() {
         "character-card";
 
       card.innerHTML = `
-
         <div class="character-avatar">
           ${escapeHTML(
             background.emoji || "🌄"
@@ -1761,49 +1431,33 @@ function renderBackgrounds() {
       `;
 
       list.appendChild(card);
-
     }
   );
 
-  /* =================================================
-     EDIT BACKGROUND BUTTON
-  ================================================= */
-
   list.querySelectorAll(
     "[data-edit-background]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
+      function () {
         editBackground(
           Number(
             button.dataset.editBackground
           )
         );
-
       }
     );
-
   });
-
-  /* =================================================
-     DELETE BACKGROUND BUTTON
-  ================================================= */
 
   list.querySelectorAll(
     "[data-delete-background]"
-  ).forEach(function(button) {
-
+  ).forEach(function (button) {
     button.addEventListener(
       "click",
-      function() {
-
-        const index =
-          Number(
-            button.dataset.deleteBackground
-          );
+      function () {
+        const index = Number(
+          button.dataset.deleteBackground
+        );
 
         if (
           !confirm(
@@ -1822,14 +1476,10 @@ function renderBackgrounds() {
           "Background deleted";
 
         renderBackgrounds();
-
         updateProjectUI();
-
         saveProject();
-
       }
     );
-
   });
 }
 
@@ -1838,7 +1488,6 @@ function renderBackgrounds() {
 ===================================================== */
 
 function editBackground(index) {
-
   if (!project.backgrounds) {
     return;
   }
@@ -1850,21 +1499,19 @@ function editBackground(index) {
     return;
   }
 
-  const name =
-    prompt(
-      "Background name:",
-      background.name
-    );
+  const name = prompt(
+    "Background name:",
+    background.name
+  );
 
   if (name === null) {
     return;
   }
 
-  const description =
-    prompt(
-      "Background description:",
-      background.description || ""
-    );
+  const description = prompt(
+    "Background description:",
+    background.description || ""
+  );
 
   if (description === null) {
     return;
@@ -1881,9 +1528,7 @@ function editBackground(index) {
     "Background updated";
 
   renderBackgrounds();
-
   updateProjectUI();
-
   saveProject();
 }
 
@@ -1892,22 +1537,16 @@ function editBackground(index) {
 ===================================================== */
 
 function saveSettings() {
-
   if ($("projectName")) {
-
     const name =
-      $("projectName")
-        .value
-        .trim();
+      $("projectName").value.trim();
 
     if (name) {
-      project.name =
-        name;
+      project.name = name;
     }
   }
 
   if ($("videoResolution")) {
-
     project.resolution =
       $("videoResolution").value;
   }
@@ -1916,11 +1555,59 @@ function saveSettings() {
     "Settings saved";
 
   updateProjectUI();
-
   saveProject();
 
+  alert("Settings saved.");
+}
+
+/* =====================================================
+   VOICE
+===================================================== */
+
+function generateVoice() {
+  if (!project.name) {
+    alert(
+      "Please create a project first."
+    );
+
+    openNewProject();
+    return;
+  }
+
+  const text = $("voiceText")
+    ? $("voiceText").value.trim()
+    : "";
+
+  if (!text) {
+    alert(
+      "Enter narration text first."
+    );
+
+    return;
+  }
+
+  project.status =
+    "Voice generation pending";
+
+  updateProjectUI();
+
   alert(
-    "Settings saved."
+    "Voice generation engine will be added in the next stage."
+  );
+}
+
+function recordVoice() {
+  if (!project.name) {
+    alert(
+      "Please create a project first."
+    );
+
+    openNewProject();
+    return;
+  }
+
+  alert(
+    "Voice recording module will be added in the next stage."
   );
 }
 
@@ -1929,7 +1616,6 @@ function saveSettings() {
 ===================================================== */
 
 function exportVideo() {
-
   const status =
     $("exportStatus");
 
@@ -1939,7 +1625,6 @@ function exportVideo() {
   updateProjectUI();
 
   if (status) {
-
     status.textContent =
       "Video export engine will be added in the next stage.";
   }
@@ -1951,25 +1636,25 @@ function exportVideo() {
 
 document.addEventListener(
   "DOMContentLoaded",
-  function() {
+  function () {
 
-    /* =================================================
+    /* =========================================
        LOAD PROJECT
-    ================================================= */
+    ========================================= */
 
     loadProject();
 
-    /* =================================================
-       SIDEBAR
-    ================================================= */
+    /* =========================================
+       SIDEBAR NAVIGATION
+    ========================================= */
 
     document.querySelectorAll(
       ".nav-item"
-    ).forEach(function(button) {
+    ).forEach(function (button) {
 
       button.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           event.preventDefault();
 
@@ -1985,17 +1670,17 @@ document.addEventListener(
 
     });
 
-    /* =================================================
+    /* =========================================
        DASHBOARD BUTTONS
-    ================================================= */
+    ========================================= */
 
     document.querySelectorAll(
       ".dashboard-action"
-    ).forEach(function(button) {
+    ).forEach(function (button) {
 
       button.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           event.preventDefault();
 
@@ -2011,191 +1696,198 @@ document.addEventListener(
 
     });
 
-    /* =================================================
+    /* =========================================
        NEW PROJECT
-    ================================================= */
+    ========================================= */
 
     if ($("newProjectBtn")) {
-
       $("newProjectBtn").onclick =
         openNewProject;
     }
 
     if ($("dashboardNewProject")) {
-
       $("dashboardNewProject").onclick =
         openNewProject;
     }
 
-    /* =================================================
+    /* =========================================
        CLOSE MODAL
-    ================================================= */
+    ========================================= */
 
     if ($("closeModalBtn")) {
-
       $("closeModalBtn").onclick =
         closeNewProject;
     }
 
-    /* =================================================
+    /* =========================================
        CREATE PROJECT
-    ================================================= */
+    ========================================= */
 
     if ($("createProjectBtn")) {
-
       $("createProjectBtn").onclick =
         createProject;
     }
 
-    /* =================================================
+    /* =========================================
        STORY
-    ================================================= */
+    ========================================= */
 
     if ($("saveStoryBtn")) {
-
       $("saveStoryBtn").onclick =
         saveStory;
     }
 
     if ($("storyToScenesBtn")) {
-
       $("storyToScenesBtn").onclick =
         createScenes;
     }
 
-    /* =================================================
+    /* =========================================
        SCENES
-    ================================================= */
+    ========================================= */
 
     if ($("addSceneBtn")) {
-
       $("addSceneBtn").onclick =
         addScene;
     }
 
-    /* =================================================
+    /* =========================================
        CHARACTERS
-    ================================================= */
+    ========================================= */
 
     if ($("addCharacterBtn")) {
-
       $("addCharacterBtn").onclick =
         addCharacter;
     }
 
-    /* =================================================
-       CAPTIONS
-    ================================================= */
-
-    if ($("addCaptionBtn")) {
-
-      $("addCaptionBtn").onclick =
-        addCaption;
-    }
-
-    /* =================================================
+    /* =========================================
        BACKGROUNDS
-    ================================================= */
+    ========================================= */
 
     if ($("addBackgroundBtn")) {
-
       $("addBackgroundBtn").onclick =
         addBackground;
     }
 
-    /* =================================================
+    /* =========================================
+       CAPTIONS
+    ========================================= */
+
+    if ($("addCaptionBtn")) {
+      $("addCaptionBtn").onclick =
+        addCaption;
+    }
+
+    /* =========================================
+       VOICE
+    ========================================= */
+
+    if ($("generateVoiceBtn")) {
+      $("generateVoiceBtn").onclick =
+        generateVoice;
+    }
+
+    if ($("recordVoiceBtn")) {
+      $("recordVoiceBtn").onclick =
+        recordVoice;
+    }
+
+    /* =========================================
        SETTINGS
-    ================================================= */
+    ========================================= */
 
     if ($("saveSettingsBtn")) {
-
       $("saveSettingsBtn").onclick =
         saveSettings;
     }
 
-    /* =================================================
+    /* =========================================
        EXPORT
-    ================================================= */
+    ========================================= */
 
     if ($("exportVideoBtn")) {
-
       $("exportVideoBtn").onclick =
         exportVideo;
     }
 
-    /* =================================================
-       SAVE PROJECT BUTTON
-    ================================================= */
+    /* =========================================
+       SAVE PROJECT
+    ========================================= */
 
     if ($("saveProjectBtn")) {
-
       $("saveProjectBtn").onclick =
         saveProject;
     }
 
-    /* =================================================
+    /* =========================================
        MODAL BACKGROUND CLICK
-    ================================================= */
+    ========================================= */
 
     const modal =
       $("newProjectModal");
 
     if (modal) {
-
       modal.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
           if (
             event.target === modal
           ) {
-
             closeNewProject();
-
           }
 
         }
       );
-
     }
 
-    /* =================================================
-       KEYBOARD SAVE
-    ================================================= */
+    /* =========================================
+       ESCAPE CLOSE MODAL
+    ========================================= */
 
     document.addEventListener(
       "keydown",
-      function(event) {
+      function (event) {
+
+        if (event.key === "Escape") {
+          closeNewProject();
+        }
+
+      }
+    );
+
+    /* =========================================
+       KEYBOARD SAVE
+    ========================================= */
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
 
         if (
           (event.ctrlKey ||
-           event.metaKey) &&
+            event.metaKey) &&
           event.key.toLowerCase() === "s"
         ) {
 
           event.preventDefault();
 
           saveProject();
-
         }
 
       }
     );
 
-    /* =================================================
+    /* =========================================
        FINAL UI REFRESH
-    ================================================= */
+    ========================================= */
 
     updateProjectUI();
 
     renderScenes();
-
     renderCharacters();
-
     renderCaptions();
-
     renderBackgrounds();
-
     updateStoryUI();
 
     showPage("dashboard");
@@ -2203,6 +1895,6 @@ document.addEventListener(
     console.log(
       "AI Animated Studio ready."
     );
-
   }
 );
+
