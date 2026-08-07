@@ -748,6 +748,112 @@
             <p>
               Add background music and sound effects.
             </p>
+            <div class="module-card">
+
+  <h3>🎵 Background Music</h3>
+
+  <label for="musicFile">
+    Select Music
+  </label>
+
+  <input
+    id="musicFile"
+    type="file"
+    accept="audio/*"
+  >
+
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="playMusicBtn">
+      ▶️ Play Music
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="stopMusicBtn">
+      ⏹️ Stop Music
+    </button>
+
+  </div>
+
+  <label for="musicVolume">
+    🔊 Music Volume
+  </label>
+
+  <input
+    id="musicVolume"
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    value="0.5"
+  >
+
+  <div id="musicVolumeValue">
+    50%
+  </div>
+
+  <audio
+    id="musicAudio"
+    controls
+    style="width:100%; margin-top:15px;">
+  </audio>
+
+  <div
+    id="musicStatus"
+    class="status-message">
+  </div>
+
+
+  <hr>
+
+
+  <h3>🔊 Sound Effects</h3>
+
+  <label for="sfxFile">
+    Select Sound Effect
+  </label>
+
+  <input
+    id="sfxFile"
+    type="file"
+    accept="audio/*"
+  >
+
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="playSfxBtn">
+      ▶️ Play SFX
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="stopSfxBtn">
+      ⏹️ Stop SFX
+    </button>
+
+  </div>
+
+  <audio
+    id="sfxAudio"
+    controls
+    style="width:100%; margin-top:15px;">
+  </audio>
+
+  <div
+    id="sfxStatus"
+    class="status-message">
+  </div>
+
+</div>
           </div>
 
         </div>
