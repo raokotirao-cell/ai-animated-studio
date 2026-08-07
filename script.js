@@ -12,6 +12,7 @@ let project = {
   storyText: "",
   scenes: [],
   characters: [],
+   backgrounds: [],
   captions: [],
   resolution: "720p",
   status: "Ready"
@@ -224,6 +225,10 @@ function loadProject() {
         Array.isArray(data.characters)
           ? data.characters
           : [],
+       backgrounds:
+  Array.isArray(data.backgrounds)
+    ? data.backgrounds
+    : [],
 
       captions:
         Array.isArray(data.captions)
@@ -323,24 +328,26 @@ function createProject() {
 
   }
 
+project = {
 
-  project = {
+  name: name,
 
-    name: name,
+  storyTitle: "",
 
-    storyTitle: "",
+  storyText: "",
 
-    storyText: "",
+  scenes: [],
 
-    scenes: [],
+  characters: [],
 
-    characters: [],
+  backgrounds: [],
 
-    captions: [],
+  captions: [],
 
-    resolution: "720p",
+  resolution: "720p",
 
-    status: "Ready"
+  status: "Ready"
+};
 
   };
 
