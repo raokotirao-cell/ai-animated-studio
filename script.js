@@ -349,7 +349,7 @@ project = {
   status: "Ready"
 };
 
-  };
+  
 
 
   updateProjectUI();
