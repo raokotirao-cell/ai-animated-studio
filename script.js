@@ -125,21 +125,33 @@ function updateProjectUI() {
 ===================================================== */
 
 function saveProject() {
+
     try {
+
+        // Update status BEFORE saving
+        if (project.status === "Ready") {
+            project.status = "Saved";
+        }
+
+        // Make sure captions exist
+        if (!Array.isArray(project.captions)) {
+            project.captions = [];
+        }
+
+        // Save complete project
         localStorage.setItem(
             "aiAnimatedStudioProject",
             JSON.stringify(project)
         );
 
-        if (project.status === "Ready") {
-            project.status = "Saved";
-        }
-
         updateProjectUI();
 
         console.log("Project saved successfully.");
+
     } catch (error) {
+
         console.error("Save error:", error);
+
         alert("Unable to save project.");
     }
 }
