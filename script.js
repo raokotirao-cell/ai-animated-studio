@@ -3101,6 +3101,42 @@ function updateAnimationPreview() {
             canvas.width,
             canvas.height
         );
+       const progress =
+    duration > 0
+        ? Math.min(
+            Math.max(time / duration, 0),
+            1
+        );
+
+ctx.save();
+
+let zoom = 1;
+
+if (scene.camera === "Zoom In") {
+
+    zoom =
+        1 + (0.20 * progress);
+
+} else if (scene.camera === "Zoom Out") {
+
+    zoom =
+        1.20 - (0.20 * progress);
+}
+
+ctx.translate(
+    canvas.width / 2,
+    canvas.height / 2
+);
+
+ctx.scale(
+    zoom,
+    zoom
+);
+
+ctx.translate(
+    -canvas.width / 2,
+    -canvas.height / 2
+);
 
 /* -----------------------------------------
    SCENE BACKGROUND
