@@ -1465,18 +1465,22 @@ function renderCaptions() {
     );
   });
 }
-
 /* =====================================================
    EDIT CAPTION
 ===================================================== */
 
 function editCaption(index) {
-  if (!project.captions) return;
+
+  if (!project.captions) {
+    return;
+  }
 
   const caption =
     project.captions[index];
 
-  if (!caption) return;
+  if (!caption) {
+    return;
+  }
 
   const text =
     prompt(
@@ -1484,9 +1488,12 @@ function editCaption(index) {
       caption.text
     );
 
-  if (text === null) return;
+  if (text === null) {
+    return;
+  }
 
   if (!text.trim()) {
+
     alert(
       "Caption cannot be empty."
     );
@@ -1505,14 +1512,18 @@ function editCaption(index) {
   updateProjectUI();
 
   saveProject();
+
 }
+
 
 /* =====================================================
    BACKGROUNDS
 ===================================================== */
 
 function addBackground() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
@@ -1536,6 +1547,7 @@ function addBackground() {
   }
 
   project.backgrounds.push({
+
     id:
       Date.now(),
 
@@ -1547,6 +1559,7 @@ function addBackground() {
 
     emoji:
       "🌄"
+
   });
 
   project.status =
@@ -1557,13 +1570,16 @@ function addBackground() {
   updateProjectUI();
 
   saveProject();
+
 }
+
 
 /* =====================================================
    RENDER BACKGROUNDS
 ===================================================== */
 
 function renderBackgrounds() {
+
   const list =
     $("backgroundList");
 
@@ -1576,7 +1592,9 @@ function renderBackgrounds() {
   if (
     project.backgrounds.length === 0
   ) {
+
     list.innerHTML = `
+
       <div class="empty-state">
 
         <div>🌄</div>
@@ -1590,6 +1608,7 @@ function renderBackgrounds() {
         </p>
 
       </div>
+
     `;
 
     return;
@@ -1599,6 +1618,7 @@ function renderBackgrounds() {
 
   project.backgrounds.forEach(
     function (background, index) {
+
       const card =
         document.createElement("div");
 
@@ -1606,6 +1626,7 @@ function renderBackgrounds() {
         "character-card";
 
       card.innerHTML = `
+
         <div class="character-avatar">
           ${escapeHTML(
             background.emoji || "🌄"
@@ -1642,37 +1663,51 @@ function renderBackgrounds() {
           </button>
 
         </div>
+
       `;
 
       list.appendChild(card);
+
     }
   );
 
-  /* EDIT BACKGROUND */
+
+  /* =================================================
+     EDIT BACKGROUND BUTTON
+  ================================================= */
 
   list.querySelectorAll(
     "[data-edit-background]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         editBackground(
           Number(
             button.dataset.editBackground
           )
         );
+
       }
     );
+
   });
 
-  /* DELETE BACKGROUND */
+
+  /* =================================================
+     DELETE BACKGROUND BUTTON
+  ================================================= */
 
   list.querySelectorAll(
     "[data-delete-background]"
   ).forEach(function (button) {
+
     button.addEventListener(
       "click",
       function () {
+
         const index =
           Number(
             button.dataset.deleteBackground
@@ -1683,6 +1718,7 @@ function renderBackgrounds() {
             "Delete this background?"
           )
         ) {
+
           return;
         }
 
@@ -1699,16 +1735,21 @@ function renderBackgrounds() {
         updateProjectUI();
 
         saveProject();
+
       }
     );
+
   });
+
 }
+
 
 /* =====================================================
    EDIT BACKGROUND
 ===================================================== */
 
 function editBackground(index) {
+
   if (!project.backgrounds) {
     return;
   }
@@ -1716,7 +1757,9 @@ function editBackground(index) {
   const background =
     project.backgrounds[index];
 
-  if (!background) return;
+  if (!background) {
+    return;
+  }
 
   const name =
     prompt(
@@ -1724,7 +1767,9 @@ function editBackground(index) {
       background.name
     );
 
-  if (name === null) return;
+  if (name === null) {
+    return;
+  }
 
   const description =
     prompt(
@@ -1732,7 +1777,9 @@ function editBackground(index) {
       background.description || ""
     );
 
-  if (description === null) return;
+  if (description === null) {
+    return;
+  }
 
   background.name =
     name.trim() ||
@@ -1749,7 +1796,10 @@ function editBackground(index) {
   updateProjectUI();
 
   saveProject();
+
 }
+
+
 
 /* =====================================================
    SETTINGS
