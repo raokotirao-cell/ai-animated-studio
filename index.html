@@ -1003,32 +1003,150 @@
            ANIMATION
       ====================================== -->
       <section class="page" id="animation">
+<div class="module-card">
 
-        <div class="page-header">
+  <h3>✨ Animation Controls</h3>
 
-          <div>
-            <h2>✨ Animation</h2>
+  <label for="animationSceneSelect">
+    🎬 Select Scene
+  </label>
 
-            <p>
-              Animate characters and scenes.
-            </p>
-          </div>
+  <select id="animationSceneSelect">
+    <option value="">
+      Select a scene
+    </option>
+  </select>
 
-        </div>
 
-        <div class="editor-placeholder">
+  <label for="characterAnimation">
+    👤 Character Animation
+  </label>
 
-          <div>✨</div>
+  <select id="characterAnimation">
 
-          <h3>Animation Studio</h3>
+    <option value="None">
+      None
+    </option>
 
-          <p>
-            Character movement, transitions,
-            camera movement and animation controls
-            will be added here.
-          </p>
+    <option value="Idle">
+      Idle
+    </option>
 
-        </div>
+    <option value="Walk">
+      Walk
+    </option>
+
+    <option value="Run">
+      Run
+    </option>
+
+    <option value="Talk">
+      Talk
+    </option>
+
+    <option value="Action">
+      Action
+    </option>
+
+  </select>
+
+
+  <label for="cameraAnimation">
+    📷 Camera Movement
+  </label>
+
+  <select id="cameraAnimation">
+
+    <option value="Static">
+      Static
+    </option>
+
+    <option value="Zoom In">
+      Zoom In
+    </option>
+
+    <option value="Zoom Out">
+      Zoom Out
+    </option>
+
+    <option value="Pan Left">
+      Pan Left
+    </option>
+
+    <option value="Pan Right">
+      Pan Right
+    </option>
+
+    <option value="Close Up">
+      Close Up
+    </option>
+
+  </select>
+
+
+  <label for="animationDuration">
+    ⏱️ Animation Duration (seconds)
+  </label>
+
+  <input
+    id="animationDuration"
+    type="number"
+    min="1"
+    max="300"
+    value="5"
+  >
+
+
+  <label for="sceneTransition">
+    🎞️ Scene Transition
+  </label>
+
+  <select id="sceneTransition">
+
+    <option value="None">
+      None
+    </option>
+
+    <option value="Fade">
+      Fade
+    </option>
+
+    <option value="Slide">
+      Slide
+    </option>
+
+    <option value="Zoom">
+      Zoom
+    </option>
+
+  </select>
+
+
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="saveAnimationBtn">
+      💾 Save Animation
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="refreshAnimationBtn">
+      🔄 Refresh
+    </button>
+
+  </div>
+
+
+  <div
+    id="animationStatus"
+    class="status-message">
+  </div>
+
+</div>
 
       </section>
 
