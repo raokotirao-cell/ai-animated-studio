@@ -1392,6 +1392,478 @@ function editBackground(index) {
 }
 
 /* =====================================================
+SCENE EDITOR
+===================================================== */
+
+function refreshSceneEditor() {
+    const sceneSelect = $("editorSceneSelect");
+    const backgroundSelect = $("editorBackgroundSelect");
+    const characterSelect = $("editorCharacterSelect");
+
+    if (!sceneSelect) return;
+
+    /* =========================
+       SCENES
+    ========================= */
+
+    sceneSelect.innerHTML = `
+        <option value="">Select a scene</option>
+    `;
+
+    if (Array.isArray(project.scenes)) {
+        project.scenes.forEach(function (scene, index) {
+            const option = document.createElement("option");
+
+            option.value = index;
+            option.textContent =
+                "Scene " +
+                (index + 1) +
+                " - " +
+                (scene.title || "Untitled");
+
+            sceneSelect.appendChild(option);
+        });
+    }
+
+    /* =========================
+       BACKGROUNDS
+    ========================= */
+
+    if (backgroundSelect) {
+
+        backgroundSelect.innerHTML = `
+            <option value="">Select background</option>
+        `;
+
+        if (Array.isArray(project.backgrounds)) {
+
+            project.backgrounds.forEach(function (background, index) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = index;
+
+                option.textContent =
+                    background.name ||
+                    "Background " + (index + 1);
+
+                backgroundSelect.appendChild(option);
+            });
+        }
+    }
+
+    /* =========================
+       CHARACTERS
+    ========================= */
+
+    if (characterSelect) {
+
+        characterSelect.innerHTML = `
+            <option value="">Select character</option>
+        `;
+
+        if (Array.isArray(project.characters)) {
+
+            project.characters.forEach(function (character, index) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = index;
+
+                option.textContent =
+                    character.name ||
+                    "Character " + (index + 1);
+
+                characterSelect.appendChild(option);
+            });
+        }
+    }
+}
+
+
+/* =====================================================
+LOAD SELECTED SCENE
+===================================================== */
+
+function loadSceneIntoEditor(index) {
+
+    const scene =
+        project.scenes[index];
+
+    if (!scene) {
+        return;
+    }
+
+    if ($("editorBackgroundSelect")) {
+
+        $("editorBackgroundSelect").value =
+            findBackgroundIndex(scene.background);
+    }
+
+    if ($("editorCharacterSelect")) {
+
+        const characterName =
+            Array.isArray(scene.characters)
+                ? scene.characters[0] || ""
+                : scene.characters || "";
+
+        $("editorCharacterSelect").value =
+            findCharacterIndex(characterName);
+    }
+
+    if ($("editorCameraSelect")) {
+
+        $("editorCameraSelect").value =
+            scene.camera || "Static";
+    }
+
+    if ($("editorAnimationSelect")) {
+
+        $("editorAnimationSelect").value =
+            scene.animation || "None";
+    }
+
+    if ($("editorSceneDescription")) {
+
+        $("editorSceneDescription").value =
+            scene.description || "";
+    }
+
+    if ($("editorSceneDialogue")) {
+
+        $("editorSceneDialogue").value =
+            scene.dialogue || "";
+    }
+
+    if ($("editorSceneDuration")) {
+
+        $("editorSceneDuration").value =
+            scene.duration || 5;
+    }
+
+    setSceneEditorStatus(
+        "Scene loaded."
+    );
+}
+
+
+/* =====================================================
+FIND BACKGROUND
+===================================================== */
+
+function findBackgroundIndex(name) {
+
+    if (!name) {
+        return "";
+    }
+
+    if (!Array.isArray(project.backgrounds)) {
+        return "";
+    }
+
+    const index =
+        project.backgrounds.findIndex(
+            function (background) {
+                return background.name === name;
+            }
+        );
+
+    return index >= 0
+        ? String(index)
+        : "";
+}
+
+
+/* =====================================================
+FIND CHARACTER
+===================================================== */
+
+function findCharacterIndex(name) {
+
+    if (!name) {
+        return "";
+    }
+
+    if (!Array.isArray(project.characters)) {
+        return "";
+    }
+
+    const index =
+        project.characters.findIndex(
+            function (character) {
+                return character.name === name;
+            }
+        );
+
+    return index >= 0
+        ? String(index)
+        : "";
+}
+
+
+/* =====================================================
+SAVE SCENE EDITOR
+===================================================== */
+
+function saveEditorScene() {
+
+    const sceneSelect =
+        $("editorSceneSelect");
+
+    if (!sceneSelect) {
+        return;
+    }
+
+    const index =
+        Number(sceneSelect.value);
+
+    if (
+        sceneSelect.value === "" ||
+        !project.scenes[index]
+    ) {
+
+        setSceneEditorStatus(
+            "Please select a scene first."
+        );
+
+        return;
+    }
+
+    const scene =
+        project.scenes[index];
+
+
+    /* =========================
+       BACKGROUND
+    ========================= */
+
+    const backgroundIndex =
+        $("editorBackgroundSelect")
+            ? $("editorBackgroundSelect").value
+            : "";
+
+    if (
+        backgroundIndex !== "" &&
+        project.backgrounds[backgroundIndex]
+    ) {
+
+        scene.background =
+            project.backgrounds[
+                backgroundIndex
+            ].name;
+
+    } else {
+
+        scene.background = "";
+    }
+
+
+    /* =========================
+       CHARACTER
+    ========================= */
+
+    const characterIndex =
+        $("editorCharacterSelect")
+            ? $("editorCharacterSelect").value
+            : "";
+
+    if (
+        characterIndex !== "" &&
+        project.characters[characterIndex]
+    ) {
+
+        scene.characters = [
+            project.characters[
+                characterIndex
+            ].name
+        ];
+
+    } else {
+
+        scene.characters = [];
+    }
+
+
+    /* =========================
+       CAMERA
+    ========================= */
+
+    if ($("editorCameraSelect")) {
+
+        scene.camera =
+            $("editorCameraSelect").value;
+    }
+
+
+    /* =========================
+       ANIMATION
+    ========================= */
+
+    if ($("editorAnimationSelect")) {
+
+        scene.animation =
+            $("editorAnimationSelect").value;
+    }
+
+
+    /* =========================
+       DESCRIPTION
+    ========================= */
+
+    if ($("editorSceneDescription")) {
+
+        scene.description =
+            $("editorSceneDescription")
+                .value
+                .trim();
+    }
+
+
+    /* =========================
+       DIALOGUE
+    ========================= */
+
+    if ($("editorSceneDialogue")) {
+
+        scene.dialogue =
+            $("editorSceneDialogue")
+                .value
+                .trim();
+    }
+
+
+    /* =========================
+       DURATION
+    ========================= */
+
+    if ($("editorSceneDuration")) {
+
+        scene.duration =
+            Math.max(
+                1,
+                Number(
+                    $("editorSceneDuration").value
+                ) || 5
+            );
+    }
+
+
+    project.status =
+        "Scene Editor saved";
+
+    saveProject();
+
+    renderScenes();
+
+    updateProjectUI();
+
+    setSceneEditorStatus(
+        "✅ Scene saved successfully."
+    );
+}
+
+
+/* =====================================================
+SCENE EDITOR STATUS
+===================================================== */
+
+function setSceneEditorStatus(message) {
+
+    const status =
+        $("sceneEditorStatus");
+
+    if (status) {
+        status.textContent =
+            message;
+    }
+}
+
+
+/* =====================================================
+INITIALIZE SCENE EDITOR
+===================================================== */
+
+function initSceneEditor() {
+
+    const sceneSelect =
+        $("editorSceneSelect");
+
+    const saveButton =
+        $("saveEditorSceneBtn");
+
+    const refreshButton =
+        $("refreshEditorBtn");
+
+
+    /* =========================
+       REFRESH
+    ========================= */
+
+    if (refreshButton) {
+
+        refreshButton.onclick =
+            function () {
+
+                refreshSceneEditor();
+
+                setSceneEditorStatus(
+                    "🔄 Editor refreshed."
+                );
+            };
+    }
+
+
+    /* =========================
+       SELECT SCENE
+    ========================= */
+
+    if (sceneSelect) {
+
+        sceneSelect.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    sceneSelect.value === ""
+                ) {
+
+                    setSceneEditorStatus(
+                        "Please select a scene."
+                    );
+
+                    return;
+                }
+
+                loadSceneIntoEditor(
+                    Number(
+                        sceneSelect.value
+                    )
+                );
+            }
+        );
+    }
+
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    if (saveButton) {
+
+        saveButton.onclick =
+            saveEditorScene;
+    }
+
+
+    /* =========================
+       INITIAL LOAD
+    ========================= */
+
+    refreshSceneEditor();
+}
+/* =====================================================
    SETTINGS
 ===================================================== */
 
@@ -1735,13 +2207,15 @@ document.addEventListener(
         ========================================= */
 
         updateProjectUI();
-        updateStoryUI();
-        renderScenes();
-        renderCharacters();
-        renderCaptions();
-        renderBackgrounds();
+updateStoryUI();
+renderScenes();
+renderCharacters();
+renderCaptions();
+renderBackgrounds();
 
-        showPage("dashboard");
+initSceneEditor();
+
+showPage("dashboard");
 
         console.log(
             "AI Animated Studio ready."
