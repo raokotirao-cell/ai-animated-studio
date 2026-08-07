@@ -1,14 +1,16 @@
 alert("SCRIPT WORKING");
+
 "use strict";
 
 /* =====================================================
    AI ANIMATED STUDIO
    CLEAN CORE SCRIPT
-===================================================== */
+   ===================================================== */
+
 
 /* =====================================================
    PROJECT DATA
-===================================================== */
+   ===================================================== */
 
 let project = {
   name: "",
@@ -25,7 +27,7 @@ let project = {
 
 /* =====================================================
    HELPERS
-===================================================== */
+   ===================================================== */
 
 function $(id) {
   return document.getElementById(id);
@@ -33,18 +35,20 @@ function $(id) {
 
 
 function escapeHTML(value) {
+
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+
 }
 
 
 /* =====================================================
    PAGE NAVIGATION
-===================================================== */
+   ===================================================== */
 
 function showPage(pageId) {
 
@@ -52,21 +56,28 @@ function showPage(pageId) {
     page.classList.remove("active");
   });
 
+
   const page = $(pageId);
 
   if (page) {
     page.classList.add("active");
   }
 
+
   document.querySelectorAll(".nav-item").forEach(function(button) {
 
     if (button.dataset.page === pageId) {
+
       button.classList.add("active");
+
     } else {
+
       button.classList.remove("active");
+
     }
 
   });
+
 
   window.scrollTo(0, 0);
 }
@@ -74,7 +85,7 @@ function showPage(pageId) {
 
 /* =====================================================
    PROJECT UI
-===================================================== */
+   ===================================================== */
 
 function updateProjectUI() {
 
@@ -83,41 +94,60 @@ function updateProjectUI() {
   const characters = $("characterCountDisplay");
   const status = $("projectStatusDisplay");
 
+
   if (name) {
+
     name.textContent =
       project.name || "No project created";
+
   }
+
 
   if (scenes) {
+
     scenes.textContent =
       project.scenes.length;
+
   }
+
 
   if (characters) {
+
     characters.textContent =
       project.characters.length;
+
   }
+
 
   if (status) {
+
     status.textContent =
       project.status;
+
   }
+
 
   if ($("projectName")) {
+
     $("projectName").value =
       project.name;
+
   }
 
+
   if ($("videoResolution")) {
+
     $("videoResolution").value =
       project.resolution;
+
   }
+
 }
 
 
 /* =====================================================
    SAVE PROJECT
-===================================================== */
+   ===================================================== */
 
 function saveProject() {
 
@@ -128,9 +158,11 @@ function saveProject() {
       JSON.stringify(project)
     );
 
+
     project.status = "Saved";
 
     updateProjectUI();
+
 
   } catch (error) {
 
@@ -140,12 +172,13 @@ function saveProject() {
     );
 
   }
+
 }
 
 
 /* =====================================================
    LOAD PROJECT
-===================================================== */
+   ===================================================== */
 
 function loadProject() {
 
@@ -156,15 +189,19 @@ function loadProject() {
         "aiAnimatedStudioProject"
       );
 
+
     if (!saved) {
 
       updateProjectUI();
 
       return;
+
     }
+
 
     const data =
       JSON.parse(saved);
+
 
     project = {
 
@@ -202,7 +239,9 @@ function loadProject() {
 
       status:
         "Saved"
+
     };
+
 
     updateStoryUI();
 
@@ -210,9 +249,12 @@ function loadProject() {
 
     renderCharacters();
 
+    renderCaptions();
+
     renderBackgrounds();
 
     updateProjectUI();
+
 
   } catch (error) {
 
@@ -222,12 +264,13 @@ function loadProject() {
     );
 
   }
+
 }
 
 
 /* =====================================================
    NEW PROJECT
-===================================================== */
+   ===================================================== */
 
 function openNewProject() {
 
@@ -236,10 +279,13 @@ function openNewProject() {
 
   if (!modal) return;
 
+
   modal.classList.remove("hidden");
+
 
   const input =
     $("newProjectName");
+
 
   if (input) {
 
@@ -247,7 +293,9 @@ function openNewProject() {
       project.name || "";
 
     input.focus();
+
   }
+
 }
 
 
@@ -256,9 +304,13 @@ function closeNewProject() {
   const modal =
     $("newProjectModal");
 
+
   if (modal) {
+
     modal.classList.add("hidden");
+
   }
+
 }
 
 
@@ -267,10 +319,13 @@ function createProject() {
   const input =
     $("newProjectName");
 
+
   if (!input) return;
+
 
   const name =
     input.value.trim();
+
 
   if (!name) {
 
@@ -279,7 +334,9 @@ function createProject() {
     );
 
     return;
+
   }
+
 
   project = {
 
@@ -300,7 +357,9 @@ function createProject() {
     resolution: "720p",
 
     status: "Ready"
+
   };
+
 
   updateProjectUI();
 
@@ -310,6 +369,8 @@ function createProject() {
 
   renderCharacters();
 
+  renderCaptions();
+
   renderBackgrounds();
 
   saveProject();
@@ -317,12 +378,13 @@ function createProject() {
   closeNewProject();
 
   showPage("story");
+
 }
 
 
 /* =====================================================
    STORY
-===================================================== */
+   ===================================================== */
 
 function updateStoryUI() {
 
@@ -330,13 +392,17 @@ function updateStoryUI() {
 
     $("storyTitle").value =
       project.storyTitle || "";
+
   }
+
 
   if ($("storyText")) {
 
     $("storyText").value =
       project.storyText || "";
+
   }
+
 }
 
 
@@ -351,32 +417,39 @@ function saveStory() {
     openNewProject();
 
     return;
+
   }
+
 
   project.storyTitle =
     $("storyTitle")
       ? $("storyTitle").value.trim()
       : "";
 
+
   project.storyText =
     $("storyText")
       ? $("storyText").value.trim()
       : "";
 
+
   project.status =
     "Story saved";
 
+
   saveProject();
+
 
   alert(
     "Story saved successfully."
   );
+
 }
 
 
 /* =====================================================
    STORY → SCENES
-===================================================== */
+   ===================================================== */
 
 function createScenes() {
 
@@ -389,12 +462,15 @@ function createScenes() {
     openNewProject();
 
     return;
+
   }
+
 
   const story =
     $("storyText")
       ? $("storyText").value.trim()
       : "";
+
 
   if (!story) {
 
@@ -403,23 +479,30 @@ function createScenes() {
     );
 
     return;
+
   }
+
 
   project.storyTitle =
     $("storyTitle")
       ? $("storyTitle").value.trim()
       : "";
 
+
   project.storyText =
     story;
+
 
   let parts =
     story
       .split(/\n\s*\n/)
       .map(function(text) {
+
         return text.trim();
+
       })
       .filter(Boolean);
+
 
   if (parts.length <= 1) {
 
@@ -427,10 +510,14 @@ function createScenes() {
       story
         .split(/(?<=[.!?])\s+/)
         .map(function(text) {
+
           return text.trim();
+
         })
         .filter(Boolean);
+
   }
+
 
   project.scenes =
     parts.map(function(text, index) {
@@ -466,12 +553,15 @@ function createScenes() {
 
         animation:
           "None"
+
       };
 
     });
 
+
   project.status =
     "Scenes created";
+
 
   renderScenes();
 
@@ -480,12 +570,13 @@ function createScenes() {
   saveProject();
 
   showPage("scenes");
+
 }
 
 
 /* =====================================================
    ADD SCENE
-===================================================== */
+   ===================================================== */
 
 function addScene() {
 
@@ -498,10 +589,13 @@ function addScene() {
     openNewProject();
 
     return;
+
   }
+
 
   const number =
     project.scenes.length + 1;
+
 
   project.scenes.push({
 
@@ -534,330 +628,353 @@ function addScene() {
 
     animation:
       "None"
+
   });
+
 
   project.status =
     "Scene added";
+
 
   renderScenes();
 
   updateProjectUI();
 
   saveProject();
+
 }
 
 
 /* =====================================================
    RENDER SCENES
-===================================================== */
+   ===================================================== */
 
 function renderScenes() {
 
   const list =
     $("sceneList");
 
+
   if (!list) return;
+
 
   if (project.scenes.length === 0) {
 
     list.innerHTML = `
+
       <div class="empty-state">
+
         <div>🎬</div>
+
         <h3>No scenes yet</h3>
+
         <p>Create your first scene.</p>
+
       </div>
+
     `;
 
     return;
+
   }
+
 
   list.innerHTML = "";
 
-  project.scenes.forEach(function(scene, index) {
 
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "scene-card";
-
-    card.innerHTML = `
-
-      <div class="scene-card-header">
-
-        <div>
-
-          <h3>
-            🎬 Scene ${index + 1}
-          </h3>
-
-          <span>
-            ${escapeHTML(
-              scene.title ||
-              "Untitled Scene"
-            )}
-          </span>
-
-        </div>
-
-        <button
-          type="button"
-          class="secondary-btn"
-          data-delete-scene="${index}">
-          🗑️ Delete
-        </button>
-
-      </div>
+  project.scenes.forEach(
+    function(scene, index) {
 
 
-      <div class="scene-editor-grid">
+      const card =
+        document.createElement("div");
 
 
-        <div class="scene-field">
+      card.className =
+        "scene-card";
 
-          <label>
-            Scene Title
-          </label>
 
-          <input
-            type="text"
-            data-scene-title="${index}"
-            value="${escapeHTML(
-              scene.title || ""
-            )}"
-            placeholder="Scene title">
+      card.innerHTML = `
+
+        <div class="scene-card-header">
+
+          <div>
+
+            <h3>
+              🎬 Scene ${index + 1}
+            </h3>
+
+            <span>
+              ${escapeHTML(
+                scene.title ||
+                "Untitled Scene"
+              )}
+            </span>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="secondary-btn"
+            data-delete-scene="${index}">
+            🗑️ Delete
+          </button>
 
         </div>
 
 
-        <div class="scene-field">
+        <div class="scene-editor-grid">
 
-          <label>
-            Duration (seconds)
-          </label>
 
-          <input
-            type="number"
-            min="1"
-            max="300"
-            data-scene-duration="${index}"
-            value="${scene.duration || 5}">
+          <div class="scene-field">
+
+            <label>
+              Scene Title
+            </label>
+
+            <input
+              type="text"
+              data-scene-title="${index}"
+              value="${escapeHTML(
+                scene.title || ""
+              )}"
+              placeholder="Scene title">
+
+          </div>
+
+
+          <div class="scene-field">
+
+            <label>
+              Duration (seconds)
+            </label>
+
+            <input
+              type="number"
+              min="1"
+              max="300"
+              data-scene-duration="${index}"
+              value="${scene.duration || 5}">
+
+          </div>
+
+
+          <div class="scene-field scene-full">
+
+            <label>
+              Scene Description
+            </label>
+
+            <textarea
+              rows="4"
+              data-scene-description="${index}"
+              placeholder="Describe what happens in this scene..."
+            >${escapeHTML(
+              scene.description || ""
+            )}</textarea>
+
+          </div>
+
+
+          <div class="scene-field">
+
+            <label>
+              🌄 Background
+            </label>
+
+            <input
+              type="text"
+              data-scene-background="${index}"
+              value="${escapeHTML(
+                scene.background || ""
+              )}"
+              placeholder="Village, forest, city...">
+
+          </div>
+
+
+          <div class="scene-field">
+
+            <label>
+              👤 Characters
+            </label>
+
+            <input
+              type="text"
+              data-scene-characters="${index}"
+              value="${escapeHTML(
+                Array.isArray(scene.characters)
+                  ? scene.characters.join(", ")
+                  : scene.characters || ""
+              )}"
+              placeholder="Character names">
+
+          </div>
+
+
+          <div class="scene-field scene-full">
+
+            <label>
+              💬 Dialogue
+            </label>
+
+            <textarea
+              rows="3"
+              data-scene-dialogue="${index}"
+              placeholder="Character dialogue..."
+            >${escapeHTML(
+              scene.dialogue || ""
+            )}</textarea>
+
+          </div>
+
+
+          <div class="scene-field">
+
+            <label>
+              📷 Camera
+            </label>
+
+            <select
+              data-scene-camera="${index}">
+
+              <option
+                value="Static"
+                ${scene.camera === "Static"
+                  ? "selected"
+                  : ""}>
+                Static
+              </option>
+
+              <option
+                value="Zoom In"
+                ${scene.camera === "Zoom In"
+                  ? "selected"
+                  : ""}>
+                Zoom In
+              </option>
+
+              <option
+                value="Zoom Out"
+                ${scene.camera === "Zoom Out"
+                  ? "selected"
+                  : ""}>
+                Zoom Out
+              </option>
+
+              <option
+                value="Pan Left"
+                ${scene.camera === "Pan Left"
+                  ? "selected"
+                  : ""}>
+                Pan Left
+              </option>
+
+              <option
+                value="Pan Right"
+                ${scene.camera === "Pan Right"
+                  ? "selected"
+                  : ""}>
+                Pan Right
+              </option>
+
+              <option
+                value="Close Up"
+                ${scene.camera === "Close Up"
+                  ? "selected"
+                  : ""}>
+                Close Up
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="scene-field">
+
+            <label>
+              ✨ Animation
+            </label>
+
+            <select
+              data-scene-animation="${index}">
+
+              <option
+                value="None"
+                ${scene.animation === "None"
+                  ? "selected"
+                  : ""}>
+                None
+              </option>
+
+              <option
+                value="Idle"
+                ${scene.animation === "Idle"
+                  ? "selected"
+                  : ""}>
+                Idle
+              </option>
+
+              <option
+                value="Walk"
+                ${scene.animation === "Walk"
+                  ? "selected"
+                  : ""}>
+                Walk
+              </option>
+
+              <option
+                value="Run"
+                ${scene.animation === "Run"
+                  ? "selected"
+                  : ""}>
+                Run
+              </option>
+
+              <option
+                value="Talk"
+                ${scene.animation === "Talk"
+                  ? "selected"
+                  : ""}>
+                Talk
+              </option>
+
+              <option
+                value="Action"
+                ${scene.animation === "Action"
+                  ? "selected"
+                  : ""}>
+                Action
+              </option>
+
+            </select>
+
+          </div>
+
 
         </div>
 
 
-        <div class="scene-field scene-full">
+        <div class="button-row">
 
-          <label>
-            Scene Description
-          </label>
-
-          <textarea
-            rows="4"
-            data-scene-description="${index}"
-            placeholder="Describe what happens in this scene..."
-          >${escapeHTML(
-            scene.description || ""
-          )}</textarea>
+          <button
+            type="button"
+            class="primary-btn"
+            data-save-scene="${index}">
+            💾 Save Scene
+          </button>
 
         </div>
 
-
-        <div class="scene-field">
-
-          <label>
-            🌄 Background
-          </label>
-
-          <input
-            type="text"
-            data-scene-background="${index}"
-            value="${escapeHTML(
-              scene.background || ""
-            )}"
-            placeholder="Village, forest, city...">
-
-        </div>
+      `;
 
 
-        <div class="scene-field">
+      list.appendChild(card);
 
-          <label>
-            👤 Characters
-          </label>
-
-          <input
-            type="text"
-            data-scene-characters="${index}"
-            value="${escapeHTML(
-              Array.isArray(scene.characters)
-                ? scene.characters.join(", ")
-                : scene.characters || ""
-            )}"
-            placeholder="Character names">
-
-        </div>
-
-
-        <div class="scene-field scene-full">
-
-          <label>
-            💬 Dialogue
-          </label>
-
-          <textarea
-            rows="3"
-            data-scene-dialogue="${index}"
-            placeholder="Character dialogue..."
-          >${escapeHTML(
-            scene.dialogue || ""
-          )}</textarea>
-
-        </div>
-
-
-        <div class="scene-field">
-
-          <label>
-            📷 Camera
-          </label>
-
-          <select
-            data-scene-camera="${index}">
-
-            <option
-              value="Static"
-              ${scene.camera === "Static"
-                ? "selected"
-                : ""}>
-              Static
-            </option>
-
-            <option
-              value="Zoom In"
-              ${scene.camera === "Zoom In"
-                ? "selected"
-                : ""}>
-              Zoom In
-            </option>
-
-            <option
-              value="Zoom Out"
-              ${scene.camera === "Zoom Out"
-                ? "selected"
-                : ""}>
-              Zoom Out
-            </option>
-
-            <option
-              value="Pan Left"
-              ${scene.camera === "Pan Left"
-                ? "selected"
-                : ""}>
-              Pan Left
-            </option>
-
-            <option
-              value="Pan Right"
-              ${scene.camera === "Pan Right"
-                ? "selected"
-                : ""}>
-              Pan Right
-            </option>
-
-            <option
-              value="Close Up"
-              ${scene.camera === "Close Up"
-                ? "selected"
-                : ""}>
-              Close Up
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="scene-field">
-
-          <label>
-            ✨ Animation
-          </label>
-
-          <select
-            data-scene-animation="${index}">
-
-            <option
-              value="None"
-              ${scene.animation === "None"
-                ? "selected"
-                : ""}>
-              None
-            </option>
-
-            <option
-              value="Idle"
-              ${scene.animation === "Idle"
-                ? "selected"
-                : ""}>
-              Idle
-            </option>
-
-            <option
-              value="Walk"
-              ${scene.animation === "Walk"
-                ? "selected"
-                : ""}>
-              Walk
-            </option>
-
-            <option
-              value="Run"
-              ${scene.animation === "Run"
-                ? "selected"
-                : ""}>
-              Run
-            </option>
-
-            <option
-              value="Talk"
-              ${scene.animation === "Talk"
-                ? "selected"
-                : ""}>
-              Talk
-            </option>
-
-            <option
-              value="Action"
-              ${scene.animation === "Action"
-                ? "selected"
-                : ""}>
-              Action
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <div class="button-row">
-
-        <button
-          type="button"
-          class="primary-btn"
-          data-save-scene="${index}">
-          💾 Save Scene
-        </button>
-
-      </div>
-
-    `;
-
-    list.appendChild(card);
-
-  });
+    }
+  );
 
 
   /* SAVE SCENE */
@@ -897,23 +1014,30 @@ function renderScenes() {
             button.dataset.deleteScene
           );
 
+
         if (
           !confirm(
             "Delete this scene?"
           )
         ) {
+
           return;
+
         }
+
 
         project.scenes.splice(
           index,
           1
         );
 
+
         renumberScenes();
+
 
         project.status =
           "Scene deleted";
+
 
         renderScenes();
 
@@ -931,49 +1055,58 @@ function renderScenes() {
 
 /* =====================================================
    SAVE SCENE
-===================================================== */
+   ===================================================== */
 
 function saveScene(index) {
 
   const scene =
     project.scenes[index];
 
+
   if (!scene) return;
+
 
   const titleInput =
     document.querySelector(
       `[data-scene-title="${index}"]`
     );
 
+
   const descriptionInput =
     document.querySelector(
       `[data-scene-description="${index}"]`
     );
+
 
   const durationInput =
     document.querySelector(
       `[data-scene-duration="${index}"]`
     );
 
+
   const backgroundInput =
     document.querySelector(
       `[data-scene-background="${index}"]`
     );
+
 
   const charactersInput =
     document.querySelector(
       `[data-scene-characters="${index}"]`
     );
 
+
   const dialogueInput =
     document.querySelector(
       `[data-scene-dialogue="${index}"]`
     );
 
+
   const cameraInput =
     document.querySelector(
       `[data-scene-camera="${index}"]`
     );
+
 
   const animationInput =
     document.querySelector(
@@ -1040,30 +1173,35 @@ function saveScene(index) {
   project.status =
     "Scene saved";
 
+
   renderScenes();
 
   updateProjectUI();
 
   saveProject();
 
+
   alert(
     "Scene " +
     (index + 1) +
     " saved successfully."
   );
+
 }
 
 
 /* =====================================================
    EDIT SCENE
-===================================================== */
+   ===================================================== */
 
 function editScene(index) {
 
   const scene =
     project.scenes[index];
 
+
   if (!scene) return;
+
 
   const title =
     prompt(
@@ -1071,7 +1209,9 @@ function editScene(index) {
       scene.title
     );
 
+
   if (title === null) return;
+
 
   const description =
     prompt(
@@ -1079,29 +1219,35 @@ function editScene(index) {
       scene.description
     );
 
+
   if (description === null) return;
+
 
   scene.title =
     title.trim() ||
     "Scene " + (index + 1);
 
+
   scene.description =
     description.trim();
 
+
   project.status =
     "Scene updated";
+
 
   renderScenes();
 
   updateProjectUI();
 
   saveProject();
+
 }
 
 
 /* =====================================================
    RENUMBER SCENES
-===================================================== */
+   ===================================================== */
 
 function renumberScenes() {
 
@@ -1113,12 +1259,13 @@ function renumberScenes() {
 
     }
   );
+
 }
 
 
 /* =====================================================
    CHARACTERS
-===================================================== */
+   ===================================================== */
 
 function addCharacter() {
 
@@ -1131,16 +1278,20 @@ function addCharacter() {
     openNewProject();
 
     return;
+
   }
+
 
   const name =
     prompt(
       "Character name:"
     );
 
+
   if (!name || !name.trim()) {
     return;
   }
+
 
   project.characters.push({
 
@@ -1155,29 +1306,35 @@ function addCharacter() {
 
     emoji:
       "👤"
+
   });
+
 
   project.status =
     "Character added";
+
 
   renderCharacters();
 
   updateProjectUI();
 
   saveProject();
+
 }
 
 
 /* =====================================================
    RENDER CHARACTERS
-===================================================== */
+   ===================================================== */
 
 function renderCharacters() {
 
   const list =
     $("characterList");
 
+
   if (!list) return;
+
 
   if (
     project.characters.length === 0
@@ -1202,24 +1359,33 @@ function renderCharacters() {
     `;
 
     return;
+
   }
 
+
   list.innerHTML = "";
+
 
   project.characters.forEach(
     function(character, index) {
 
+
       const card =
         document.createElement("div");
+
 
       card.className =
         "character-card";
 
+
       card.innerHTML = `
 
         <div class="character-avatar">
-          ${character.emoji || "👤"}
+          ${escapeHTML(
+            character.emoji || "👤"
+          )}
         </div>
+
 
         <h3>
           ${escapeHTML(
@@ -1227,12 +1393,14 @@ function renderCharacters() {
           )}
         </h3>
 
+
         <p>
           ${escapeHTML(
             character.description ||
             "No description yet."
           )}
         </p>
+
 
         <div class="button-row">
 
@@ -1242,6 +1410,7 @@ function renderCharacters() {
             data-edit-character="${index}">
             ✏️ Edit
           </button>
+
 
           <button
             type="button"
@@ -1253,6 +1422,7 @@ function renderCharacters() {
         </div>
 
       `;
+
 
       list.appendChild(card);
 
@@ -1297,21 +1467,27 @@ function renderCharacters() {
             button.dataset.deleteCharacter
           );
 
+
         if (
           !confirm(
             "Delete this character?"
           )
         ) {
+
           return;
+
         }
+
 
         project.characters.splice(
           index,
           1
         );
 
+
         project.status =
           "Character deleted";
+
 
         renderCharacters();
 
@@ -1329,14 +1505,16 @@ function renderCharacters() {
 
 /* =====================================================
    EDIT CHARACTER
-===================================================== */
+   ===================================================== */
 
 function editCharacter(index) {
 
   const character =
     project.characters[index];
 
+
   if (!character) return;
+
 
   const name =
     prompt(
@@ -1344,7 +1522,9 @@ function editCharacter(index) {
       character.name
     );
 
+
   if (name === null) return;
+
 
   const description =
     prompt(
@@ -1352,29 +1532,355 @@ function editCharacter(index) {
       character.description
     );
 
+
   if (description === null) return;
+
 
   character.name =
     name.trim() ||
     character.name;
 
+
   character.description =
     description.trim();
 
+
   project.status =
     "Character updated";
+
 
   renderCharacters();
 
   updateProjectUI();
 
   saveProject();
+
+}
+
+
+/* =====================================================
+   CAPTIONS
+   ===================================================== */
+
+function addCaption() {
+
+  if (!project.name) {
+
+    alert(
+      "Please create a project first."
+    );
+
+    openNewProject();
+
+    return;
+
+  }
+
+
+  const input =
+    $("captionText");
+
+
+  if (!input) {
+
+    alert(
+      "Caption input not found."
+    );
+
+    return;
+
+  }
+
+
+  const text =
+    input.value.trim();
+
+
+  if (!text) {
+
+    alert(
+      "Enter caption text first."
+    );
+
+    return;
+
+  }
+
+
+  if (!project.captions) {
+    project.captions = [];
+  }
+
+
+  project.captions.push({
+
+    id:
+      Date.now(),
+
+    text:
+      text
+
+  });
+
+
+  input.value = "";
+
+
+  project.status =
+    "Caption added";
+
+
+  renderCaptions();
+
+  updateProjectUI();
+
+  saveProject();
+
+
+  alert(
+    "Caption added."
+  );
+
+}
+
+
+/* =====================================================
+   RENDER CAPTIONS
+   ===================================================== */
+
+function renderCaptions() {
+
+  const list =
+    $("captionList");
+
+
+  if (!list) return;
+
+
+  if (!project.captions) {
+    project.captions = [];
+  }
+
+
+  if (
+    project.captions.length === 0
+  ) {
+
+    list.innerHTML = `
+
+      <div class="empty-state">
+
+        <div>💬</div>
+
+        <h3>
+          No captions yet
+        </h3>
+
+        <p>
+          Add your first caption.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.innerHTML = "";
+
+
+  project.captions.forEach(
+    function(caption, index) {
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "character-card";
+
+
+      card.innerHTML = `
+
+        <div class="character-avatar">
+          💬
+        </div>
+
+
+        <h3>
+          Caption ${index + 1}
+        </h3>
+
+
+        <p>
+          ${escapeHTML(
+            caption.text
+          )}
+        </p>
+
+
+        <div class="button-row">
+
+          <button
+            type="button"
+            class="secondary-btn"
+            data-edit-caption="${index}">
+            ✏️ Edit
+          </button>
+
+
+          <button
+            type="button"
+            class="secondary-btn"
+            data-delete-caption="${index}">
+            🗑️ Delete
+          </button>
+
+        </div>
+
+      `;
+
+
+      list.appendChild(card);
+
+    }
+  );
+
+
+  /* EDIT CAPTION */
+
+  list.querySelectorAll(
+    "[data-edit-caption]"
+  ).forEach(function(button) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        editCaption(
+          Number(
+            button.dataset.editCaption
+          )
+        );
+
+      }
+    );
+
+  });
+
+
+  /* DELETE CAPTION */
+
+  list.querySelectorAll(
+    "[data-delete-caption]"
+  ).forEach(function(button) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        const index =
+          Number(
+            button.dataset.deleteCaption
+          );
+
+
+        if (
+          !confirm(
+            "Delete this caption?"
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        project.captions.splice(
+          index,
+          1
+        );
+
+
+        project.status =
+          "Caption deleted";
+
+
+        renderCaptions();
+
+        updateProjectUI();
+
+        saveProject();
+
+      }
+    );
+
+  });
+
+}
+
+
+/* =====================================================
+   EDIT CAPTION
+   ===================================================== */
+
+function editCaption(index) {
+
+  if (!project.captions) return;
+
+
+  const caption =
+    project.captions[index];
+
+
+  if (!caption) return;
+
+
+  const text =
+    prompt(
+      "Caption text:",
+      caption.text
+    );
+
+
+  if (text === null) return;
+
+
+  if (!text.trim()) {
+
+    alert(
+      "Caption cannot be empty."
+    );
+
+    return;
+
+  }
+
+
+  caption.text =
+    text.trim();
+
+
+  project.status =
+    "Caption updated";
+
+
+  renderCaptions();
+
+  updateProjectUI();
+
+  saveProject();
+
 }
 
 
 /* =====================================================
    BACKGROUNDS
-===================================================== */
+   ===================================================== */
 
 function addBackground() {
 
@@ -1387,20 +1893,25 @@ function addBackground() {
     openNewProject();
 
     return;
+
   }
+
 
   const name =
     prompt(
       "Background name:"
     );
 
+
   if (!name || !name.trim()) {
     return;
   }
 
+
   if (!project.backgrounds) {
     project.backgrounds = [];
   }
+
 
   project.backgrounds.push({
 
@@ -1415,33 +1926,40 @@ function addBackground() {
 
     emoji:
       "🌄"
+
   });
+
 
   project.status =
     "Background added";
+
 
   renderBackgrounds();
 
   updateProjectUI();
 
   saveProject();
+
 }
 
 
 /* =====================================================
    RENDER BACKGROUNDS
-===================================================== */
+   ===================================================== */
 
 function renderBackgrounds() {
 
   const list =
     $("backgroundList");
 
+
   if (!list) return;
+
 
   if (!project.backgrounds) {
     project.backgrounds = [];
   }
+
 
   if (
     project.backgrounds.length === 0
@@ -1466,24 +1984,33 @@ function renderBackgrounds() {
     `;
 
     return;
+
   }
 
+
   list.innerHTML = "";
+
 
   project.backgrounds.forEach(
     function(background, index) {
 
+
       const card =
         document.createElement("div");
+
 
       card.className =
         "character-card";
 
+
       card.innerHTML = `
 
         <div class="character-avatar">
-          ${background.emoji || "🌄"}
+          ${escapeHTML(
+            background.emoji || "🌄"
+          )}
         </div>
+
 
         <h3>
           ${escapeHTML(
@@ -1491,12 +2018,14 @@ function renderBackgrounds() {
           )}
         </h3>
 
+
         <p>
           ${escapeHTML(
             background.description ||
             "No description yet."
           )}
         </p>
+
 
         <div class="button-row">
 
@@ -1506,6 +2035,7 @@ function renderBackgrounds() {
             data-edit-background="${index}">
             ✏️ Edit
           </button>
+
 
           <button
             type="button"
@@ -1517,6 +2047,7 @@ function renderBackgrounds() {
         </div>
 
       `;
+
 
       list.appendChild(card);
 
@@ -1561,21 +2092,27 @@ function renderBackgrounds() {
             button.dataset.deleteBackground
           );
 
+
         if (
           !confirm(
             "Delete this background?"
           )
         ) {
+
           return;
+
         }
+
 
         project.backgrounds.splice(
           index,
           1
         );
 
+
         project.status =
           "Background deleted";
+
 
         renderBackgrounds();
 
@@ -1593,7 +2130,7 @@ function renderBackgrounds() {
 
 /* =====================================================
    EDIT BACKGROUND
-===================================================== */
+   ===================================================== */
 
 function editBackground(index) {
 
@@ -1601,10 +2138,13 @@ function editBackground(index) {
     return;
   }
 
+
   const background =
     project.backgrounds[index];
 
+
   if (!background) return;
+
 
   const name =
     prompt(
@@ -1612,7 +2152,9 @@ function editBackground(index) {
       background.name
     );
 
+
   if (name === null) return;
+
 
   const description =
     prompt(
@@ -1620,78 +2162,35 @@ function editBackground(index) {
       background.description || ""
     );
 
+
   if (description === null) return;
+
 
   background.name =
     name.trim() ||
     background.name;
 
+
   background.description =
     description.trim();
 
+
   project.status =
     "Background updated";
+
 
   renderBackgrounds();
 
   updateProjectUI();
 
   saveProject();
-}
 
-
-/* =====================================================
-   CAPTIONS
-===================================================== */
-
-function addCaption() {
-
-  const input =
-    $("captionText");
-
-  if (!input) return;
-
-  const text =
-    input.value.trim();
-
-  if (!text) {
-
-    alert(
-      "Enter caption text first."
-    );
-
-    return;
-  }
-
-  if (!project.captions) {
-    project.captions = [];
-  }
-
-  project.captions.push({
-
-    id:
-      Date.now(),
-
-    text:
-      text
-  });
-
-  input.value = "";
-
-  project.status =
-    "Caption added";
-
-  saveProject();
-
-  alert(
-    "Caption added."
-  );
 }
 
 
 /* =====================================================
    SETTINGS
-===================================================== */
+   ===================================================== */
 
 function saveSettings() {
 
@@ -1702,71 +2201,87 @@ function saveSettings() {
         .value
         .trim();
 
+
     if (name) {
 
       project.name =
         name;
+
     }
+
   }
+
 
   if ($("videoResolution")) {
 
     project.resolution =
-      $("videoResolution")
-        .value;
+      $("videoResolution").value;
+
   }
+
 
   project.status =
     "Settings saved";
+
 
   updateProjectUI();
 
   saveProject();
 
+
   alert(
     "Settings saved."
   );
+
 }
 
 
 /* =====================================================
    EXPORT
-===================================================== */
+   ===================================================== */
 
 function exportVideo() {
 
   const status =
     $("exportStatus");
 
+
   project.status =
     "Export engine pending";
 
+
   updateProjectUI();
+
 
   if (status) {
 
     status.textContent =
       "Video export engine will be added in the next stage.";
+
   }
+
 }
 
 
 /* =====================================================
    INITIALIZE
-===================================================== */
+   ===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
   function() {
 
-    /* LOAD */
+
+    /* =================================================
+       LOAD PROJECT
+       ================================================= */
 
     loadProject();
 
 
     /* =================================================
        SIDEBAR
-    ================================================= */
+       ================================================= */
 
     document.querySelectorAll(
       ".nav-item"
@@ -1778,11 +2293,15 @@ document.addEventListener(
 
           event.preventDefault();
 
+
           const page =
             button.dataset.page;
 
+
           if (page) {
+
             showPage(page);
+
           }
 
         }
@@ -1793,7 +2312,7 @@ document.addEventListener(
 
     /* =================================================
        DASHBOARD BUTTONS
-    ================================================= */
+       ================================================= */
 
     document.querySelectorAll(
       ".dashboard-action"
@@ -1805,11 +2324,15 @@ document.addEventListener(
 
           event.preventDefault();
 
+
           const page =
             button.dataset.page;
 
+
           if (page) {
+
             showPage(page);
+
           }
 
         }
@@ -1820,7 +2343,7 @@ document.addEventListener(
 
     /* =================================================
        NEW PROJECT
-    ================================================= */
+       ================================================= */
 
     if ($("newProjectBtn")) {
 
@@ -1840,7 +2363,7 @@ document.addEventListener(
 
     /* =================================================
        CLOSE MODAL
-    ================================================= */
+       ================================================= */
 
     if ($("closeModalBtn")) {
 
@@ -1852,7 +2375,7 @@ document.addEventListener(
 
     /* =================================================
        CREATE PROJECT
-    ================================================= */
+       ================================================= */
 
     if ($("createProjectBtn")) {
 
@@ -1864,7 +2387,7 @@ document.addEventListener(
 
     /* =================================================
        STORY
-    ================================================= */
+       ================================================= */
 
     if ($("saveStoryBtn")) {
 
@@ -1884,7 +2407,7 @@ document.addEventListener(
 
     /* =================================================
        SCENES
-    ================================================= */
+       ================================================= */
 
     if ($("addSceneBtn")) {
 
@@ -1896,7 +2419,7 @@ document.addEventListener(
 
     /* =================================================
        CHARACTERS
-    ================================================= */
+       ================================================= */
 
     if ($("addCharacterBtn")) {
 
@@ -1907,20 +2430,8 @@ document.addEventListener(
 
 
     /* =================================================
-       BACKGROUNDS
-    ================================================= */
-
-    if ($("addBackgroundBtn")) {
-
-      $("addBackgroundBtn").onclick =
-        addBackground;
-
-    }
-
-
-    /* =================================================
        CAPTIONS
-    ================================================= */
+       ================================================= */
 
     if ($("addCaptionBtn")) {
 
@@ -1931,8 +2442,20 @@ document.addEventListener(
 
 
     /* =================================================
+       BACKGROUNDS
+       ================================================= */
+
+    if ($("addBackgroundBtn")) {
+
+      $("addBackgroundBtn").onclick =
+        addBackground;
+
+    }
+
+
+    /* =================================================
        SETTINGS
-    ================================================= */
+       ================================================= */
 
     if ($("saveSettingsBtn")) {
 
@@ -1944,7 +2467,7 @@ document.addEventListener(
 
     /* =================================================
        EXPORT
-    ================================================= */
+       ================================================= */
 
     if ($("exportVideoBtn")) {
 
@@ -1956,7 +2479,7 @@ document.addEventListener(
 
     /* =================================================
        SAVE PROJECT BUTTON
-    ================================================= */
+       ================================================= */
 
     if ($("saveProjectBtn")) {
 
@@ -1968,10 +2491,11 @@ document.addEventListener(
 
     /* =================================================
        MODAL BACKGROUND CLICK
-    ================================================= */
+       ================================================= */
 
     const modal =
       $("newProjectModal");
+
 
     if (modal) {
 
@@ -1995,7 +2519,7 @@ document.addEventListener(
 
     /* =================================================
        KEYBOARD SAVE
-    ================================================= */
+       ================================================= */
 
     document.addEventListener(
       "keydown",
@@ -2019,13 +2543,15 @@ document.addEventListener(
 
     /* =================================================
        FINAL UI REFRESH
-    ================================================= */
+       ================================================= */
 
     updateProjectUI();
 
     renderScenes();
 
     renderCharacters();
+
+    renderCaptions();
 
     renderBackgrounds();
 
