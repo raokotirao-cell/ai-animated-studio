@@ -1748,4 +1748,131 @@ document.addEventListener(
         );
     }
 );
+/* =====================================================
+   SCENE EDITOR - AUTO REFRESH WHEN PAGE OPENS
+===================================================== */
 
+function openSceneEditor() {
+
+    refreshSceneEditor();
+
+    const sceneSelect = $("editorSceneSelect");
+
+    if (
+        sceneSelect &&
+        sceneSelect.value === "" &&
+        project.scenes.length > 0
+    ) {
+        sceneSelect.value = "0";
+
+        loadSceneIntoEditor(0);
+    }
+}
+
+
+/* =====================================================
+   NAVIGATION HOOK
+===================================================== */
+
+const originalShowPage = showPage;
+
+showPage = function (pageId) {
+
+    originalShowPage(pageId);
+
+    if (pageId === "editor") {
+        openSceneEditor();
+    }
+
+    if (pageId === "preview") {
+        updateAnimationPreview();
+    }
+};
+
+
+/* =====================================================
+   SIMPLE ANIMATION PREVIEW
+===================================================== */
+
+function updateAnimationPreview() {
+
+    const preview =
+        document.querySelector(
+            ".preview-placeholder"
+        );
+
+    if (!preview) {
+        return;
+    }
+
+    if (
+        !Array.isArray(project.scenes) ||
+        project.scenes.length === 0
+    ) {
+
+        preview.innerHTML = `
+            <div>▶️</div>
+            <h3>No Scenes</h3>
+            <p>Create scenes first.</p>
+        `;
+
+        return;
+    }
+
+    preview.innerHTML = `
+        <div style="font-size:48px;">
+            🎬
+        </div>
+
+        <h3>
+            ${escapeHTML(
+                project.name ||
+                "AI Animated Project"
+            )}
+        </h3>
+
+        <p>
+            ${project.scenes.length}
+            scene(s) ready for preview.
+        </p>
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="previewFirstSceneBtn">
+                ▶️ Preview Scene
+            </button>
+
+        </div>
+    `;
+
+    const button =
+        $("previewFirstSceneBtn");
+
+    if (button) {
+
+        button.onclick =
+            function () {
+
+                const scene =
+                    project.scenes[0];
+
+                if (!scene) {
+                    return;
+                }
+
+                alert(
+                    "🎬 " +
+                    (scene.title || "Scene 1") +
+                    "\n\n" +
+                    (scene.description || "") +
+                    "\n\n" +
+                    "Duration: " +
+                    (scene.duration || 5) +
+                    " seconds"
+                );
+            };
+    }
+}
