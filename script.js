@@ -3515,3 +3515,269 @@ function setupAnimationControls() {
 ===================================================== */
 
 setupAnimationControls();
+/* =====================================================
+   CAPTIONS
+===================================================== */
+
+function refreshCaptionScenes() {
+
+    const select = $("captionSceneSelect");
+
+    if (!select) return;
+
+    select.innerHTML = `
+        <option value="">
+            Select a scene
+        </option>
+    `;
+
+    if (!project.scenes) {
+        project.scenes = [];
+    }
+
+    project.scenes.forEach(function(scene, index) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            "Scene " +
+            (index + 1) +
+            " - " +
+            (scene.title ||
+             scene.name ||
+             "Scene");
+
+        select.appendChild(option);
+
+    });
+
+}
+function renderCaptions() {
+
+    const list = $("captionList");
+
+    if (!list) return;
+
+    if (!project.captions) {
+        project.captions = [];
+    }
+
+    if (project.captions.length === 0) {
+
+        list.innerHTML = `
+            <div class="empty-state">
+                <div>💬</div>
+                <h3>No captions yet</h3>
+                <p>Add your first caption.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    list.innerHTML = "";
+
+    project.captions.forEach(function(caption, index) {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "character-card";
+
+        card.innerHTML = `
+            <div>💬</div>
+
+            <strong>
+                ${escapeHTML(caption.text)}
+            </strong>
+
+            <p>
+                Scene ${Number(caption.sceneIndex) + 1}
+                |
+                ${caption.start}s -
+                ${caption.end}s
+            </p>
+
+            <button
+                type="button"
+                class="secondary-btn"
+                data-delete-caption="${index}">
+                🗑️ Delete
+            </button>
+        `;
+
+        list.appendChild(card);
+
+    });
+
+    list
+        .querySelectorAll("[data-delete-caption]")
+        .forEach(function(button) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    const index =
+                        Number(
+                            button.dataset.deleteCaption
+                        );
+
+                    project.captions.splice(index, 1);
+
+                    project.status =
+                        "Caption deleted";
+
+                    renderCaptions();
+                    saveProject();
+
+                }
+            );
+
+        });
+
+}
+
+function addCaption() {
+
+    const sceneSelect =
+        $("captionSceneSelect");
+
+    const textInput =
+        $("captionText");
+
+    const startInput =
+        $("captionStart");
+
+    const endInput =
+        $("captionEnd");
+
+    if (!sceneSelect || sceneSelect.value === "") {
+
+        alert("Please select a scene first.");
+
+        return;
+    }
+
+    const text =
+        textInput.value.trim();
+
+    if (!text) {
+
+        alert("Please enter caption text.");
+
+        return;
+    }
+
+    const start =
+        Number(startInput.value);
+
+    const end =
+        Number(endInput.value);
+
+    if (end <= start) {
+
+        alert(
+            "End time must be greater than start time."
+        );
+
+        return;
+    }
+
+    if (!project.captions) {
+        project.captions = [];
+    }
+
+    project.captions.push({
+
+        id: Date.now(),
+
+        sceneIndex:
+            Number(sceneSelect.value),
+
+        text: text,
+
+        start: start,
+
+        end: end
+
+    });
+
+    project.status =
+        "Caption added";
+
+    renderCaptions();
+    saveProject();
+
+    textInput.value = "";
+
+    const status =
+        $("captionStatus");
+
+    if (status) {
+
+        status.textContent =
+            "Caption added successfully.";
+
+    }
+
+}
+
+function clearCaptions() {
+
+    if (!project.captions ||
+        project.captions.length === 0) {
+
+        return;
+    }
+
+    if (!confirm("Clear all captions?")) {
+
+        return;
+    }
+
+    project.captions = [];
+
+    project.status =
+        "Captions cleared";
+
+    renderCaptions();
+    saveProject();
+
+}
+
+const addCaptionBtn =
+    $("addCaptionBtn");
+
+if (addCaptionBtn) {
+
+    addCaptionBtn.addEventListener(
+        "click",
+        addCaption
+    );
+
+}
+
+
+const clearCaptionsBtn =
+    $("clearCaptionsBtn");
+
+if (clearCaptionsBtn) {
+
+    clearCaptionsBtn.addEventListener(
+        "click",
+        clearCaptions
+    );
+
+}
+if (page === "captions") {
+
+    refreshCaptionScenes();
+
+    renderCaptions();
+
+}
+
