@@ -2997,3 +2997,214 @@ function updateAnimationPreview() {
             };
     }
 }
+/* =====================================================
+   MUSIC & SOUND EFFECTS
+===================================================== */
+
+let musicObjectURL = null;
+let sfxObjectURL = null;
+
+
+/* -------------------------
+   MUSIC FILE
+------------------------- */
+
+function setupMusicControls() {
+
+    const musicFile = $("musicFile");
+    const musicAudio = $("musicAudio");
+    const playMusicBtn = $("playMusicBtn");
+    const stopMusicBtn = $("stopMusicBtn");
+    const musicVolume = $("musicVolume");
+    const musicVolumeValue = $("musicVolumeValue");
+    const musicStatus = $("musicStatus");
+
+    if (!musicFile || !musicAudio) return;
+
+
+    musicFile.addEventListener("change", function () {
+
+        const file = musicFile.files[0];
+
+        if (!file) return;
+
+        if (musicObjectURL) {
+            URL.revokeObjectURL(musicObjectURL);
+        }
+
+        musicObjectURL = URL.createObjectURL(file);
+
+        musicAudio.src = musicObjectURL;
+        musicAudio.load();
+
+        musicStatus.textContent =
+            "Music loaded: " + file.name;
+
+    });
+
+
+    if (playMusicBtn) {
+
+        playMusicBtn.addEventListener("click", function () {
+
+            if (!musicAudio.src) {
+
+                musicStatus.textContent =
+                    "Please select a music file first.";
+
+                return;
+            }
+
+            musicAudio.play()
+                .then(function () {
+
+                    musicStatus.textContent =
+                        "Playing music.";
+
+                })
+                .catch(function () {
+
+                    musicStatus.textContent =
+                        "Unable to play music.";
+
+                });
+
+        });
+
+    }
+
+
+    if (stopMusicBtn) {
+
+        stopMusicBtn.addEventListener("click", function () {
+
+            musicAudio.pause();
+            musicAudio.currentTime = 0;
+
+            musicStatus.textContent =
+                "Music stopped.";
+
+        });
+
+    }
+
+
+    if (musicVolume) {
+
+        musicAudio.volume =
+            Number(musicVolume.value);
+
+        musicVolume.addEventListener("input", function () {
+
+            const volume =
+                Number(musicVolume.value);
+
+            musicAudio.volume = volume;
+
+            if (musicVolumeValue) {
+
+                musicVolumeValue.textContent =
+                    Math.round(volume * 100) + "%";
+
+            }
+
+        });
+
+    }
+
+}
+
+
+/* -------------------------
+   SOUND EFFECTS
+------------------------- */
+
+function setupSfxControls() {
+
+    const sfxFile = $("sfxFile");
+    const sfxAudio = $("sfxAudio");
+    const playSfxBtn = $("playSfxBtn");
+    const stopSfxBtn = $("stopSfxBtn");
+    const sfxStatus = $("sfxStatus");
+
+    if (!sfxFile || !sfxAudio) return;
+
+
+    sfxFile.addEventListener("change", function () {
+
+        const file = sfxFile.files[0];
+
+        if (!file) return;
+
+        if (sfxObjectURL) {
+            URL.revokeObjectURL(sfxObjectURL);
+        }
+
+        sfxObjectURL =
+            URL.createObjectURL(file);
+
+        sfxAudio.src = sfxObjectURL;
+        sfxAudio.load();
+
+        sfxStatus.textContent =
+            "Sound effect loaded: " + file.name;
+
+    });
+
+
+    if (playSfxBtn) {
+
+        playSfxBtn.addEventListener("click", function () {
+
+            if (!sfxAudio.src) {
+
+                sfxStatus.textContent =
+                    "Please select a sound effect first.";
+
+                return;
+            }
+
+            sfxAudio.currentTime = 0;
+
+            sfxAudio.play()
+                .then(function () {
+
+                    sfxStatus.textContent =
+                        "Playing sound effect.";
+
+                })
+                .catch(function () {
+
+                    sfxStatus.textContent =
+                        "Unable to play sound effect.";
+
+                });
+
+        });
+
+    }
+
+
+    if (stopSfxBtn) {
+
+        stopSfxBtn.addEventListener("click", function () {
+
+            sfxAudio.pause();
+            sfxAudio.currentTime = 0;
+
+            sfxStatus.textContent =
+                "Sound effect stopped.";
+
+        });
+
+    }
+
+}
+
+
+/* -------------------------
+   START MUSIC / SFX
+------------------------- */
+
+setupMusicControls();
+setupSfxControls();
