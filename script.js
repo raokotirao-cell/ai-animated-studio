@@ -155,6 +155,31 @@ function saveProject() {
         alert("Unable to save project.");
     }
 }
+/* =====================================================
+   SAVE PROJECT BUTTON
+===================================================== */
+
+const saveProjectBtn = $("saveProjectBtn");
+
+if (saveProjectBtn) {
+
+    saveProjectBtn.addEventListener(
+        "click",
+        function () {
+
+            saveProject();
+
+            const status =
+                $("saveProjectStatus");
+
+            if (status) {
+                status.textContent =
+                    "Project saved successfully.";
+            }
+
+        }
+    );
+}
 
 /* =====================================================
    LOAD PROJECT
