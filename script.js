@@ -1890,56 +1890,317 @@ function saveSettings() {
 
     alert("Settings saved.");
 }
+/* =====================================================
+VOICE / NARRATION
+===================================================== */
+
+let voiceRecorder = null;
+let voiceChunks = [];
+let recordedVoiceUrl = "";
+
 
 /* =====================================================
-   VOICE
+GENERATE VOICE
+Browser Text-to-Speech
 ===================================================== */
 
 function generateVoice() {
-    if (!project.name) {
-        alert(
-            "Please create a project first."
-        );
 
+    if (!project.name) {
+        alert("Please create a project first.");
         openNewProject();
         return;
     }
 
-    const text = $("voiceText")
-        ? $("voiceText").value.trim()
-        : "";
+    const input = $("voiceText");
 
-    if (!text) {
-        alert(
-            "Enter narration text first."
-        );
-
+    if (!input) {
+        alert("Voice text input not found.");
         return;
     }
 
-    project.status =
-        "Voice generation pending";
+    const text = input.value.trim();
 
-    updateProjectUI();
+    if (!text) {
+        alert("Enter narration text first.");
+        return;
+    }
 
-    alert(
-        "Voice generation engine will be added in the next stage."
+    if (!("speechSynthesis" in window)) {
+        alert(
+            "Your browser does not support voice generation."
+        );
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.rate = 1;
+    speech.pitch = 1;
+    speech.volume = 1;
+
+    speech.onstart = function () {
+
+        project.status =
+            "Voice playing";
+
+        updateProjectUI();
+    };
+
+    speech.onend = function () {
+
+        project.status =
+            "Voice completed";
+
+        updateProjectUI();
+    };
+
+    speech.onerror = function () {
+
+        project.status =
+            "Voice error";
+
+        updateProjectUI();
+
+        alert(
+            "Voice generation failed."
+        );
+    };
+
+    window.speechSynthesis.speak(
+        speech
     );
 }
 
-function recordVoice() {
-    if (!project.name) {
-        alert(
-            "Please create a project first."
-        );
 
+/* =====================================================
+RECORD VOICE
+===================================================== */
+
+async function recordVoice() {
+
+    if (!project.name) {
+        alert("Please create a project first.");
         openNewProject();
         return;
     }
 
-    alert(
-        "Voice recording module will be added in the next stage."
-    );
+    if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ) {
+        alert(
+            "Voice recording is not supported by this browser."
+        );
+        return;
+    }
+
+    /* =========================
+       STOP CURRENT RECORDING
+    ========================= */
+
+    if (
+        voiceRecorder &&
+        voiceRecorder.state === "recording"
+    ) {
+
+        voiceRecorder.stop();
+
+        return;
+    }
+
+
+    /* =========================
+       MICROPHONE
+    ========================= */
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
+
+        voiceChunks = [];
+
+        voiceRecorder =
+            new MediaRecorder(stream);
+
+
+        voiceRecorder.ondataavailable =
+            function (event) {
+
+                if (event.data.size > 0) {
+                    voiceChunks.push(
+                        event.data
+                    );
+                }
+            };
+
+
+        voiceRecorder.onstop =
+            function () {
+
+                const blob =
+                    new Blob(
+                        voiceChunks,
+                        {
+                            type:
+                                voiceRecorder.mimeType ||
+                                "audio/webm"
+                        }
+                    );
+
+                if (recordedVoiceUrl) {
+                    URL.revokeObjectURL(
+                        recordedVoiceUrl
+                    );
+                }
+
+                recordedVoiceUrl =
+                    URL.createObjectURL(blob);
+
+
+                /* =========================
+                   AUDIO PREVIEW
+                ========================= */
+
+                let audio =
+                    $("recordedVoicePreview");
+
+                if (!audio) {
+
+                    audio =
+                        document.createElement(
+                            "audio"
+                        );
+
+                    audio.id =
+                        "recordedVoicePreview";
+
+                    audio.controls = true;
+
+                    audio.style.width =
+                        "100%";
+
+                    const voiceModule =
+                        $("voice");
+
+                    if (voiceModule) {
+                        voiceModule
+                            .querySelector(
+                                ".module-card"
+                            )
+                            ?.appendChild(audio);
+                    }
+                }
+
+                audio.src =
+                    recordedVoiceUrl;
+
+
+                /* =========================
+                   DOWNLOAD
+                ========================= */
+
+                let download =
+                    $("downloadRecordedVoice");
+
+                if (!download) {
+
+                    download =
+                        document.createElement(
+                            "a"
+                        );
+
+                    download.id =
+                        "downloadRecordedVoice";
+
+                    download.className =
+                        "secondary-btn";
+
+                    download.textContent =
+                        "⬇️ Download Voice";
+
+                    download.style.display =
+                        "inline-block";
+
+                    download.style.marginTop =
+                        "12px";
+
+                    const voiceModule =
+                        $("voice");
+
+                    if (voiceModule) {
+                        voiceModule
+                            .querySelector(
+                                ".module-card"
+                            )
+                            ?.appendChild(download);
+                    }
+                }
+
+                download.href =
+                    recordedVoiceUrl;
+
+                download.download =
+                    "recorded-voice.webm";
+
+
+                project.status =
+                    "Voice recorded";
+
+                updateProjectUI();
+
+                stream
+                    .getTracks()
+                    .forEach(
+                        function (track) {
+                            track.stop();
+                        }
+                    );
+
+                alert(
+                    "Voice recording completed."
+                );
+            };
+
+
+        voiceRecorder.onstart =
+            function () {
+
+                project.status =
+                    "Recording voice";
+
+                updateProjectUI();
+
+                const button =
+                    $("recordVoiceBtn");
+
+                if (button) {
+
+                    button.textContent =
+                        "⏹️ Stop Recording";
+                }
+            };
+
+
+        voiceRecorder.start();
+
+    } catch (error) {
+
+        console.error(
+            "Voice recording error:",
+            error
+        );
+
+        alert(
+            "Microphone permission was denied or recording failed."
+        );
+    }
 }
 
 /* =====================================================
