@@ -64,7 +64,14 @@ function showPage(pageId) {
             button.classList.remove("active");
         }
     });
+   
+if (page === "captions") {
 
+    refreshCaptionScenes();
+
+    renderCaptions();
+
+}
     window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -3773,11 +3780,5 @@ if (clearCaptionsBtn) {
     );
 
 }
-if (page === "captions") {
 
-    refreshCaptionScenes();
-
-    renderCaptions();
-
-}
 
