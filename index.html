@@ -1156,35 +1156,95 @@
       ====================================== -->
       <section class="page" id="captions">
 
-        <div class="page-header">
-
-          <div>
-            <h2>💬 Captions / Subtitles</h2>
-
-            <p>
-              Add subtitles and captions to your video.
-            </p>
-          </div>
-
-        </div>
-
         <div class="module-card">
 
-          <label for="captionText">
-            Caption Text
-          </label>
+  <h3>💬 Add Caption</h3>
 
-          <textarea
-            id="captionText"
-            rows="5"
-            placeholder="Enter caption text..."
-          ></textarea>
+  <label for="captionText">
+    Caption Text
+  </label>
 
-          <button class="primary-btn" id="addCaptionBtn">
-            + Add Caption
-          </button>
+  <textarea
+    id="captionText"
+    rows="4"
+    placeholder="Enter caption text..."
+  ></textarea>
 
-        </div>
+
+  <label for="captionStart">
+    ▶️ Start Time (seconds)
+  </label>
+
+  <input
+    id="captionStart"
+    type="number"
+    min="0"
+    step="0.1"
+    value="0"
+  >
+
+
+  <label for="captionEnd">
+    ⏹️ End Time (seconds)
+  </label>
+
+  <input
+    id="captionEnd"
+    type="number"
+    min="0"
+    step="0.1"
+    value="5"
+  >
+
+
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="addCaptionBtn">
+      + Add Caption
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="clearCaptionsBtn">
+      🗑️ Clear All
+    </button>
+
+  </div>
+
+
+  <div
+    id="captionStatus"
+    class="status-message">
+  </div>
+
+</div>
+
+
+<div class="module-card">
+
+  <h3>📋 Caption List</h3>
+
+  <div id="captionList">
+
+    <div class="empty-state">
+
+      <div>💬</div>
+
+      <h3>No captions yet</h3>
+
+      <p>
+        Add your first caption.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
 
       </section>
 
