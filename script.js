@@ -1,4 +1,3 @@
-
 alert("SCRIPT WORKING");
 
 "use strict";
@@ -46,7 +45,8 @@ function escapeHTML(value) {
 ===================================================== */
 
 function showPage(pageId) {
-  document.querySelectorAll(".page").forEach(function (page) {
+
+  document.querySelectorAll(".page").forEach(function(page) {
     page.classList.remove("active");
   });
 
@@ -56,12 +56,14 @@ function showPage(pageId) {
     page.classList.add("active");
   }
 
-  document.querySelectorAll(".nav-item").forEach(function (button) {
+  document.querySelectorAll(".nav-item").forEach(function(button) {
+
     if (button.dataset.page === pageId) {
       button.classList.add("active");
     } else {
       button.classList.remove("active");
     }
+
   });
 
   window.scrollTo(0, 0);
@@ -72,6 +74,7 @@ function showPage(pageId) {
 ===================================================== */
 
 function updateProjectUI() {
+
   const name = $("projectNameDisplay");
   const scenes = $("sceneCountDisplay");
   const characters = $("characterCountDisplay");
@@ -117,7 +120,9 @@ function updateProjectUI() {
 ===================================================== */
 
 function saveProject() {
+
   try {
+
     localStorage.setItem(
       "aiAnimatedStudioProject",
       JSON.stringify(project)
@@ -128,7 +133,12 @@ function saveProject() {
     updateProjectUI();
 
   } catch (error) {
-    console.error("Save error:", error);
+
+    console.error(
+      "Save error:",
+      error
+    );
+
   }
 }
 
@@ -137,14 +147,18 @@ function saveProject() {
 ===================================================== */
 
 function loadProject() {
+
   try {
+
     const saved =
       localStorage.getItem(
         "aiAnimatedStudioProject"
       );
 
     if (!saved) {
+
       updateProjectUI();
+
       return;
     }
 
@@ -152,6 +166,7 @@ function loadProject() {
       JSON.parse(saved);
 
     project = {
+
       name:
         data.name || "",
 
@@ -189,17 +204,24 @@ function loadProject() {
     };
 
     updateStoryUI();
+
     renderScenes();
+
     renderCharacters();
+
     renderCaptions();
+
     renderBackgrounds();
+
     updateProjectUI();
 
   } catch (error) {
+
     console.error(
       "Load error:",
       error
     );
+
   }
 }
 
@@ -208,10 +230,13 @@ function loadProject() {
 ===================================================== */
 
 function openNewProject() {
+
   const modal =
     $("newProjectModal");
 
-  if (!modal) return;
+  if (!modal) {
+    return;
+  }
 
   modal.classList.remove("hidden");
 
@@ -219,6 +244,7 @@ function openNewProject() {
     $("newProjectName");
 
   if (input) {
+
     input.value =
       project.name || "";
 
@@ -227,6 +253,7 @@ function openNewProject() {
 }
 
 function closeNewProject() {
+
   const modal =
     $("newProjectModal");
 
@@ -236,38 +263,57 @@ function closeNewProject() {
 }
 
 function createProject() {
+
   const input =
     $("newProjectName");
 
-  if (!input) return;
+  if (!input) {
+    return;
+  }
 
   const name =
     input.value.trim();
 
   if (!name) {
+
     alert(
       "Please enter a project name."
     );
+
     return;
   }
 
   project = {
+
     name: name,
+
     storyTitle: "",
+
     storyText: "",
+
     scenes: [],
+
     characters: [],
+
     backgrounds: [],
+
     captions: [],
+
     resolution: "720p",
+
     status: "Ready"
   };
 
   updateProjectUI();
+
   updateStoryUI();
+
   renderScenes();
+
   renderCharacters();
+
   renderCaptions();
+
   renderBackgrounds();
 
   saveProject();
@@ -282,24 +328,30 @@ function createProject() {
 ===================================================== */
 
 function updateStoryUI() {
+
   if ($("storyTitle")) {
+
     $("storyTitle").value =
       project.storyTitle || "";
   }
 
   if ($("storyText")) {
+
     $("storyText").value =
       project.storyText || "";
   }
 }
 
 function saveStory() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
 
     openNewProject();
+
     return;
   }
 
@@ -328,12 +380,15 @@ function saveStory() {
 ===================================================== */
 
 function createScenes() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
 
     openNewProject();
+
     return;
   }
 
@@ -343,9 +398,11 @@ function createScenes() {
       : "";
 
   if (!story) {
+
     alert(
       "Please write a story first."
     );
+
     return;
   }
 
@@ -360,24 +417,27 @@ function createScenes() {
   let parts =
     story
       .split(/\n\s*\n/)
-      .map(function (text) {
+      .map(function(text) {
         return text.trim();
       })
       .filter(Boolean);
 
   if (parts.length <= 1) {
+
     parts =
       story
         .split(/(?<=[.!?])\s+/)
-        .map(function (text) {
+        .map(function(text) {
           return text.trim();
         })
         .filter(Boolean);
   }
 
   project.scenes =
-    parts.map(function (text, index) {
+    parts.map(function(text, index) {
+
       return {
+
         id:
           Date.now() + index,
 
@@ -408,13 +468,16 @@ function createScenes() {
         animation:
           "None"
       };
+
     });
 
   project.status =
     "Scenes created";
 
   renderScenes();
+
   updateProjectUI();
+
   saveProject();
 
   showPage("scenes");
@@ -425,12 +488,15 @@ function createScenes() {
 ===================================================== */
 
 function addScene() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
 
     openNewProject();
+
     return;
   }
 
@@ -438,6 +504,7 @@ function addScene() {
     project.scenes.length + 1;
 
   project.scenes.push({
+
     id:
       Date.now(),
 
@@ -473,7 +540,9 @@ function addScene() {
     "Scene added";
 
   renderScenes();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -482,16 +551,20 @@ function addScene() {
 ===================================================== */
 
 function renderScenes() {
+
   const list =
     $("sceneList");
 
-  if (!list) return;
+  if (!list) {
+    return;
+  }
 
   if (!Array.isArray(project.scenes)) {
     project.scenes = [];
   }
 
   if (project.scenes.length === 0) {
+
     list.innerHTML = `
       <div class="empty-state">
         <div>🎬</div>
@@ -506,7 +579,7 @@ function renderScenes() {
   list.innerHTML = "";
 
   project.scenes.forEach(
-    function (scene, index) {
+    function(scene, index) {
 
       const card =
         document.createElement("div");
@@ -515,9 +588,11 @@ function renderScenes() {
         "scene-card";
 
       card.innerHTML = `
+
         <div class="scene-card-header">
 
           <div>
+
             <h3>
               🎬 Scene ${index + 1}
             </h3>
@@ -528,6 +603,7 @@ function renderScenes() {
                 "Untitled Scene"
               )}
             </span>
+
           </div>
 
           <button
@@ -782,11 +858,11 @@ function renderScenes() {
 
   list.querySelectorAll(
     "[data-save-scene]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         saveScene(
           Number(
@@ -803,11 +879,11 @@ function renderScenes() {
 
   list.querySelectorAll(
     "[data-delete-scene]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         const index =
           Number(
@@ -833,7 +909,9 @@ function renderScenes() {
           "Scene deleted";
 
         renderScenes();
+
         updateProjectUI();
+
         saveProject();
 
       }
@@ -847,10 +925,13 @@ function renderScenes() {
 ===================================================== */
 
 function saveScene(index) {
+
   const scene =
     project.scenes[index];
 
-  if (!scene) return;
+  if (!scene) {
+    return;
+  }
 
   const titleInput =
     document.querySelector(
@@ -906,9 +987,7 @@ function saveScene(index) {
     durationInput
       ? Math.max(
           1,
-          Number(
-            durationInput.value
-          ) || 5
+          Number(durationInput.value) || 5
         )
       : 5;
 
@@ -921,7 +1000,7 @@ function saveScene(index) {
     charactersInput
       ? charactersInput.value
           .split(",")
-          .map(function (name) {
+          .map(function(name) {
             return name.trim();
           })
           .filter(Boolean)
@@ -946,7 +1025,9 @@ function saveScene(index) {
     "Scene saved";
 
   renderScenes();
+
   updateProjectUI();
+
   saveProject();
 
   alert(
@@ -961,26 +1042,33 @@ function saveScene(index) {
 ===================================================== */
 
 function editScene(index) {
+
   const scene =
     project.scenes[index];
 
-  if (!scene) return;
+  if (!scene) {
+    return;
+  }
 
   const title =
     prompt(
       "Scene title:",
-      scene.title || ""
+      scene.title
     );
 
-  if (title === null) return;
+  if (title === null) {
+    return;
+  }
 
   const description =
     prompt(
       "Scene description:",
-      scene.description || ""
+      scene.description
     );
 
-  if (description === null) return;
+  if (description === null) {
+    return;
+  }
 
   scene.title =
     title.trim() ||
@@ -993,7 +1081,9 @@ function editScene(index) {
     "Scene updated";
 
   renderScenes();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -1002,10 +1092,13 @@ function editScene(index) {
 ===================================================== */
 
 function renumberScenes() {
+
   project.scenes.forEach(
-    function (scene, index) {
+    function(scene, index) {
+
       scene.number =
         index + 1;
+
     }
   );
 }
@@ -1015,12 +1108,15 @@ function renumberScenes() {
 ===================================================== */
 
 function addCharacter() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
 
     openNewProject();
+
     return;
   }
 
@@ -1033,7 +1129,12 @@ function addCharacter() {
     return;
   }
 
+  if (!Array.isArray(project.characters)) {
+    project.characters = [];
+  }
+
   project.characters.push({
+
     id:
       Date.now(),
 
@@ -1051,7 +1152,9 @@ function addCharacter() {
     "Character added";
 
   renderCharacters();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -1060,32 +1163,25 @@ function addCharacter() {
 ===================================================== */
 
 function renderCharacters() {
+
   const list =
     $("characterList");
 
-  if (!list) return;
+  if (!list) {
+    return;
+  }
 
   if (!Array.isArray(project.characters)) {
     project.characters = [];
   }
 
-  if (
-    project.characters.length === 0
-  ) {
+  if (project.characters.length === 0) {
 
     list.innerHTML = `
       <div class="empty-state">
-
         <div>👤</div>
-
-        <h3>
-          No characters yet
-        </h3>
-
-        <p>
-          Add your first character.
-        </p>
-
+        <h3>No characters yet</h3>
+        <p>Add your first character.</p>
       </div>
     `;
 
@@ -1095,7 +1191,7 @@ function renderCharacters() {
   list.innerHTML = "";
 
   project.characters.forEach(
-    function (character, index) {
+    function(character, index) {
 
       const card =
         document.createElement("div");
@@ -1104,6 +1200,7 @@ function renderCharacters() {
         "character-card";
 
       card.innerHTML = `
+
         <div class="character-avatar">
           ${escapeHTML(
             character.emoji || "👤"
@@ -1112,7 +1209,7 @@ function renderCharacters() {
 
         <h3>
           ${escapeHTML(
-            character.name || "Unnamed"
+            character.name
           )}
         </h3>
 
@@ -1150,11 +1247,11 @@ function renderCharacters() {
 
   list.querySelectorAll(
     "[data-edit-character]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         editCharacter(
           Number(
@@ -1171,11 +1268,11 @@ function renderCharacters() {
 
   list.querySelectorAll(
     "[data-delete-character]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         const index =
           Number(
@@ -1199,7 +1296,9 @@ function renderCharacters() {
           "Character deleted";
 
         renderCharacters();
+
         updateProjectUI();
+
         saveProject();
 
       }
@@ -1213,26 +1312,33 @@ function renderCharacters() {
 ===================================================== */
 
 function editCharacter(index) {
+
   const character =
     project.characters[index];
 
-  if (!character) return;
+  if (!character) {
+    return;
+  }
 
   const name =
     prompt(
       "Character name:",
-      character.name || ""
+      character.name
     );
 
-  if (name === null) return;
+  if (name === null) {
+    return;
+  }
 
   const description =
     prompt(
       "Character description:",
-      character.description || ""
+      character.description
     );
 
-  if (description === null) return;
+  if (description === null) {
+    return;
+  }
 
   character.name =
     name.trim() ||
@@ -1245,7 +1351,9 @@ function editCharacter(index) {
     "Character updated";
 
   renderCharacters();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -1254,12 +1362,15 @@ function editCharacter(index) {
 ===================================================== */
 
 function addCaption() {
+
   if (!project.name) {
+
     alert(
       "Please create a project first."
     );
 
     openNewProject();
+
     return;
   }
 
@@ -1267,9 +1378,11 @@ function addCaption() {
     $("captionText");
 
   if (!input) {
+
     alert(
       "Caption input not found."
     );
+
     return;
   }
 
@@ -1277,17 +1390,20 @@ function addCaption() {
     input.value.trim();
 
   if (!text) {
+
     alert(
       "Enter caption text first."
     );
+
     return;
   }
 
-  if (!project.captions) {
+  if (!Array.isArray(project.captions)) {
     project.captions = [];
   }
 
   project.captions.push({
+
     id:
       Date.now(),
 
@@ -1301,7 +1417,9 @@ function addCaption() {
     "Caption added";
 
   renderCaptions();
+
   updateProjectUI();
+
   saveProject();
 
   alert(
@@ -1314,32 +1432,25 @@ function addCaption() {
 ===================================================== */
 
 function renderCaptions() {
+
   const list =
     $("captionList");
 
-  if (!list) return;
+  if (!list) {
+    return;
+  }
 
   if (!Array.isArray(project.captions)) {
     project.captions = [];
   }
 
-  if (
-    project.captions.length === 0
-  ) {
+  if (project.captions.length === 0) {
 
     list.innerHTML = `
       <div class="empty-state">
-
         <div>💬</div>
-
-        <h3>
-          No captions yet
-        </h3>
-
-        <p>
-          Add your first caption.
-        </p>
-
+        <h3>No captions yet</h3>
+        <p>Add your first caption.</p>
       </div>
     `;
 
@@ -1349,7 +1460,7 @@ function renderCaptions() {
   list.innerHTML = "";
 
   project.captions.forEach(
-    function (caption, index) {
+    function(caption, index) {
 
       const card =
         document.createElement("div");
@@ -1358,6 +1469,7 @@ function renderCaptions() {
         "character-card";
 
       card.innerHTML = `
+
         <div class="character-avatar">
           💬
         </div>
@@ -1368,7 +1480,7 @@ function renderCaptions() {
 
         <p>
           ${escapeHTML(
-            caption.text || ""
+            caption.text
           )}
         </p>
 
@@ -1399,11 +1511,11 @@ function renderCaptions() {
 
   list.querySelectorAll(
     "[data-edit-caption]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         editCaption(
           Number(
@@ -1420,11 +1532,11 @@ function renderCaptions() {
 
   list.querySelectorAll(
     "[data-delete-caption]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         const index =
           Number(
@@ -1448,7 +1560,9 @@ function renderCaptions() {
           "Caption deleted";
 
         renderCaptions();
+
         updateProjectUI();
+
         saveProject();
 
       }
@@ -1462,6 +1576,7 @@ function renderCaptions() {
 ===================================================== */
 
 function editCaption(index) {
+
   if (!project.captions) {
     return;
   }
@@ -1476,7 +1591,7 @@ function editCaption(index) {
   const text =
     prompt(
       "Caption text:",
-      caption.text || ""
+      caption.text
     );
 
   if (text === null) {
@@ -1499,7 +1614,9 @@ function editCaption(index) {
     "Caption updated";
 
   renderCaptions();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -1508,6 +1625,7 @@ function editCaption(index) {
 ===================================================== */
 
 function addBackground() {
+
   if (!project.name) {
 
     alert(
@@ -1528,7 +1646,7 @@ function addBackground() {
     return;
   }
 
-  if (!project.backgrounds) {
+  if (!Array.isArray(project.backgrounds)) {
     project.backgrounds = [];
   }
 
@@ -1551,7 +1669,9 @@ function addBackground() {
     "Background added";
 
   renderBackgrounds();
+
   updateProjectUI();
+
   saveProject();
 
   alert(
@@ -1564,32 +1684,25 @@ function addBackground() {
 ===================================================== */
 
 function renderBackgrounds() {
+
   const list =
     $("backgroundList");
 
-  if (!list) return;
+  if (!list) {
+    return;
+  }
 
   if (!Array.isArray(project.backgrounds)) {
     project.backgrounds = [];
   }
 
-  if (
-    project.backgrounds.length === 0
-  ) {
+  if (project.backgrounds.length === 0) {
 
     list.innerHTML = `
       <div class="empty-state">
-
         <div>🌄</div>
-
-        <h3>
-          No backgrounds yet
-        </h3>
-
-        <p>
-          Add your first background.
-        </p>
-
+        <h3>No backgrounds yet</h3>
+        <p>Add your first background.</p>
       </div>
     `;
 
@@ -1599,7 +1712,7 @@ function renderBackgrounds() {
   list.innerHTML = "";
 
   project.backgrounds.forEach(
-    function (background, index) {
+    function(background, index) {
 
       const card =
         document.createElement("div");
@@ -1617,7 +1730,7 @@ function renderBackgrounds() {
 
         <h3>
           ${escapeHTML(
-            background.name || "Unnamed Background"
+            background.name
           )}
         </h3>
 
@@ -1645,22 +1758,24 @@ function renderBackgrounds() {
           </button>
 
         </div>
-
       `;
 
       list.appendChild(card);
+
     }
   );
 
-  /* EDIT BACKGROUND BUTTON */
+  /* =================================================
+     EDIT BACKGROUND BUTTON
+  ================================================= */
 
   list.querySelectorAll(
     "[data-edit-background]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         editBackground(
           Number(
@@ -1673,15 +1788,17 @@ function renderBackgrounds() {
 
   });
 
-  /* DELETE BACKGROUND BUTTON */
+  /* =================================================
+     DELETE BACKGROUND BUTTON
+  ================================================= */
 
   list.querySelectorAll(
     "[data-delete-background]"
-  ).forEach(function (button) {
+  ).forEach(function(button) {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
         const index =
           Number(
@@ -1705,7 +1822,9 @@ function renderBackgrounds() {
           "Background deleted";
 
         renderBackgrounds();
+
         updateProjectUI();
+
         saveProject();
 
       }
@@ -1719,6 +1838,7 @@ function renderBackgrounds() {
 ===================================================== */
 
 function editBackground(index) {
+
   if (!project.backgrounds) {
     return;
   }
@@ -1733,7 +1853,7 @@ function editBackground(index) {
   const name =
     prompt(
       "Background name:",
-      background.name || ""
+      background.name
     );
 
   if (name === null) {
@@ -1761,7 +1881,9 @@ function editBackground(index) {
     "Background updated";
 
   renderBackgrounds();
+
   updateProjectUI();
+
   saveProject();
 }
 
@@ -1785,6 +1907,7 @@ function saveSettings() {
   }
 
   if ($("videoResolution")) {
+
     project.resolution =
       $("videoResolution").value;
   }
@@ -1793,6 +1916,7 @@ function saveSettings() {
     "Settings saved";
 
   updateProjectUI();
+
   saveProject();
 
   alert(
@@ -1805,6 +1929,7 @@ function saveSettings() {
 ===================================================== */
 
 function exportVideo() {
+
   const status =
     $("exportStatus");
 
@@ -1814,6 +1939,7 @@ function exportVideo() {
   updateProjectUI();
 
   if (status) {
+
     status.textContent =
       "Video export engine will be added in the next stage.";
   }
@@ -1825,7 +1951,7 @@ function exportVideo() {
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
+  function() {
 
     /* =================================================
        LOAD PROJECT
@@ -1839,11 +1965,11 @@ document.addEventListener(
 
     document.querySelectorAll(
       ".nav-item"
-    ).forEach(function (button) {
+    ).forEach(function(button) {
 
       button.addEventListener(
         "click",
-        function (event) {
+        function(event) {
 
           event.preventDefault();
 
@@ -1865,11 +1991,11 @@ document.addEventListener(
 
     document.querySelectorAll(
       ".dashboard-action"
-    ).forEach(function (button) {
+    ).forEach(function(button) {
 
       button.addEventListener(
         "click",
-        function (event) {
+        function(event) {
 
           event.preventDefault();
 
@@ -1890,11 +2016,13 @@ document.addEventListener(
     ================================================= */
 
     if ($("newProjectBtn")) {
+
       $("newProjectBtn").onclick =
         openNewProject;
     }
 
     if ($("dashboardNewProject")) {
+
       $("dashboardNewProject").onclick =
         openNewProject;
     }
@@ -1904,6 +2032,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("closeModalBtn")) {
+
       $("closeModalBtn").onclick =
         closeNewProject;
     }
@@ -1913,6 +2042,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("createProjectBtn")) {
+
       $("createProjectBtn").onclick =
         createProject;
     }
@@ -1922,11 +2052,13 @@ document.addEventListener(
     ================================================= */
 
     if ($("saveStoryBtn")) {
+
       $("saveStoryBtn").onclick =
         saveStory;
     }
 
     if ($("storyToScenesBtn")) {
+
       $("storyToScenesBtn").onclick =
         createScenes;
     }
@@ -1936,6 +2068,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("addSceneBtn")) {
+
       $("addSceneBtn").onclick =
         addScene;
     }
@@ -1945,6 +2078,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("addCharacterBtn")) {
+
       $("addCharacterBtn").onclick =
         addCharacter;
     }
@@ -1954,6 +2088,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("addCaptionBtn")) {
+
       $("addCaptionBtn").onclick =
         addCaption;
     }
@@ -1963,6 +2098,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("addBackgroundBtn")) {
+
       $("addBackgroundBtn").onclick =
         addBackground;
     }
@@ -1972,6 +2108,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("saveSettingsBtn")) {
+
       $("saveSettingsBtn").onclick =
         saveSettings;
     }
@@ -1981,6 +2118,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("exportVideoBtn")) {
+
       $("exportVideoBtn").onclick =
         exportVideo;
     }
@@ -1990,6 +2128,7 @@ document.addEventListener(
     ================================================= */
 
     if ($("saveProjectBtn")) {
+
       $("saveProjectBtn").onclick =
         saveProject;
     }
@@ -2005,12 +2144,14 @@ document.addEventListener(
 
       modal.addEventListener(
         "click",
-        function (event) {
+        function(event) {
 
           if (
             event.target === modal
           ) {
+
             closeNewProject();
+
           }
 
         }
@@ -2024,7 +2165,7 @@ document.addEventListener(
 
     document.addEventListener(
       "keydown",
-      function (event) {
+      function(event) {
 
         if (
           (event.ctrlKey ||
@@ -2065,4 +2206,3 @@ document.addEventListener(
 
   }
 );
-
