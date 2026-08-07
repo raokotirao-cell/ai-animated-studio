@@ -1254,27 +1254,91 @@
       ====================================== -->
       <section class="page" id="preview">
 
-        <div class="page-header">
+        <div class="module-card">
 
-          <div>
-            <h2>▶️ Video Preview</h2>
+  <h3>🎬 Animation Preview</h3>
 
-            <p>
-              Preview your animation before exporting.
-            </p>
-          </div>
+  <div class="video-preview-box">
 
-        </div>
+    <canvas
+      id="animationPreviewCanvas"
+      width="1280"
+      height="720"
+      style="width:100%; max-width:100%; display:block; background:#111; border-radius:10px;">
+    </canvas>
 
-        <div class="video-preview-box">
+  </div>
 
-          <div class="preview-placeholder">
-            <div>▶️</div>
-            <h3>Preview Area</h3>
-            <p>Your animation preview will appear here.</p>
-          </div>
 
-        </div>
+  <div class="button-row">
+
+    <button
+      type="button"
+      class="primary-btn"
+      id="previewPlayBtn">
+      ▶️ Play
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="previewPauseBtn">
+      ⏸️ Pause
+    </button>
+
+    <button
+      type="button"
+      class="secondary-btn"
+      id="previewRestartBtn">
+      🔄 Restart
+    </button>
+
+  </div>
+
+
+  <label for="previewVolume">
+    🔊 Preview Volume
+  </label>
+
+  <input
+    id="previewVolume"
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    value="1"
+  >
+
+
+  <div class="preview-timeline">
+
+    <span id="previewCurrentTime">
+      0.0s
+    </span>
+
+    <input
+      id="previewTimeline"
+      type="range"
+      min="0"
+      max="100"
+      step="0.1"
+      value="0"
+    >
+
+    <span id="previewDuration">
+      0.0s
+    </span>
+
+  </div>
+
+
+  <div
+    id="previewStatus"
+    class="status-message">
+    Ready
+  </div>
+
+</div>
 
       </section>
 
