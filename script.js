@@ -2202,6 +2202,392 @@ async function recordVoice() {
         );
     }
 }
+/* =====================================================
+MUSIC & SOUND EFFECTS
+===================================================== */
+
+let musicObjectUrl = "";
+let sfxObjectUrl = "";
+
+
+/* =====================================================
+MUSIC FILE
+===================================================== */
+
+function loadMusicFile() {
+
+    const input = $("musicFile");
+    const audio = $("musicAudio");
+
+    if (!input || !audio) {
+        return;
+    }
+
+    const file = input.files[0];
+
+    if (!file) {
+        setMusicStatus(
+            "Please select a music file."
+        );
+        return;
+    }
+
+    if (musicObjectUrl) {
+        URL.revokeObjectURL(
+            musicObjectUrl
+        );
+    }
+
+    musicObjectUrl =
+        URL.createObjectURL(file);
+
+    audio.src =
+        musicObjectUrl;
+
+    audio.volume =
+        Number(
+            $("musicVolume")
+                ? $("musicVolume").value
+                : 0.5
+        );
+
+    project.status =
+        "Music loaded";
+
+    updateProjectUI();
+
+    setMusicStatus(
+        "🎵 Music loaded: " +
+        file.name
+    );
+}
+
+
+/* =====================================================
+PLAY MUSIC
+===================================================== */
+
+function playMusic() {
+
+    const audio =
+        $("musicAudio");
+
+    if (!audio || !audio.src) {
+
+        alert(
+            "Please select a music file first."
+        );
+
+        return;
+    }
+
+    audio.play()
+        .then(function () {
+
+            project.status =
+                "Music playing";
+
+            updateProjectUI();
+
+            setMusicStatus(
+                "▶️ Music playing."
+            );
+
+        })
+        .catch(function (error) {
+
+            console.error(
+                "Music play error:",
+                error
+            );
+
+            setMusicStatus(
+                "Unable to play music."
+            );
+        });
+}
+
+
+/* =====================================================
+STOP MUSIC
+===================================================== */
+
+function stopMusic() {
+
+    const audio =
+        $("musicAudio");
+
+    if (!audio) {
+        return;
+    }
+
+    audio.pause();
+
+    audio.currentTime = 0;
+
+    project.status =
+        "Music stopped";
+
+    updateProjectUI();
+
+    setMusicStatus(
+        "⏹️ Music stopped."
+    );
+}
+
+
+/* =====================================================
+MUSIC VOLUME
+===================================================== */
+
+function updateMusicVolume() {
+
+    const volume =
+        $("musicVolume");
+
+    const audio =
+        $("musicAudio");
+
+    if (!volume) {
+        return;
+    }
+
+    const value =
+        Number(volume.value);
+
+    if (audio) {
+        audio.volume =
+            value;
+    }
+
+    const display =
+        $("musicVolumeValue");
+
+    if (display) {
+
+        display.textContent =
+            Math.round(value * 100) +
+            "%";
+    }
+}
+
+
+/* =====================================================
+SFX FILE
+===================================================== */
+
+function loadSfxFile() {
+
+    const input =
+        $("sfxFile");
+
+    const audio =
+        $("sfxAudio");
+
+    if (!input || !audio) {
+        return;
+    }
+
+    const file =
+        input.files[0];
+
+    if (!file) {
+
+        setSfxStatus(
+            "Please select a sound effect."
+        );
+
+        return;
+    }
+
+    if (sfxObjectUrl) {
+
+        URL.revokeObjectURL(
+            sfxObjectUrl
+        );
+    }
+
+    sfxObjectUrl =
+        URL.createObjectURL(file);
+
+    audio.src =
+        sfxObjectUrl;
+
+    project.status =
+        "Sound effect loaded";
+
+    updateProjectUI();
+
+    setSfxStatus(
+        "🔊 SFX loaded: " +
+        file.name
+    );
+}
+
+
+/* =====================================================
+PLAY SFX
+===================================================== */
+
+function playSfx() {
+
+    const audio =
+        $("sfxAudio");
+
+    if (!audio || !audio.src) {
+
+        alert(
+            "Please select a sound effect first."
+        );
+
+        return;
+    }
+
+    audio.currentTime = 0;
+
+    audio.play()
+        .then(function () {
+
+            project.status =
+                "SFX playing";
+
+            updateProjectUI();
+
+            setSfxStatus(
+                "▶️ Sound effect playing."
+            );
+
+        })
+        .catch(function (error) {
+
+            console.error(
+                "SFX play error:",
+                error
+            );
+
+            setSfxStatus(
+                "Unable to play SFX."
+            );
+        });
+}
+
+
+/* =====================================================
+STOP SFX
+===================================================== */
+
+function stopSfx() {
+
+    const audio =
+        $("sfxAudio");
+
+    if (!audio) {
+        return;
+    }
+
+    audio.pause();
+
+    audio.currentTime = 0;
+
+    project.status =
+        "SFX stopped";
+
+    updateProjectUI();
+
+    setSfxStatus(
+        "⏹️ Sound effect stopped."
+    );
+}
+
+
+/* =====================================================
+MUSIC STATUS
+===================================================== */
+
+function setMusicStatus(message) {
+
+    const status =
+        $("musicStatus");
+
+    if (status) {
+        status.textContent =
+            message;
+    }
+}
+
+
+/* =====================================================
+SFX STATUS
+===================================================== */
+
+function setSfxStatus(message) {
+
+    const status =
+        $("sfxStatus");
+
+    if (status) {
+        status.textContent =
+            message;
+    }
+}
+
+
+/* =====================================================
+INITIALIZE MUSIC
+===================================================== */
+
+function initMusicModule() {
+
+    if ($("musicFile")) {
+
+        $("musicFile").addEventListener(
+            "change",
+            loadMusicFile
+        );
+    }
+
+    if ($("playMusicBtn")) {
+
+        $("playMusicBtn").onclick =
+            playMusic;
+    }
+
+    if ($("stopMusicBtn")) {
+
+        $("stopMusicBtn").onclick =
+            stopMusic;
+    }
+
+    if ($("musicVolume")) {
+
+        $("musicVolume").addEventListener(
+            "input",
+            updateMusicVolume
+        );
+    }
+
+    if ($("sfxFile")) {
+
+        $("sfxFile").addEventListener(
+            "change",
+            loadSfxFile
+        );
+    }
+
+    if ($("playSfxBtn")) {
+
+        $("playSfxBtn").onclick =
+            playSfx;
+    }
+
+    if ($("stopSfxBtn")) {
+
+        $("stopSfxBtn").onclick =
+            stopSfx;
+    }
+
+    updateMusicVolume();
+}
 
 /* =====================================================
    EXPORT
@@ -2475,7 +2861,7 @@ renderCaptions();
 renderBackgrounds();
 
 initSceneEditor();
-
+initMusicModule();
 showPage("dashboard");
 
         console.log(
