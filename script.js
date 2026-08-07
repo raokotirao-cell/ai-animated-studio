@@ -1652,19 +1652,7 @@ document.addEventListener(
         addCharacter;
 
     }
-/* Backgrounds */
 
-const addBackgroundBtn =
-  $("addBackgroundBtn");
-
-if (addBackgroundBtn) {
-
-  addBackgroundBtn.addEventListener(
-    "click",
-    addBackground
-  );
-
-}
      /* =====================================================
    BACKGROUNDS
 ===================================================== */
@@ -1720,7 +1708,20 @@ function addBackground() {
   saveProject();
 
 }
+     
+/* Backgrounds */
 
+const addBackgroundBtn =
+  $("addBackgroundBtn");
+
+if (addBackgroundBtn) {
+
+  addBackgroundBtn.addEventListener(
+    "click",
+    addBackground
+  );
+
+}
 
 /* =====================================================
    RENDER BACKGROUNDS
