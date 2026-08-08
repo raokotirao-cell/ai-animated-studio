@@ -5091,7 +5091,8 @@ function saveSelectedSceneCharacterSettings() {
         sceneCharacter.speed =
             Math.max(
                 0.1,
-               function setupAnimationControls() {
+
+function setupAnimationControls() {
 
     const sceneSelect =
         $("animationSceneSelect");
@@ -5102,25 +5103,6 @@ function saveSelectedSceneCharacterSettings() {
     const refreshButton =
         $("refreshAnimationBtn");
 
-    const characterSelect =
-        $("sceneCharacterSelect");
-
-    const animationSelect =
-        $("editorAnimationSelect");
-
-    const startPositionSelect =
-        $("characterStartPosition");
-
-    const endPositionSelect =
-        $("characterEndPosition");
-
-    const speedInput =
-        $("characterSpeed");
-
-
-    /* -------------------------
-       SCENE CHANGE
-    ------------------------- */
 
     if (sceneSelect) {
 
@@ -5138,10 +5120,6 @@ function saveSelectedSceneCharacterSettings() {
     }
 
 
-    /* -------------------------
-       SAVE BUTTON
-    ------------------------- */
-
     if (saveButton) {
 
         saveButton.addEventListener(
@@ -5155,10 +5133,6 @@ function saveSelectedSceneCharacterSettings() {
 
     }
 
-
-    /* -------------------------
-       REFRESH BUTTON
-    ------------------------- */
 
     if (refreshButton) {
 
@@ -5174,245 +5148,11 @@ function saveSelectedSceneCharacterSettings() {
     }
 
 
-    /* -------------------------
-       SAVE CHARACTER SETTINGS
-    ------------------------- */
+    setTimeout(function() {
 
-    function saveSelectedSceneCharacterSettings() {
+        refreshAnimationScenes();
 
-        if (!characterSelect ||
-            characterSelect.value === "") {
-
-            return;
-        }
-
-
-        const currentSceneSelect =
-            $("animationSceneSelect");
-
-
-        if (!currentSceneSelect ||
-            currentSceneSelect.value === "") {
-
-            return;
-        }
-
-
-        const scene =
-            project.scenes[
-                Number(currentSceneSelect.value)
-            ];
-
-
-        if (!scene ||
-            !Array.isArray(scene.characters)) {
-
-            return;
-        }
-
-
-        const characterId =
-            Number(characterSelect.value);
-
-
-        const sceneCharacter =
-            scene.characters.find(
-                function(item) {
-
-                    return Number(item.characterId) ===
-                           characterId;
-
-                }
-            );
-
-
-        if (!sceneCharacter) {
-            return;
-        }
-
-
-        if (startPositionSelect) {
-
-            sceneCharacter.startPosition =
-                startPositionSelect.value;
-
-        }
-
-
-        if (endPositionSelect) {
-
-            sceneCharacter.endPosition =
-                endPositionSelect.value;
-
-        }
-
-
-        if (speedInput) {
-
-            sceneCharacter.speed =
-                Math.max(
-                    0.1,
-                    Math.min(
-                        5,
-                        Number(speedInput.value) || 1
-                    )
-                );
-
-        }
-
-
-        project.status =
-            "Scene character settings updated";
-
-
-        saveProject();
-        updateProjectUI();
-
-    }
-
-
-    /* -------------------------
-       POSITION + SPEED EVENTS
-    ------------------------- */
-
-    if (startPositionSelect) {
-
-        startPositionSelect.addEventListener(
-            "change",
-            saveSelectedSceneCharacterSettings
-        );
-
-    }
-
-
-    if (endPositionSelect) {
-
-        endPositionSelect.addEventListener(
-            "change",
-            saveSelectedSceneCharacterSettings
-        );
-
-    }
-
-
-    if (speedInput) {
-
-        speedInput.addEventListener(
-            "change",
-            saveSelectedSceneCharacterSettings
-        );
-
-    }
-
-
-    /* -------------------------
-       CHARACTER ANIMATION
-    ------------------------- */
-
-    if (animationSelect) {
-
-        animationSelect.addEventListener(
-            "change",
-            function() {
-
-                if (!characterSelect ||
-                    characterSelect.value === "") {
-
-                    return;
-                }
-
-
-                const currentSceneSelect =
-                    $("animationSceneSelect");
-
-
-                if (!currentSceneSelect ||
-                    currentSceneSelect.value === "") {
-
-                    return;
-                }
-
-
-                const scene =
-                    project.scenes[
-                        Number(currentSceneSelect.value)
-                    ];
-
-
-                if (!scene ||
-                    !Array.isArray(scene.characters)) {
-
-                    return;
-                }
-
-
-                const characterId =
-                    Number(characterSelect.value);
-
-
-                const sceneCharacter =
-                    scene.characters.find(
-                        function(item) {
-
-                            return Number(item.characterId) ===
-                                   characterId;
-
-                        }
-                    );
-
-
-                if (!sceneCharacter) {
-                    return;
-                }
-
-
-                sceneCharacter.animation =
-                    animationSelect.value;
-
-
-                project.status =
-                    "Scene character animation updated";
-
-
-                saveProject();
-                updateProjectUI();
-
-            }
-        );
-
-    }
-
-
-    /* -------------------------
-       CHARACTER CHANGE
-    ------------------------- */
-
-    if (characterSelect) {
-
-        characterSelect.addEventListener(
-            "change",
-            function() {
-
-                loadSelectedSceneCharacterControls();
-
-            }
-        );
-
-    }
-
-
-    /* -------------------------
-       INITIAL REFRESH
-    ------------------------- */
-
-    setTimeout(
-        function() {
-
-            refreshAnimationScenes();
-
-        },
-        100
-    );
+    }, 100);
 
 }
 
