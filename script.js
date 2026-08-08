@@ -10,7 +10,7 @@ console.log("AI Animated Studio script loaded.");
 /* =====================================================
    PROJECT DATA
 ===================================================== */
-
+let currentAnimationSceneIndex = 0;
 let project = {
     name: "",
     storyTitle: "",
