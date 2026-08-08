@@ -4615,18 +4615,28 @@ function refreshSceneCharacterControls(scene) {
     characterSelect.addEventListener(
         "change",
         function() {
+           function refreshSceneCharacterControls(scene) {
 
-            loadSelectedSceneCharacterControls();
-
-        }
-    );
-
-}
+    const characterSelect =
+        $("sceneCharacterSelect");
 
     const animationSelect =
         $("editorAnimationSelect");
 
-    if (!characterSelect) return;
+    const startPositionSelect =
+        $("characterStartPosition");
+
+    const endPositionSelect =
+        $("characterEndPosition");
+
+    const speedInput =
+        $("characterSpeed");
+
+
+    if (!characterSelect) {
+        return;
+    }
+
 
     characterSelect.innerHTML = `
         <option value="">
@@ -4634,9 +4644,11 @@ function refreshSceneCharacterControls(scene) {
         </option>
     `;
 
+
     if (!Array.isArray(project.characters)) {
         return;
     }
+
 
     project.characters.forEach(function(character) {
 
@@ -4650,60 +4662,76 @@ function refreshSceneCharacterControls(scene) {
             character.name || "Unnamed Character";
 
         characterSelect.appendChild(option);
+
     });
+
 
     if (!Array.isArray(scene.characters) ||
         scene.characters.length === 0) {
+
+        characterSelect.value = "";
 
         if (animationSelect) {
             animationSelect.value = "None";
         }
 
+        if (startPositionSelect) {
+            startPositionSelect.value = "Left";
+        }
+
+        if (endPositionSelect) {
+            endPositionSelect.value = "Center";
+        }
+
+        if (speedInput) {
+            speedInput.value = 1;
+        }
+
         return;
     }
+
 
     const attachedCharacter =
         scene.characters[0];
 
+
     characterSelect.value =
         String(attachedCharacter.characterId);
+
 
     if (animationSelect) {
 
         animationSelect.value =
             attachedCharacter.animation || "Idle";
+
     }
-}
-const startPositionSelect =
-    $("characterStartPosition");
-
-const endPositionSelect =
-    $("characterEndPosition");
-
-const speedInput =
-    $("characterSpeed");
 
 
-if (startPositionSelect) {
+    if (startPositionSelect) {
 
-    startPositionSelect.value =
-        attachedCharacter.startPosition || "Left";
+        startPositionSelect.value =
+            attachedCharacter.startPosition || "Left";
 
-}
+    }
 
-if (endPositionSelect) {
 
-    endPositionSelect.value =
-        attachedCharacter.endPosition || "Center";
+    if (endPositionSelect) {
 
-}
+        endPositionSelect.value =
+            attachedCharacter.endPosition || "Center";
 
-if (speedInput) {
+    }
 
-    speedInput.value =
-        attachedCharacter.speed || 1;
+
+    if (speedInput) {
+
+        speedInput.value =
+            attachedCharacter.speed || 1;
+
+    }
 
 }
+
 /* -------------------------
    SAVE ANIMATION
 ------------------------- */
