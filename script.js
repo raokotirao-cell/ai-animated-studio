@@ -4952,7 +4952,92 @@ function setupAnimationControls() {
         );
 
     }
+const characterSelect =
+    $("sceneCharacterSelect");
 
+const startPositionSelect =
+    $("characterStartPosition");
+
+const endPositionSelect =
+    $("characterEndPosition");
+
+const speedInput =
+    $("characterSpeed");
+
+
+function saveSelectedSceneCharacterSettings() {
+
+    if (!characterSelect ||
+        characterSelect.value === "") {
+        return;
+    }
+
+    const sceneSelect =
+        $("animationSceneSelect");
+
+    if (!sceneSelect ||
+        sceneSelect.value === "") {
+        return;
+    }
+
+    const scene =
+        project.scenes[
+            Number(sceneSelect.value)
+        ];
+
+    if (!scene ||
+        !Array.isArray(scene.characters)) {
+        return;
+    }
+
+    const characterId =
+        Number(characterSelect.value);
+
+    const sceneCharacter =
+        scene.characters.find(function(item) {
+
+            return Number(item.characterId) ===
+                   characterId;
+
+        });
+
+    if (!sceneCharacter) {
+        return;
+    }
+
+    if (startPositionSelect) {
+
+        sceneCharacter.startPosition =
+            startPositionSelect.value;
+
+    }
+
+    if (endPositionSelect) {
+
+        sceneCharacter.endPosition =
+            endPositionSelect.value;
+
+    }
+
+    if (speedInput) {
+
+        sceneCharacter.speed =
+            Math.max(
+                0.1,
+                Math.min(
+                    5,
+                    Number(speedInput.value) || 1
+                )
+            );
+
+    }
+
+    project.status =
+        "Scene character settings updated";
+
+    saveProject();
+    updateProjectUI();
+}
 
     setTimeout(function() {
        const characterSelect =
