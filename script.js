@@ -11,6 +11,7 @@ console.log("AI Animated Studio script loaded.");
    PROJECT DATA
 ===================================================== */
 let currentAnimationSceneIndex = 0;
+
 let project = {
     name: "",
     storyTitle: "",
@@ -22,6 +23,94 @@ let project = {
     resolution: "720p",
     status: "Ready"
 };
+
+/* =====================================================
+   CHARACTER SYSTEM
+===================================================== */
+
+const addCharacterBtn =
+    document.getElementById("addCharacterBtn");
+
+const characterList =
+    document.getElementById("characterList");
+
+if (addCharacterBtn) {
+
+    addCharacterBtn.addEventListener(
+        "click",
+        function () {
+
+            const name =
+                prompt("Enter character name:");
+
+            if (!name) return;
+
+            const character = {
+                id: "char_" + Date.now(),
+                name: name,
+                type: "3D Cartoon",
+                animation: "Idle",
+                startPosition: "Left",
+                endPosition: "Center",
+                speed: 1
+            };
+
+            project.characters.push(character);
+
+            renderCharacters();
+
+        }
+    );
+}
+
+function renderCharacters() {
+
+    if (!characterList) return;
+
+    characterList.innerHTML = "";
+
+    if (!project.characters.length) {
+
+        characterList.innerHTML = `
+            <div class="empty-state">
+                <div>👤</div>
+                <h3>No characters yet</h3>
+                <p>Add your first character.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    project.characters.forEach(function(character) {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "character-card";
+
+        card.innerHTML = `
+            <div style="font-size:60px;">
+                🧑‍🎨
+            </div>
+
+            <h3>${character.name}</h3>
+
+            <p>🎭 ${character.type}</p>
+
+            <p>✨ ${character.animation}</p>
+
+            <p>
+                ${character.startPosition}
+                → 
+                ${character.endPosition}
+            </p>
+        `;
+
+        characterList.appendChild(card);
+
+    });
+}
 
 /* =====================================================
    HELPER
