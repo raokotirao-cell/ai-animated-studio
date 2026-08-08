@@ -6287,3 +6287,455 @@ document.addEventListener(
     deleteBackground;
 
 })();
+
+// =====================================================
+// AI ANIMATED STUDIO
+// SCENE EDITOR INTEGRATION
+// =====================================================
+
+(function initSceneEditorModule() {
+  "use strict";
+
+  const sceneSelect =
+    document.getElementById("editorSceneSelect");
+
+  const backgroundSelect =
+    document.getElementById("editorBackgroundSelect");
+
+  const characterSelect =
+    document.getElementById("editorCharacterSelect");
+
+  const cameraSelect =
+    document.getElementById("editorCameraSelect");
+
+  const animationSelect =
+    document.getElementById("editorAnimationSelect");
+
+  const descriptionInput =
+    document.getElementById("editorSceneDescription");
+
+  const dialogueInput =
+    document.getElementById("editorSceneDialogue");
+
+  const durationInput =
+    document.getElementById("editorSceneDuration");
+
+  const saveBtn =
+    document.getElementById("saveEditorSceneBtn");
+
+  const refreshBtn =
+    document.getElementById("refreshEditorBtn");
+
+  const status =
+    document.getElementById("sceneEditorStatus");
+
+
+  // -----------------------------------------------------
+  // CHECK REQUIRED ELEMENTS
+  // -----------------------------------------------------
+
+  if (
+    !sceneSelect ||
+    !backgroundSelect ||
+    !characterSelect ||
+    !cameraSelect ||
+    !animationSelect ||
+    !descriptionInput ||
+    !dialogueInput ||
+    !durationInput ||
+    !saveBtn
+  ) {
+    console.warn(
+      "Scene Editor: required elements not found."
+    );
+    return;
+  }
+
+
+  // -----------------------------------------------------
+  // PROJECT DATA
+  // -----------------------------------------------------
+
+  if (!Array.isArray(project.scenes)) {
+    project.scenes = [];
+  }
+
+  if (!Array.isArray(project.backgrounds)) {
+    project.backgrounds = [];
+  }
+
+  if (!Array.isArray(project.characters)) {
+    project.characters = [];
+  }
+
+
+  // -----------------------------------------------------
+  // STATUS
+  // -----------------------------------------------------
+
+  function showStatus(message, isError = false) {
+    if (!status) {
+      return;
+    }
+
+    status.textContent = message;
+
+    status.style.color = isError
+      ? "var(--danger)"
+      : "var(--success)";
+
+    setTimeout(() => {
+      if (status) {
+        status.textContent = "";
+      }
+    }, 3000);
+  }
+
+
+  // -----------------------------------------------------
+  // SAVE PROJECT
+  // -----------------------------------------------------
+
+  function saveEditorProject() {
+    try {
+      localStorage.setItem(
+        "aiAnimatedStudioProject",
+        JSON.stringify(project)
+      );
+    } catch (error) {
+      console.error(
+        "Scene Editor save error:",
+        error
+      );
+    }
+  }
+
+
+  // -----------------------------------------------------
+  // LOAD SCENES
+  // -----------------------------------------------------
+
+  function loadSceneOptions() {
+    sceneSelect.innerHTML = `
+      <option value="">
+        Select a scene
+      </option>
+    `;
+
+    project.scenes.forEach((scene, index) => {
+      const option =
+        document.createElement("option");
+
+      option.value = String(index);
+
+      option.textContent =
+        scene.title ||
+        `Scene ${index + 1}`;
+
+      sceneSelect.appendChild(option);
+    });
+  }
+
+
+  // -----------------------------------------------------
+  // LOAD BACKGROUNDS
+  // -----------------------------------------------------
+
+  function loadBackgroundOptions() {
+    backgroundSelect.innerHTML = `
+      <option value="">
+        Select background
+      </option>
+    `;
+
+    project.backgrounds.forEach(
+      (background, index) => {
+        const option =
+          document.createElement("option");
+
+        option.value = String(index);
+
+        option.textContent =
+          background.name ||
+          `Background ${index + 1}`;
+
+        backgroundSelect.appendChild(
+          option
+        );
+      }
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // LOAD CHARACTERS
+  // -----------------------------------------------------
+
+  function loadCharacterOptions() {
+    characterSelect.innerHTML = `
+      <option value="">
+        Select character
+      </option>
+    `;
+
+    project.characters.forEach(
+      (character, index) => {
+        const option =
+          document.createElement("option");
+
+        option.value = String(index);
+
+        option.textContent =
+          character.name ||
+          `Character ${index + 1}`;
+
+        characterSelect.appendChild(
+          option
+        );
+      }
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // LOAD ALL OPTIONS
+  // -----------------------------------------------------
+
+  function refreshEditor() {
+    loadSceneOptions();
+    loadBackgroundOptions();
+    loadCharacterOptions();
+
+    clearEditor();
+
+    showStatus(
+      "Editor refreshed."
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // CLEAR EDITOR
+  // -----------------------------------------------------
+
+  function clearEditor() {
+    sceneSelect.value = "";
+
+    backgroundSelect.value = "";
+
+    characterSelect.value = "";
+
+    cameraSelect.value = "Static";
+
+    animationSelect.value = "None";
+
+    descriptionInput.value = "";
+
+    dialogueInput.value = "";
+
+    durationInput.value = "5";
+  }
+
+
+  // -----------------------------------------------------
+  // LOAD SELECTED SCENE
+  // -----------------------------------------------------
+
+  function loadSelectedScene() {
+    const index =
+      Number(sceneSelect.value);
+
+    if (
+      sceneSelect.value === "" ||
+      !project.scenes[index]
+    ) {
+      clearEditor();
+      return;
+    }
+
+    const scene =
+      project.scenes[index];
+
+
+    // Background
+    if (
+      scene.backgroundIndex !== undefined
+    ) {
+      backgroundSelect.value =
+        String(scene.backgroundIndex);
+    } else {
+      backgroundSelect.value = "";
+    }
+
+
+    // Character
+    if (
+      scene.characterIndex !== undefined
+    ) {
+      characterSelect.value =
+        String(scene.characterIndex);
+    } else {
+      characterSelect.value = "";
+    }
+
+
+    // Camera
+    cameraSelect.value =
+      scene.camera || "Static";
+
+
+    // Animation
+    animationSelect.value =
+      scene.animation || "None";
+
+
+    // Description
+    descriptionInput.value =
+      scene.description || "";
+
+
+    // Dialogue
+    dialogueInput.value =
+      scene.dialogue || "";
+
+
+    // Duration
+    durationInput.value =
+      scene.duration || 5;
+  }
+
+
+  // -----------------------------------------------------
+  // SAVE EDITOR SCENE
+  // -----------------------------------------------------
+
+  function saveEditorScene() {
+    if (sceneSelect.value === "") {
+      showStatus(
+        "Please select a scene first.",
+        true
+      );
+      return;
+    }
+
+    const index =
+      Number(sceneSelect.value);
+
+    const scene =
+      project.scenes[index];
+
+    if (!scene) {
+      showStatus(
+        "Selected scene not found.",
+        true
+      );
+      return;
+    }
+
+
+    scene.backgroundIndex =
+      backgroundSelect.value === ""
+        ? null
+        : Number(backgroundSelect.value);
+
+
+    scene.characterIndex =
+      characterSelect.value === ""
+        ? null
+        : Number(characterSelect.value);
+
+
+    scene.camera =
+      cameraSelect.value;
+
+
+    scene.animation =
+      animationSelect.value;
+
+
+    scene.description =
+      descriptionInput.value.trim();
+
+
+    scene.dialogue =
+      dialogueInput.value.trim();
+
+
+    const duration =
+      Number(durationInput.value);
+
+    scene.duration =
+      Number.isFinite(duration) &&
+      duration > 0
+        ? duration
+        : 5;
+
+
+    saveEditorProject();
+
+
+    // Update other UI
+    if (
+      typeof renderScenes === "function"
+    ) {
+      renderScenes();
+    }
+
+    if (
+      typeof updateProjectUI === "function"
+    ) {
+      updateProjectUI();
+    }
+
+
+    showStatus(
+      "✅ Scene saved successfully."
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // EVENTS
+  // -----------------------------------------------------
+
+  sceneSelect.addEventListener(
+    "change",
+    loadSelectedScene
+  );
+
+  saveBtn.addEventListener(
+    "click",
+    saveEditorScene
+  );
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener(
+      "click",
+      refreshEditor
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // INITIALIZE
+  // -----------------------------------------------------
+
+  loadSceneOptions();
+  loadBackgroundOptions();
+  loadCharacterOptions();
+
+
+  // -----------------------------------------------------
+  // GLOBAL ACCESS
+  // -----------------------------------------------------
+
+  window.refreshSceneEditor =
+    refreshEditor;
+
+  window.loadSelectedEditorScene =
+    loadSelectedScene;
+
+  window.saveEditorScene =
+    saveEditorScene;
+
+})();
