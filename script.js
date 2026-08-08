@@ -4599,8 +4599,69 @@ function loadAnimationScene(index) {
     }
 
 }
+if (status) {
 
+    status.textContent =
+        "Scene loaded.";
+   
+refreshSceneCharacterControls(scene);
+}
+function refreshSceneCharacterControls(scene) {
 
+    const characterSelect =
+        $("sceneCharacterSelect");
+
+    const animationSelect =
+        $("editorAnimationSelect");
+
+    if (!characterSelect) return;
+
+    characterSelect.innerHTML = `
+        <option value="">
+            Select character
+        </option>
+    `;
+
+    if (!Array.isArray(project.characters)) {
+        return;
+    }
+
+    project.characters.forEach(function(character) {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            character.id;
+
+        option.textContent =
+            character.name || "Unnamed Character";
+
+        characterSelect.appendChild(option);
+    });
+
+    if (!Array.isArray(scene.characters) ||
+        scene.characters.length === 0) {
+
+        if (animationSelect) {
+            animationSelect.value = "None";
+        }
+
+        return;
+    }
+
+    const attachedCharacter =
+        scene.characters[0];
+
+    characterSelect.value =
+        String(attachedCharacter.characterId);
+
+    if (animationSelect) {
+
+        animationSelect.value =
+            attachedCharacter.animation || "Idle";
+    }
+}
 /* -------------------------
    SAVE ANIMATION
 ------------------------- */
