@@ -2641,18 +2641,513 @@ function initMusicModule() {
 ===================================================== */
 
 function exportVideo() {
+
     const status =
         $("exportStatus");
 
+    const scenes =
+        Array.isArray(project.scenes)
+            ? project.scenes
+            : [];
+
+    if (scenes.length === 0) {
+
+        if (status) {
+            status.textContent =
+                "❌ Please create at least one scene.";
+        }
+
+        return;
+    }
+
+    const canvas =
+        $("animationPreviewCanvas");
+
+    if (!canvas) {
+
+        if (status) {
+            status.textContent =
+                "❌ Preview canvas not found.";
+        }
+
+        return;
+    }
+
+    if (!window.MediaRecorder) {
+
+        if (status) {
+            status.textContent =
+                "❌ Your browser does not support video export.";
+        }
+
+        return;
+    }
+
     project.status =
-        "Export engine pending";
+        "Exporting video...";
 
     updateProjectUI();
 
     if (status) {
         status.textContent =
-            "Video export engine will be added in the next stage.";
+            "🎬 Preparing video export...";
     }
+
+
+    /* =========================================
+       TOTAL DURATION
+    ========================================= */
+
+    let totalDuration = 0;
+
+    scenes.forEach(function (scene) {
+
+        totalDuration +=
+            Number(scene.duration) > 0
+                ? Number(scene.duration)
+                : 5;
+
+    });
+
+
+    /* =========================================
+       CANVAS STREAM
+    ========================================= */
+
+    const canvasStream =
+        canvas.captureStream(30);
+
+
+    /* =========================================
+       RECORDER MIME TYPE
+    ========================================= */
+
+    let mimeType = "";
+
+    const mimeTypes = [
+
+        "video/webm;codecs=vp9",
+
+        "video/webm;codecs=vp8",
+
+        "video/webm"
+
+    ];
+
+    for (
+        let i = 0;
+        i < mimeTypes.length;
+        i++
+    ) {
+
+        if (
+            MediaRecorder.isTypeSupported(
+                mimeTypes[i]
+            )
+        ) {
+
+            mimeType =
+                mimeTypes[i];
+
+            break;
+        }
+    }
+
+
+    if (!mimeType) {
+
+        if (status) {
+            status.textContent =
+                "❌ WebM export is not supported.";
+        }
+
+        return;
+    }
+
+
+    /* =========================================
+       RECORDER
+    ========================================= */
+
+    const chunks = [];
+
+    let recorder;
+
+    try {
+
+        recorder =
+            new MediaRecorder(
+                canvasStream,
+                {
+                    mimeType:
+                        mimeType
+                }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "Recorder error:",
+            error
+        );
+
+        if (status) {
+            status.textContent =
+                "❌ Unable to start video export.";
+        }
+
+        return;
+    }
+
+
+    recorder.ondataavailable =
+        function (event) {
+
+            if (
+                event.data &&
+                event.data.size > 0
+            ) {
+
+                chunks.push(
+                    event.data
+                );
+            }
+        };
+
+
+    recorder.onstop =
+        function () {
+
+            const blob =
+                new Blob(
+                    chunks,
+                    {
+                        type:
+                            mimeType
+                    }
+                );
+
+            const url =
+                URL.createObjectURL(blob);
+
+
+            const download =
+                document.createElement("a");
+
+            download.href =
+                url;
+
+            download.download =
+                (
+                    project.name ||
+                    "AI-Animated-Project"
+                )
+                .replace(
+                    /[^a-z0-9-_]/gi,
+                    "_"
+                ) +
+                ".webm";
+
+            download.textContent =
+                "⬇️ Download Video";
+
+            download.className =
+                "primary-btn";
+
+            const exportModule =
+                $("export");
+
+            if (exportModule) {
+
+                const card =
+                    exportModule.querySelector(
+                        ".module-card"
+                    );
+
+                if (card) {
+
+                    card.appendChild(
+                        download
+                    );
+                }
+            }
+
+
+            project.status =
+                "Video exported";
+
+            updateProjectUI();
+
+            if (status) {
+
+                status.textContent =
+                    "✅ Video exported successfully.";
+            }
+
+            download.click();
+
+            setTimeout(
+                function () {
+                    URL.revokeObjectURL(url);
+                },
+                60000
+            );
+        };
+
+
+    recorder.onerror =
+        function (event) {
+
+            console.error(
+                "Export error:",
+                event
+            );
+
+            project.status =
+                "Export failed";
+
+            updateProjectUI();
+
+            if (status) {
+                status.textContent =
+                    "❌ Video export failed.";
+            }
+        };
+
+
+    /* =========================================
+       START RECORDING
+    ========================================= */
+
+    previewIsPlaying =
+        false;
+
+    previewPausedTime =
+        0;
+
+
+    recorder.start();
+
+
+    if (status) {
+        status.textContent =
+            "🔴 Recording animation...";
+    }
+
+
+    /* =========================================
+       PLAY PREVIEW INTO RECORDER
+    ========================================= */
+
+    let startTime =
+        performance.now();
+
+
+    function renderExportFrame(
+        timestamp
+    ) {
+
+        const elapsed =
+            (
+                timestamp -
+                startTime
+            ) / 1000;
+
+
+        /* -------------------------------------
+           DRAW CURRENT SCENE
+        ------------------------------------- */
+
+        let accumulated =
+            0;
+
+        let sceneToDraw =
+            scenes[scenes.length - 1];
+
+        let sceneTime = 0;
+
+        for (
+            let i = 0;
+            i < scenes.length;
+            i++
+        ) {
+
+            const sceneDuration =
+                Number(
+                    scenes[i].duration
+                ) > 0
+                    ? Number(
+                        scenes[i].duration
+                    )
+                    : 5;
+
+            if (
+                elapsed <
+                accumulated +
+                sceneDuration
+            ) {
+
+                sceneToDraw =
+                    scenes[i];
+
+                sceneTime =
+                    elapsed -
+                    accumulated;
+
+                break;
+            }
+
+            accumulated +=
+                sceneDuration;
+        }
+
+
+        /* -------------------------------------
+           TEMPORARY SCENE DRAW
+        ------------------------------------- */
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle =
+            "#111";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle =
+            "#fff";
+
+        ctx.textAlign =
+            "center";
+
+        ctx.font =
+            "bold 48px Arial";
+
+        ctx.fillText(
+            sceneToDraw.title ||
+                "Scene",
+            canvas.width / 2,
+            100
+        );
+
+        ctx.font =
+            "26px Arial";
+
+        ctx.fillStyle =
+            "#ddd";
+
+        ctx.fillText(
+            String(
+                sceneToDraw.description ||
+                ""
+            ).substring(0, 100),
+            canvas.width / 2,
+            155
+        );
+
+
+        /* -------------------------------------
+           CHARACTER
+        ------------------------------------- */
+
+        const characters =
+            Array.isArray(
+                sceneToDraw.characters
+            )
+                ? sceneToDraw.characters
+                : [];
+
+        if (characters.length > 0) {
+
+            const name =
+                String(
+                    characters[0] || ""
+                );
+
+            let character = null;
+
+            if (
+                Array.isArray(
+                    project.characters
+                )
+            ) {
+
+                character =
+                    project.characters.find(
+                        function (char) {
+
+                            return String(
+                                char.name || ""
+                            )
+                            .trim()
+                            .toLowerCase() ===
+                            name
+                            .trim()
+                            .toLowerCase();
+
+                        }
+                    );
+            }
+
+            ctx.font =
+                "90px Arial";
+
+            ctx.fillText(
+                character &&
+                character.emoji
+                    ? character.emoji
+                    : "👤",
+                canvas.width / 2,
+                canvas.height - 260
+            );
+
+            ctx.font =
+                "bold 32px Arial";
+
+            ctx.fillText(
+                character &&
+                character.name
+                    ? character.name
+                    : name,
+                canvas.width / 2,
+                canvas.height - 205
+            );
+        }
+
+
+        /* -------------------------------------
+           STOP
+        ------------------------------------- */
+
+        if (
+            elapsed >=
+            totalDuration
+        ) {
+
+            recorder.stop();
+
+            return;
+        }
+
+
+        requestAnimationFrame(
+            renderExportFrame
+        );
+    }
+
+
+    requestAnimationFrame(
+        renderExportFrame
+    );
 }
 
 /* =====================================================
@@ -3574,6 +4069,7 @@ if (scene.animation === "Idle") {
                 }
             };
     }
+   
 
 
     /* ---------------------------------------------
