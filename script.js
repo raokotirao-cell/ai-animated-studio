@@ -3106,7 +3106,12 @@ const progress = Math.min(time / duration, 1);
        let zoom = 1;
 
 if (scene.camera === "Zoom In") {
+
     zoom = 1 + (progress * 0.20);
+
+} else if (scene.camera === "Zoom Out") {
+
+    zoom = 1.20 - (progress * 0.20);
 }
 
  ctx.save();
@@ -3236,10 +3241,21 @@ sceneCharacters.forEach(
         }
 
         const x =
-            canvas.width / 2;
+    canvas.width / 2;
 
-        const y =
-            canvas.height - 260;
+let y =
+    canvas.height - 260;
+
+
+/* -----------------------------------------
+   CHARACTER ANIMATION
+----------------------------------------- */
+
+if (scene.animation === "Idle") {
+
+    y +=
+        Math.sin(time * 2) * 8;
+}
 
         ctx.textAlign = "center";
 
