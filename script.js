@@ -4610,6 +4610,18 @@ function refreshSceneCharacterControls(scene) {
 
     const characterSelect =
         $("sceneCharacterSelect");
+   if (characterSelect) {
+
+    characterSelect.addEventListener(
+        "change",
+        function() {
+
+            loadSelectedSceneCharacterControls();
+
+        }
+    );
+
+}
 
     const animationSelect =
         $("editorAnimationSelect");
@@ -4661,6 +4673,36 @@ function refreshSceneCharacterControls(scene) {
         animationSelect.value =
             attachedCharacter.animation || "Idle";
     }
+}
+const startPositionSelect =
+    $("characterStartPosition");
+
+const endPositionSelect =
+    $("characterEndPosition");
+
+const speedInput =
+    $("characterSpeed");
+
+
+if (startPositionSelect) {
+
+    startPositionSelect.value =
+        attachedCharacter.startPosition || "Left";
+
+}
+
+if (endPositionSelect) {
+
+    endPositionSelect.value =
+        attachedCharacter.endPosition || "Center";
+
+}
+
+if (speedInput) {
+
+    speedInput.value =
+        attachedCharacter.speed || 1;
+
 }
 /* -------------------------
    SAVE ANIMATION
