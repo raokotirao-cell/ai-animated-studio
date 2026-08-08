@@ -3101,7 +3101,13 @@ function updateAnimationPreview() {
             canvas.width,
             canvas.height
         );
+       
+const progress = Math.min(time / duration, 1);
+       let zoom = 1;
 
+if (scene.camera === "Zoom In") {
+    zoom = 1 + (progress * 0.20);
+}
 
 /* -----------------------------------------
    SCENE BACKGROUND
