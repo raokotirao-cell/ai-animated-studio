@@ -6739,3 +6739,149 @@ document.addEventListener(
     saveEditorScene;
 
 })();
+// =====================================================
+// AI ANIMATED STUDIO
+// SETTINGS MODULE
+// =====================================================
+
+(function initSettingsModule() {
+  "use strict";
+
+  const projectNameInput =
+    document.getElementById("projectName");
+
+  const resolutionSelect =
+    document.getElementById("videoResolution");
+
+  const saveSettingsBtn =
+    document.getElementById("saveSettingsBtn");
+
+  if (
+    !projectNameInput ||
+    !resolutionSelect ||
+    !saveSettingsBtn
+  ) {
+    console.warn(
+      "Settings module: required elements not found."
+    );
+    return;
+  }
+
+  // -----------------------------------------------------
+  // LOAD CURRENT PROJECT SETTINGS
+  // -----------------------------------------------------
+
+  function loadSettings() {
+    projectNameInput.value =
+      project.name || "";
+
+    resolutionSelect.value =
+      project.resolution || "720p";
+  }
+
+
+  // -----------------------------------------------------
+  // SAVE SETTINGS
+  // -----------------------------------------------------
+
+  function saveSettings() {
+    const name =
+      projectNameInput.value.trim();
+
+    const resolution =
+      resolutionSelect.value;
+
+    if (!name) {
+      alert("Please enter a project name.");
+      projectNameInput.focus();
+      return;
+    }
+
+    project.name = name;
+
+    project.resolution =
+      resolution === "1080p"
+        ? "1080p"
+        : "720p";
+
+    project.status = "Ready";
+
+    try {
+      localStorage.setItem(
+        "aiAnimatedStudioProject",
+        JSON.stringify(project)
+      );
+    } catch (error) {
+      console.error(
+        "Settings save error:",
+        error
+      );
+      return;
+    }
+
+
+    // Update Dashboard
+    if (
+      typeof updateProjectUI === "function"
+    ) {
+      updateProjectUI();
+    }
+
+
+    // Update other UI if available
+    const projectNameDisplay =
+      document.getElementById(
+        "projectNameDisplay"
+      );
+
+    if (projectNameDisplay) {
+      projectNameDisplay.textContent =
+        project.name;
+    }
+
+
+    const statusDisplay =
+      document.getElementById(
+        "projectStatusDisplay"
+      );
+
+    if (statusDisplay) {
+      statusDisplay.textContent =
+        project.status;
+    }
+
+
+    alert(
+      "✅ Settings saved successfully."
+    );
+  }
+
+
+  // -----------------------------------------------------
+  // EVENT
+  // -----------------------------------------------------
+
+  saveSettingsBtn.addEventListener(
+    "click",
+    saveSettings
+  );
+
+
+  // -----------------------------------------------------
+  // INITIAL LOAD
+  // -----------------------------------------------------
+
+  loadSettings();
+
+
+  // -----------------------------------------------------
+  // GLOBAL ACCESS
+  // -----------------------------------------------------
+
+  window.loadProjectSettings =
+    loadSettings;
+
+  window.saveProjectSettings =
+    saveSettings;
+
+})();
