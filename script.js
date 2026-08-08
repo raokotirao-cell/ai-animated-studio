@@ -921,11 +921,17 @@ function addCharacter() {
     }
 
     project.characters.push({
-        id: Date.now(),
-        name: name.trim(),
-        description: "",
-        emoji: "👤"
-    });
+    id: Date.now(),
+    name: name.trim(),
+    description: "",
+    emoji: "👤",
+
+    type: "3D Cartoon",
+    animation: "Idle",
+    startPosition: "Left",
+    endPosition: "Center",
+    speed: 1
+});
 
     project.status = "Character added";
 
