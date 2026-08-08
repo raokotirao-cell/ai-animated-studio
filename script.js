@@ -4955,6 +4955,71 @@ function setupAnimationControls() {
 
 
     setTimeout(function() {
+       const characterSelect =
+    $("sceneCharacterSelect");
+
+const animationSelect =
+    $("editorAnimationSelect");
+
+if (animationSelect) {
+
+    animationSelect.addEventListener(
+        "change",
+        function() {
+
+            if (!characterSelect ||
+                characterSelect.value === "") {
+
+                return;
+            }
+
+            const sceneSelect =
+                $("animationSceneSelect");
+
+            if (!sceneSelect ||
+                sceneSelect.value === "") {
+
+                return;
+            }
+
+            const scene =
+                project.scenes[
+                    Number(sceneSelect.value)
+                ];
+
+            if (!scene ||
+                !Array.isArray(scene.characters)) {
+
+                return;
+            }
+
+            const characterId =
+                Number(characterSelect.value);
+
+            const sceneCharacter =
+                scene.characters.find(
+                    function(item) {
+                        return Number(item.characterId) ===
+                               characterId;
+                    }
+                );
+
+            if (!sceneCharacter) {
+                return;
+            }
+
+            sceneCharacter.animation =
+                animationSelect.value;
+
+            project.status =
+                "Scene character animation updated";
+
+            saveProject();
+            updateProjectUI();
+
+        }
+    );
+}
     refreshAnimationScenes();
 }, 100);
 
