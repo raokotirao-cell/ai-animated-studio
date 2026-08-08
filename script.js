@@ -936,6 +936,7 @@ function addCharacter() {
     project.status = "Character added";
 
     renderCharacters();
+   refreshSceneCharacterSelect();
     updateProjectUI();
     saveProject();
 }
