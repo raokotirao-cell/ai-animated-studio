@@ -3581,12 +3581,13 @@ function updateAnimationPreview() {
                 previewPausedTime,
                 duration
             );
-    }
+       }
+           
 
-
-    /* ---------------------------------------------
-       DRAW FRAME
-    --------------------------------------------- */
+/* ---------------------------------------------
+   DRAW FRAME
+--------------------------------------------- */
+    
 
     function drawPreviewFrame(time) {
 
@@ -3783,7 +3784,7 @@ if (scene.animation === "Idle") {
         );
     }
 );
-
+ctx.restore();
 
         /* Scene title */
 
