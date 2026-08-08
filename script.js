@@ -3109,6 +3109,19 @@ if (scene.camera === "Zoom In") {
     zoom = 1 + (progress * 0.20);
 }
 
+ ctx.save();
+
+ctx.translate(
+    canvas.width / 2,
+    canvas.height / 2
+);
+
+ctx.scale(zoom, zoom);
+
+ctx.translate(
+    -canvas.width / 2,
+    -canvas.height / 2
+);      
 /* -----------------------------------------
    SCENE BACKGROUND
 ----------------------------------------- */
