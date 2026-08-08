@@ -5038,7 +5038,33 @@ function saveSelectedSceneCharacterSettings() {
     saveProject();
     updateProjectUI();
 }
+if (startPositionSelect) {
 
+    startPositionSelect.addEventListener(
+        "change",
+        saveSelectedSceneCharacterSettings
+    );
+
+}
+
+if (endPositionSelect) {
+
+    endPositionSelect.addEventListener(
+        "change",
+        saveSelectedSceneCharacterSettings
+    );
+
+}
+
+if (speedInput) {
+
+    speedInput.addEventListener(
+        "change",
+        saveSelectedSceneCharacterSettings
+    );
+
+}
+   
     setTimeout(function() {
        const characterSelect =
     $("sceneCharacterSelect");
