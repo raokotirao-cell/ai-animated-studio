@@ -4755,12 +4755,43 @@ function addCharacterToScene() {
 
     saveProject();
     updateProjectUI();
-
+   
+refreshSceneCharacterSelect();
     alert(
         character.name +
         " added to Scene " +
         (sceneIndex + 1)
     );
+}
+function refreshSceneCharacterSelect() {
+
+    const select =
+        $("sceneCharacterSelect");
+
+    if (!select) return;
+
+    select.innerHTML = `
+        <option value="">
+            Select character
+        </option>
+    `;
+
+    if (!Array.isArray(project.characters)) {
+        return;
+    }
+
+    project.characters.forEach(function(character) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = character.id;
+
+        option.textContent =
+            character.name || "Unnamed Character";
+
+        select.appendChild(option);
+    });
 }
 
 /* -------------------------
