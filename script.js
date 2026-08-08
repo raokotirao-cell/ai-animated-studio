@@ -4727,8 +4727,26 @@ function addCharacterToScene() {
         alert("Please create a character first.");
         return;
     }
+const characterSelect =
+    $("sceneCharacterSelect");
 
-    const character = project.characters[0];
+if (!characterSelect || characterSelect.value === "") {
+    alert("Please select a character.");
+    return;
+}
+
+const characterId =
+    Number(characterSelect.value);
+
+const character =
+    project.characters.find(function(item) {
+        return Number(item.id) === characterId;
+    });
+
+if (!character) {
+    alert("Selected character not found.");
+    return;
+}
 
     if (!Array.isArray(scene.characters)) {
         scene.characters = [];
