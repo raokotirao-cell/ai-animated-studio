@@ -5091,115 +5091,328 @@ function saveSelectedSceneCharacterSettings() {
         sceneCharacter.speed =
             Math.max(
                 0.1,
-                Math.min(
-                    5,
-                    Number(speedInput.value) || 1
-                )
-            );
+               function setupAnimationControls() {
+
+    const sceneSelect =
+        $("animationSceneSelect");
+
+    const saveButton =
+        $("saveAnimationBtn");
+
+    const refreshButton =
+        $("refreshAnimationBtn");
+
+    const characterSelect =
+        $("sceneCharacterSelect");
+
+    const animationSelect =
+        $("editorAnimationSelect");
+
+    const startPositionSelect =
+        $("characterStartPosition");
+
+    const endPositionSelect =
+        $("characterEndPosition");
+
+    const speedInput =
+        $("characterSpeed");
+
+
+    /* -------------------------
+       SCENE CHANGE
+    ------------------------- */
+
+    if (sceneSelect) {
+
+        sceneSelect.addEventListener(
+            "change",
+            function() {
+
+                loadAnimationScene(
+                    sceneSelect.value
+                );
+
+            }
+        );
 
     }
 
-    project.status =
-        "Scene character settings updated";
 
-    saveProject();
-    updateProjectUI();
-}
-if (startPositionSelect) {
+    /* -------------------------
+       SAVE BUTTON
+    ------------------------- */
 
-    startPositionSelect.addEventListener(
-        "change",
-        saveSelectedSceneCharacterSettings
-    );
+    if (saveButton) {
 
-}
+        saveButton.addEventListener(
+            "click",
+            function() {
 
-if (endPositionSelect) {
+                saveAnimationSettings();
 
-    endPositionSelect.addEventListener(
-        "change",
-        saveSelectedSceneCharacterSettings
-    );
-
-}
-
-if (speedInput) {
-
-    speedInput.addEventListener(
-        "change",
-        saveSelectedSceneCharacterSettings
-    );
-
-}
-   
-    setTimeout(function() {
-       const characterSelect =
-    $("sceneCharacterSelect");
-
-const animationSelect =
-    $("editorAnimationSelect");
-
-if (animationSelect) {
-
-    animationSelect.addEventListener(
-        "change",
-        function() {
-
-            if (!characterSelect ||
-                characterSelect.value === "") {
-
-                return;
             }
+        );
 
-            const sceneSelect =
-                $("animationSceneSelect");
+    }
 
-            if (!sceneSelect ||
-                sceneSelect.value === "") {
 
-                return;
+    /* -------------------------
+       REFRESH BUTTON
+    ------------------------- */
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            "click",
+            function() {
+
+                refreshAnimationControls();
+
             }
+        );
 
-            const scene =
-                project.scenes[
-                    Number(sceneSelect.value)
-                ];
+    }
 
-            if (!scene ||
-                !Array.isArray(scene.characters)) {
 
-                return;
-            }
+    /* -------------------------
+       SAVE CHARACTER SETTINGS
+    ------------------------- */
 
-            const characterId =
-                Number(characterSelect.value);
+    function saveSelectedSceneCharacterSettings() {
 
-            const sceneCharacter =
-                scene.characters.find(
-                    function(item) {
-                        return Number(item.characterId) ===
-                               characterId;
-                    }
-                );
+        if (!characterSelect ||
+            characterSelect.value === "") {
 
-            if (!sceneCharacter) {
-                return;
-            }
+            return;
+        }
 
-            sceneCharacter.animation =
-                animationSelect.value;
 
-            project.status =
-                "Scene character animation updated";
+        const currentSceneSelect =
+            $("animationSceneSelect");
 
-            saveProject();
-            updateProjectUI();
+
+        if (!currentSceneSelect ||
+            currentSceneSelect.value === "") {
+
+            return;
+        }
+
+
+        const scene =
+            project.scenes[
+                Number(currentSceneSelect.value)
+            ];
+
+
+        if (!scene ||
+            !Array.isArray(scene.characters)) {
+
+            return;
+        }
+
+
+        const characterId =
+            Number(characterSelect.value);
+
+
+        const sceneCharacter =
+            scene.characters.find(
+                function(item) {
+
+                    return Number(item.characterId) ===
+                           characterId;
+
+                }
+            );
+
+
+        if (!sceneCharacter) {
+            return;
+        }
+
+
+        if (startPositionSelect) {
+
+            sceneCharacter.startPosition =
+                startPositionSelect.value;
 
         }
+
+
+        if (endPositionSelect) {
+
+            sceneCharacter.endPosition =
+                endPositionSelect.value;
+
+        }
+
+
+        if (speedInput) {
+
+            sceneCharacter.speed =
+                Math.max(
+                    0.1,
+                    Math.min(
+                        5,
+                        Number(speedInput.value) || 1
+                    )
+                );
+
+        }
+
+
+        project.status =
+            "Scene character settings updated";
+
+
+        saveProject();
+        updateProjectUI();
+
+    }
+
+
+    /* -------------------------
+       POSITION + SPEED EVENTS
+    ------------------------- */
+
+    if (startPositionSelect) {
+
+        startPositionSelect.addEventListener(
+            "change",
+            saveSelectedSceneCharacterSettings
+        );
+
+    }
+
+
+    if (endPositionSelect) {
+
+        endPositionSelect.addEventListener(
+            "change",
+            saveSelectedSceneCharacterSettings
+        );
+
+    }
+
+
+    if (speedInput) {
+
+        speedInput.addEventListener(
+            "change",
+            saveSelectedSceneCharacterSettings
+        );
+
+    }
+
+
+    /* -------------------------
+       CHARACTER ANIMATION
+    ------------------------- */
+
+    if (animationSelect) {
+
+        animationSelect.addEventListener(
+            "change",
+            function() {
+
+                if (!characterSelect ||
+                    characterSelect.value === "") {
+
+                    return;
+                }
+
+
+                const currentSceneSelect =
+                    $("animationSceneSelect");
+
+
+                if (!currentSceneSelect ||
+                    currentSceneSelect.value === "") {
+
+                    return;
+                }
+
+
+                const scene =
+                    project.scenes[
+                        Number(currentSceneSelect.value)
+                    ];
+
+
+                if (!scene ||
+                    !Array.isArray(scene.characters)) {
+
+                    return;
+                }
+
+
+                const characterId =
+                    Number(characterSelect.value);
+
+
+                const sceneCharacter =
+                    scene.characters.find(
+                        function(item) {
+
+                            return Number(item.characterId) ===
+                                   characterId;
+
+                        }
+                    );
+
+
+                if (!sceneCharacter) {
+                    return;
+                }
+
+
+                sceneCharacter.animation =
+                    animationSelect.value;
+
+
+                project.status =
+                    "Scene character animation updated";
+
+
+                saveProject();
+                updateProjectUI();
+
+            }
+        );
+
+    }
+
+
+    /* -------------------------
+       CHARACTER CHANGE
+    ------------------------- */
+
+    if (characterSelect) {
+
+        characterSelect.addEventListener(
+            "change",
+            function() {
+
+                loadSelectedSceneCharacterControls();
+
+            }
+        );
+
+    }
+
+
+    /* -------------------------
+       INITIAL REFRESH
+    ------------------------- */
+
+    setTimeout(
+        function() {
+
+            refreshAnimationScenes();
+
+        },
+        100
     );
-}
-    refreshAnimationScenes();
-}, 100);
 
 }
 
