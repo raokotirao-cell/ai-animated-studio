@@ -1658,10 +1658,19 @@
 ========================================== -->
 
 <script>
-  window.addEventListener("error", function(event) {
-    alert("JS ERROR: " + event.message);
-  });
-
+  
+window.addEventListener("error", function(event) {
+  alert(
+    "JS ERROR: " +
+    event.message +
+    "\n\nFile: " +
+    event.filename +
+    "\nLine: " +
+    event.lineno +
+    "\nColumn: " +
+    event.colno
+  );
+});
   alert("HTML SCRIPT TEST");
 </script>
 
