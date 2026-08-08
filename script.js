@@ -4691,6 +4691,17 @@ function saveAnimationSettings() {
     }
 
 }
+const addSceneCharacterBtn =
+    $("addSceneCharacterBtn");
+
+if (addSceneCharacterBtn) {
+
+    addSceneCharacterBtn.addEventListener(
+        "click",
+        addCharacterToScene
+    );
+
+}
 /* =====================================================
    SCENE CHARACTER ASSIGNMENT
 ===================================================== */
