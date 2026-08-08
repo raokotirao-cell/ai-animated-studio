@@ -3101,8 +3101,11 @@ function updateAnimationPreview() {
             canvas.width,
             canvas.height
         );
+const progress =
+    duration > 0
+        ? Math.min(time / duration, 1)
+        : 0;
        
-const progress = Math.min(time / duration, 1);
        let zoom = 1;
 
 if (scene.camera === "Zoom In") {
@@ -3329,7 +3332,7 @@ if (scene.animation === "Idle") {
             );
         }
 
-
+ctx.restore();
         /* -----------------------------------------
            CAPTION
         ----------------------------------------- */
