@@ -4612,10 +4612,7 @@ function refreshSceneCharacterControls(scene) {
         $("sceneCharacterSelect");
    if (characterSelect) {
 
-    characterSelect.addEventListener(
-        "change",
-        function() {
-           function refreshSceneCharacterControls(scene) {
+    function refreshSceneCharacterControls(scene) {
 
     const characterSelect =
         $("sceneCharacterSelect");
