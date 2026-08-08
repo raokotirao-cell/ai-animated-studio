@@ -3854,10 +3854,10 @@ ctx.restore();
                 */
 
                 if (
-                    captionScene !== 0
-                ) {
-                    return;
-                }
+    captionScene !== currentAnimationSceneIndex
+) {
+    return;
+}
 
 
                 const start =
@@ -4427,6 +4427,7 @@ function refreshAnimationScenes() {
 ------------------------- */
 
 function loadAnimationScene(index) {
+   currentAnimationSceneIndex = Number(index);
 
     if (
         index === "" ||
