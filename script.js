@@ -4691,7 +4691,66 @@ function saveAnimationSettings() {
     }
 
 }
+/* =====================================================
+   SCENE CHARACTER ASSIGNMENT
+===================================================== */
 
+function addCharacterToScene() {
+
+    const select = $("animationSceneSelect");
+
+    if (!select || select.value === "") {
+        alert("Please select a scene first.");
+        return;
+    }
+
+    const sceneIndex = Number(select.value);
+    const scene = project.scenes[sceneIndex];
+
+    if (!scene) return;
+
+    if (!Array.isArray(project.characters) ||
+        project.characters.length === 0) {
+
+        alert("Please create a character first.");
+        return;
+    }
+
+    const character = project.characters[0];
+
+    if (!Array.isArray(scene.characters)) {
+        scene.characters = [];
+    }
+
+    const alreadyAdded =
+        scene.characters.some(function (item) {
+            return item.characterId === character.id;
+        });
+
+    if (alreadyAdded) {
+        alert("Character already added to this scene.");
+        return;
+    }
+
+    scene.characters.push({
+        characterId: character.id,
+        animation: character.animation || "Idle",
+        startPosition: character.startPosition || "Left",
+        endPosition: character.endPosition || "Center",
+        speed: Number(character.speed) || 1
+    });
+
+    project.status = "Character added to scene";
+
+    saveProject();
+    updateProjectUI();
+
+    alert(
+        character.name +
+        " added to Scene " +
+        (sceneIndex + 1)
+    );
+}
 
 /* -------------------------
    REFRESH ANIMATION
