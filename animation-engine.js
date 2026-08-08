@@ -381,7 +381,7 @@
       canvas.width / 2;
 
 
-    const y =
+    let y =
       canvas.height * 0.68;
 
 
